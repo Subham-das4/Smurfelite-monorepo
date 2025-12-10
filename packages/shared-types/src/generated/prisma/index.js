@@ -97,7 +97,9 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
-  role: 'role'
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ProductScalarFieldEnum = {
@@ -108,11 +110,52 @@ exports.Prisma.ProductScalarFieldEnum = {
   price: 'price',
   isAvailable: 'isAvailable',
   specifications: 'specifications',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   accountUsername: 'accountUsername',
   accountPassword: 'accountPassword',
   accountEmail: 'accountEmail',
   accountEmailPassword: 'accountEmailPassword',
   sellerId: 'sellerId'
+};
+
+exports.Prisma.CartScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CartItemScalarFieldEnum = {
+  cartId: 'cartId',
+  productId: 'productId',
+  quantity: 'quantity'
+};
+
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  totalAmount: 'totalAmount',
+  paymentIntent: 'paymentIntent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  buyerId: 'buyerId'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  orderId: 'orderId',
+  productId: 'productId',
+  priceAtPurchase: 'priceAtPurchase',
+  quantity: 'quantity'
+};
+
+exports.Prisma.EnquiryScalarFieldEnum = {
+  id: 'id',
+  subject: 'subject',
+  message: 'message',
+  isClosed: 'isClosed',
+  createdAt: 'createdAt',
+  userId: 'userId'
 };
 
 exports.Prisma.SortOrder = {
@@ -145,9 +188,22 @@ exports.Role = exports.$Enums.Role = {
   BUYER: 'BUYER'
 };
 
+exports.OrderStatus = exports.$Enums.OrderStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
-  Product: 'Product'
+  Product: 'Product',
+  Cart: 'Cart',
+  CartItem: 'CartItem',
+  Order: 'Order',
+  OrderItem: 'OrderItem',
+  Enquiry: 'Enquiry'
 };
 /**
  * Create the Client
@@ -157,10 +213,10 @@ const config = {
   "clientVersion": "7.1.0",
   "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
   "activeProvider": "postgresql",
-  "inlineSchema": "// apps/express-server/prisma/schema.prisma\n\ngenerator client {\n  provider   = \"prisma-client-js\"\n  output     = \"../../../packages/shared-types/src/generated/prisma\"\n  engineType = \"binary\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\n// Initial Models for SmurfElite\n\nenum Role {\n  ADMIN\n  SELLER\n  BUYER\n}\n\nmodel User {\n  id       String    @id @default(uuid())\n  email    String    @unique\n  password String // Hashed password for security\n  role     Role      @default(BUYER)\n  products Product[]\n  // orders    Order[]\n  // enquiries Enquiry[]\n}\n\nmodel Product {\n  id             String  @id @default(uuid())\n  gameType       String\n  title          String\n  description    String?\n  price          Float\n  isAvailable    Boolean @default(true)\n  specifications Json // Stores JSON key values for specs\n\n  // Account Credentials - STORED ENCRYPTED\n  accountUsername      Bytes // Encrypted 'username' (maps to BYTEA in Postgres)\n  accountPassword      Bytes // Encrypted 'password'\n  accountEmail         Bytes // Encrypted 'acc email'\n  accountEmailPassword Bytes // Encrypted 'that email's password'\n\n  sellerId String\n  seller   User   @relation(fields: [sellerId], references: [id])\n\n  // items          OrderItem[]\n  // cartItems      CartItem[]\n}\n"
+  "inlineSchema": "// apps/express-server/prisma/schema.prisma\n\ngenerator client {\n  provider   = \"prisma-client-js\"\n  output     = \"../../../packages/shared-types/src/generated/prisma\"\n  engineType = \"binary\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\n// Initial Models for SmurfElite\n\nenum Role {\n  ADMIN // Can manage users, products, orders, settings\n  SELLER // Can only list and manage their own products\n  BUYER // Standard customer\n}\n\nenum OrderStatus {\n  PENDING // Order placed, waiting for payment/confirmation\n  PROCESSING // Payment confirmed, processing account transfer\n  COMPLETED // Account delivered to buyer\n  CANCELLED // Order cancelled by user or admin\n  REFUNDED\n}\n\nmodel User {\n  id        String   @id @default(uuid())\n  email     String   @unique\n  password  String // Hashed password for login\n  role      Role     @default(BUYER)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // Relations\n  products  Product[] // Products listed by this Seller\n  orders    Order[] // Orders placed by this Buyer\n  cart      Cart? // One-to-one relation to the Cart model\n  enquiries Enquiry[]\n}\n\nmodel Product {\n  id             String   @id @default(uuid())\n  gameType       String // e.g., \"League of Legends\", \"Valorant\"\n  title          String\n  description    String?\n  price          Float\n  isAvailable    Boolean  @default(true)\n  specifications Json // Stores JSON key/value pairs for account specs (e.g., \"Rank\": \"Diamond\")\n  createdAt      DateTime @default(now())\n  updatedAt      DateTime @updatedAt\n\n  // Account Credentials - STORED ENCRYPTED\n  accountUsername      Bytes // Encrypted 'username' (Maps to BYTEA in Postgres)\n  accountPassword      Bytes\n  accountEmail         Bytes\n  accountEmailPassword Bytes\n\n  // Foreign Key for Seller (User)\n  sellerId String\n  seller   User   @relation(fields: [sellerId], references: [id])\n\n  // Relations\n  items     OrderItem[]\n  cartItems CartItem[]\n}\n\n// ----------------------------------------------------\n// 4. E-COMMERCE MODELS (Cart, Order, Enquiry)\n// ----------------------------------------------------\n\n// 4a. Cart (Temporary storage before checkout)\nmodel Cart {\n  id        String   @id @default(uuid())\n  // One-to-one relation: Cart belongs to one User\n  userId    String   @unique // @unique ensures 1:1 relation\n  user      User     @relation(fields: [userId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // Relations\n  items CartItem[] // Items currently in the cart\n}\n\n// Junction table for Cart <-> Product (Explicit Many-to-Many)\nmodel CartItem {\n  // Composite ID: A cart item is unique by the Cart and the Product it contains\n  cartId    String\n  productId String\n\n  quantity Int @default(1)\n\n  cart    Cart    @relation(fields: [cartId], references: [id])\n  product Product @relation(fields: [productId], references: [id])\n\n  @@id([cartId, productId])\n}\n\n// 4b. Order (Completed purchase)\nmodel Order {\n  id            String      @id @default(uuid())\n  status        OrderStatus @default(PENDING)\n  totalAmount   Float\n  paymentIntent String?     @unique // Stripe/PayPal Payment Intent ID\n  createdAt     DateTime    @default(now())\n  updatedAt     DateTime    @updatedAt\n\n  // Foreign Key for Buyer (User)\n  buyerId String\n  buyer   User   @relation(fields: [buyerId], references: [id])\n\n  // Relations\n  items OrderItem[] // Items included in the order\n}\n\n// Junction table for Order <-> Product (Explicit Many-to-Many)\nmodel OrderItem {\n  // Composite ID: An order item is unique by the Order and the Product it contains\n  orderId   String\n  productId String\n\n  // NOTE: We denormalize price here to capture the price *at the time of purchase*\n  priceAtPurchase Float // The price when the order was placed\n  quantity        Int\n\n  order   Order   @relation(fields: [orderId], references: [id])\n  product Product @relation(fields: [productId], references: [id])\n\n  @@id([orderId, productId])\n}\n\n// 4c. Enquiry (Customer service requests/questions)\nmodel Enquiry {\n  id        String   @id @default(uuid())\n  subject   String\n  message   String\n  isClosed  Boolean  @default(false)\n  createdAt DateTime @default(now())\n\n  // Foreign Key for User (Customer)\n  userId String\n  user   User   @relation(fields: [userId], references: [id])\n}\n"
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToUser\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"gameType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"isAvailable\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"specifications\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"accountUsername\",\"kind\":\"scalar\",\"type\":\"Bytes\"},{\"name\":\"accountPassword\",\"kind\":\"scalar\",\"type\":\"Bytes\"},{\"name\":\"accountEmail\",\"kind\":\"scalar\",\"type\":\"Bytes\"},{\"name\":\"accountEmailPassword\",\"kind\":\"scalar\",\"type\":\"Bytes\"},{\"name\":\"sellerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"seller\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ProductToUser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToUser\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToUser\"},{\"name\":\"cart\",\"kind\":\"object\",\"type\":\"Cart\",\"relationName\":\"CartToUser\"},{\"name\":\"enquiries\",\"kind\":\"object\",\"type\":\"Enquiry\",\"relationName\":\"EnquiryToUser\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"gameType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"isAvailable\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"specifications\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"accountUsername\",\"kind\":\"scalar\",\"type\":\"Bytes\"},{\"name\":\"accountPassword\",\"kind\":\"scalar\",\"type\":\"Bytes\"},{\"name\":\"accountEmail\",\"kind\":\"scalar\",\"type\":\"Bytes\"},{\"name\":\"accountEmailPassword\",\"kind\":\"scalar\",\"type\":\"Bytes\"},{\"name\":\"sellerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"seller\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ProductToUser\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderItemToProduct\"},{\"name\":\"cartItems\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartItemToProduct\"}],\"dbName\":null},\"Cart\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CartToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartToCartItem\"}],\"dbName\":null},\"CartItem\":{\"fields\":[{\"name\":\"cartId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"cart\",\"kind\":\"object\",\"type\":\"Cart\",\"relationName\":\"CartToCartItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CartItemToProduct\"}],\"dbName\":null},\"Order\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"OrderStatus\"},{\"name\":\"totalAmount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"paymentIntent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"buyerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"buyer\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"OrderToUser\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderToOrderItem\"}],\"dbName\":null},\"OrderItem\":{\"fields\":[{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"priceAtPurchase\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"OrderItemToProduct\"}],\"dbName\":null},\"Enquiry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"subject\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isClosed\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"EnquiryToUser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.compilerWasm = {
       getRuntime: async () => require('./query_compiler_bg.js'),

@@ -124,7 +124,9 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
-  role: 'role'
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ProductScalarFieldEnum = {
@@ -135,11 +137,52 @@ exports.Prisma.ProductScalarFieldEnum = {
   price: 'price',
   isAvailable: 'isAvailable',
   specifications: 'specifications',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   accountUsername: 'accountUsername',
   accountPassword: 'accountPassword',
   accountEmail: 'accountEmail',
   accountEmailPassword: 'accountEmailPassword',
   sellerId: 'sellerId'
+};
+
+exports.Prisma.CartScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CartItemScalarFieldEnum = {
+  cartId: 'cartId',
+  productId: 'productId',
+  quantity: 'quantity'
+};
+
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  totalAmount: 'totalAmount',
+  paymentIntent: 'paymentIntent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  buyerId: 'buyerId'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  orderId: 'orderId',
+  productId: 'productId',
+  priceAtPurchase: 'priceAtPurchase',
+  quantity: 'quantity'
+};
+
+exports.Prisma.EnquiryScalarFieldEnum = {
+  id: 'id',
+  subject: 'subject',
+  message: 'message',
+  isClosed: 'isClosed',
+  createdAt: 'createdAt',
+  userId: 'userId'
 };
 
 exports.Prisma.SortOrder = {
@@ -172,9 +215,22 @@ exports.Role = exports.$Enums.Role = {
   BUYER: 'BUYER'
 };
 
+exports.OrderStatus = exports.$Enums.OrderStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
-  Product: 'Product'
+  Product: 'Product',
+  Cart: 'Cart',
+  CartItem: 'CartItem',
+  Order: 'Order',
+  OrderItem: 'OrderItem',
+  Enquiry: 'Enquiry'
 };
 
 /**
