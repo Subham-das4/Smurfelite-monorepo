@@ -1,0 +1,24 @@
+{
+  "name": "@smurfelite/express-server",
+  "version": "1.0.0",
+  "description": "Backend API for SmurfElite eCommerce.",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@smurfelite/types": "workspace:^1.0.0",
+    "express": "^4.18.2",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2",
+    "dotenv": "^16.3.1",
+    "@prisma/client": "^5.8.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.0"
+  }
+}
