@@ -13,39 +13,135 @@ provider = "postgresql"
 // Initial Models for SmurfElite
 
 enum Role {
-  ADMIN
-  SELLER
-  BUYER
+  ADMIN   // Can manage users, products, orders, settings
+  SELLER  // Can only list and manage their own products
+  BUYER   // Standard customer
 }
 
+enum OrderStatus {
+  PENDING     // Order placed, waiting for payment/confirmation
+  PROCESSING  // Payment confirmed, processing account transfer
+  COMPLETED   // Account delivered to buyer
+  CANCELLED   // Order cancelled by user or admin
+  REFUNDED
+}
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  password  String   // Hashed password for security
+  password  String   // Hashed password for login
   role      Role     @default(BUYER)
-  products  Product[] 
-  // orders    Order[]
-  // enquiries Enquiry[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  products  Product[]    // Products listed by this Seller
+  orders    Order[]      // Orders placed by this Buyer
+  cart      Cart?        // One-to-one relation to the Cart model
+  enquiries Enquiry[]
 }
 
 model Product {
   id             String   @id @default(uuid())
-  gameType       String
+  gameType       String   // e.g., "League of Legends", "Valorant"
   title          String
   description    String?
   price          Float
   isAvailable    Boolean  @default(true)
-  specifications Json     // Stores JSON key values for specs
+  specifications Json     // Stores JSON key/value pairs for account specs (e.g., "Rank": "Diamond")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
   
   // Account Credentials - STORED ENCRYPTED
-  accountUsername Bytes   // Encrypted 'username' (maps to BYTEA in Postgres)
-  accountPassword Bytes   // Encrypted 'password'
-  accountEmail    Bytes   // Encrypted 'acc email'
-  accountEmailPassword Bytes // Encrypted 'that email's password'
+  accountUsername Bytes   // Encrypted 'username' (Maps to BYTEA in Postgres)
+  accountPassword Bytes
+  accountEmail    Bytes
+  accountEmailPassword Bytes
 
+  // Foreign Key for Seller (User)
   sellerId       String
   seller         User     @relation(fields: [sellerId], references: [id])
   
-  // items          OrderItem[]
-  // cartItems      CartItem[]
+  // Relations
+  items          OrderItem[]
+  cartItems      CartItem[]
+}
+
+
+// ----------------------------------------------------
+// 4. E-COMMERCE MODELS (Cart, Order, Enquiry)
+// ----------------------------------------------------
+
+// 4a. Cart (Temporary storage before checkout)
+model Cart {
+  id        String   @id @default(uuid())
+  // One-to-one relation: Cart belongs to one User
+  userId    String   @unique // @unique ensures 1:1 relation
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  items     CartItem[] // Items currently in the cart
+}
+
+// Junction table for Cart <-> Product (Explicit Many-to-Many)
+model CartItem {
+  // Composite ID: A cart item is unique by the Cart and the Product it contains
+  cartId    String
+  productId String
+  
+  quantity  Int      @default(1)
+  
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  
+  @@id([cartId, productId])
+}
+
+
+// 4b. Order (Completed purchase)
+model Order {
+  id            String      @id @default(uuid())
+  status        OrderStatus @default(PENDING)
+  totalAmount   Float
+  paymentIntent String?     @unique // Stripe/PayPal Payment Intent ID
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  // Foreign Key for Buyer (User)
+  buyerId       String
+  buyer         User        @relation(fields: [buyerId], references: [id])
+
+  // Relations
+  items         OrderItem[] // Items included in the order
+}
+
+// Junction table for Order <-> Product (Explicit Many-to-Many)
+model OrderItem {
+  // Composite ID: An order item is unique by the Order and the Product it contains
+  orderId    String
+  productId  String
+  
+  // NOTE: We denormalize price here to capture the price *at the time of purchase*
+  priceAtPurchase Float // The price when the order was placed
+  quantity        Int
+  
+  order           Order    @relation(fields: [orderId], references: [id])
+  product         Product  @relation(fields: [productId], references: [id])
+  
+  @@id([orderId, productId])
+}
+
+
+// 4c. Enquiry (Customer service requests/questions)
+model Enquiry {
+  id        String   @id @default(uuid())
+  subject   String
+  message   String
+  isClosed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  // Foreign Key for User (Customer)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }
