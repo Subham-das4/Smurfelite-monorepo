@@ -1,9 +1,12 @@
 {
   "name": "@smurfelite/types",
   "version": "1.0.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/generated/prisma/index.js",
+  "types": "./src/generated/prisma/index.d.ts",
+  "files": [
+    "src/generated"
+  ],
   "scripts": {
-    "build": "echo \"Build script for types goes here (e.g., running Prisma generate)\""
+    "build": "pnpm --filter=@smurfelite/express-server prisma generate"
   }
 }

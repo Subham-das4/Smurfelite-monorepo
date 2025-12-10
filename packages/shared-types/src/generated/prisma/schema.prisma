@@ -1,0 +1,51 @@
+// apps/express-server/prisma/schema.prisma
+
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../../../packages/shared-types/src/generated/prisma"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Initial Models for SmurfElite
+
+enum Role {
+  ADMIN
+  SELLER
+  BUYER
+}
+
+model User {
+  id       String    @id @default(uuid())
+  email    String    @unique
+  password String // Hashed password for security
+  role     Role      @default(BUYER)
+  products Product[]
+  // orders    Order[]
+  // enquiries Enquiry[]
+}
+
+model Product {
+  id             String  @id @default(uuid())
+  gameType       String
+  title          String
+  description    String?
+  price          Float
+  isAvailable    Boolean @default(true)
+  specifications Json // Stores JSON key values for specs
+
+  // Account Credentials - STORED ENCRYPTED
+  accountUsername      Bytes // Encrypted 'username' (maps to BYTEA in Postgres)
+  accountPassword      Bytes // Encrypted 'password'
+  accountEmail         Bytes // Encrypted 'acc email'
+  accountEmailPassword Bytes // Encrypted 'that email's password'
+
+  sellerId String
+  seller   User   @relation(fields: [sellerId], references: [id])
+
+  // items          OrderItem[]
+  // cartItems      CartItem[]
+}
