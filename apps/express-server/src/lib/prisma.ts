@@ -1,6 +1,7 @@
 import * as PrismaNamespace from "@smurfelite/types/src/generated/prisma/index.js"; // Import from the monorepo shared package!
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
+import bcrypt from "bcrypt";
 
 const globalForPrisma = global as unknown as {
   prisma: PrismaNamespace.PrismaClient | undefined;
@@ -34,3 +35,27 @@ if (process.env.NODE_ENV !== "production") {
 
 // Export the client for use in controllers and services
 export default prisma;
+
+// Ensure at least one admin user exists
+export async function ensureAdminUser() {
+  if (process.env.NODE_ENV === "production") return; // Skip in production
+  const admin = await prisma.user.findFirst({
+    where: { role: PrismaNamespace.Role.ADMIN },
+  });
+
+  if (!admin) {
+    const hashedPassword = await bcrypt.hash(
+      process.env.DEFAULT_ADMIN_PASSWORD || "admin123",
+      12
+    );
+    await prisma.user.create({
+      data: {
+        email: process.env.DEFAULT_ADMIN_EMAIL || "admin@admin.com",
+        password: hashedPassword,
+        role: PrismaNamespace.Role.ADMIN,
+        isVerified: true,
+        name: "Default Admin",
+      },
+    });
+  }
+}

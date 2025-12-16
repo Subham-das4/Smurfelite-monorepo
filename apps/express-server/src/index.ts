@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import prisma from "./lib/prisma.js";
+import prisma, { ensureAdminUser } from "./lib/prisma.js";
 import apiRouter from "./lib/route.js";
 
 const app = express();
@@ -29,6 +29,7 @@ app.listen(PORT, () => {
     .$connect()
     .then(() => {
       console.log("Prisma Client successfully connected to PostgreSQL.");
+      ensureAdminUser();
     })
     .catch((error) => {
       console.error("Prisma connection failed on startup:", error);
