@@ -1,4 +1,5 @@
-// ApiError.ts
+import { NextFunction, Request, Response } from "express";
+import logger from "./logger.ts";
 
 class ApiError extends Error {
   public statusCode: number;
@@ -22,5 +23,25 @@ class ApiError extends Error {
     }
   }
 }
+
+export const globalErrorHandler = (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      message: err.message,
+      error: process.env.NODE_ENV === "development" ? err : undefined,
+    });
+  }
+  logger.error("Unhandled Server Error:", err);
+  const statusCode = err.status || 500;
+  res.status(statusCode).json({
+    message: "An unexpected server error occurred.",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+  });
+};
 
 export default ApiError;

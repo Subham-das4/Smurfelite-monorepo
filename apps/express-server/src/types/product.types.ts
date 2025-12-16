@@ -21,3 +21,16 @@ export type ProductCreateInput = Omit<
   accountEmailPassword: string;
   specifications: InputJsonValue;
 };
+
+export type ProductUpdateData = Partial<ProductCreateInput>;
+
+export interface ProductFilters {
+  gameType?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  search?: string;
+  page: number;
+  pageSize: number;
+  sortBy?: keyof Product;
+  sortOrder?: "asc" | "desc";
+}
