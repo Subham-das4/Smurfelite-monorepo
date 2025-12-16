@@ -4,4 +4,5 @@ export const ProductErrors = {
   PRODUCT_DELETION_FAILED: "Failed to delete the product.",
   PRODUCT_FORBIDDEN:
     "Forbidden: You do not have permission to modify this product.",
+  PRODUCT_AUTHORIZATION_FAILED: "Product authorization failed.",
 };

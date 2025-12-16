@@ -1,0 +1,209 @@
+import * as PrismaNamespace from "@smurfelite/types";
+import prisma from "../../lib/prisma.js";
+import ApiError from "../../utils/errors.js";
+import { AuthErrorMessages } from "./auth.message.js";
+import bcrypt from "bcrypt";
+import { JwtPayload, UserRegistrationInput } from "../../types/auth.types.js";
+import jwt, { SignOptions } from "jsonwebtoken";
+import crypto from "crypto";
+import logger from "../../utils/logger.js";
+
+const JWT_SECRET = process.env.JWT_SECRET!;
+const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS!);
+const TOKEN_EXPIRATION = process.env
+  .TOKEN_EXPIRATION! as SignOptions["expiresIn"];
+
+if (!JWT_SECRET || !SALT_ROUNDS || isNaN(SALT_ROUNDS) || !TOKEN_EXPIRATION) {
+  throw new Error("Missing or invalid authentication environment variables.");
+}
+
+export function generateTokens(userId: string, userRole: string) {
+  const accessToken = jwt.sign({ userId, role: userRole }, JWT_SECRET, {
+    expiresIn: TOKEN_EXPIRATION,
+  } as jwt.SignOptions);
+
+  const refreshToken = jwt.sign({ userId }, JWT_SECRET, {
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || "7d",
+  } as jwt.SignOptions);
+
+  return { accessToken, refreshToken };
+}
+
+const checkIfUserExists = async (email: string): Promise<boolean> => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  return !!user;
+};
+
+export const registerUser = async (
+  userRegistrationInput: UserRegistrationInput
+): Promise<Omit<PrismaNamespace.User, "password">> => {
+  const { email, password, name, role } = userRegistrationInput;
+  const existingUser = await checkIfUserExists(email);
+  if (existingUser) {
+    throw new ApiError(AuthErrorMessages.USER_ALREADY_EXISTS, 409);
+  }
+
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+  // Create user
+  const user = await prisma.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      name,
+      role,
+    },
+  });
+
+  await generateAndSaveVerificationToken(user.id);
+
+  // Remove password before returning
+  const { password: _, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+};
+
+export const loginUser = async (
+  email: string,
+  password: string
+): Promise<Omit<PrismaNamespace.User, "password">> => {
+  // Find user
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    throw new ApiError(AuthErrorMessages.INVALID_CREDENTIALS, 401);
+  }
+
+  // Compare password
+  const passwordMatch = await bcrypt.compare(password, user.password);
+  if (!passwordMatch) {
+    throw new ApiError(AuthErrorMessages.INVALID_CREDENTIALS, 401);
+  }
+
+  // Create JWT Payload
+  const payload: JwtPayload = {
+    id: user.id,
+    email: user.email,
+    role: user.role,
+  };
+
+  // Generate Token (expires in 24 hours)
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
+
+  // Remove password before returning
+  const { password: _, ...userWithoutPassword } = user;
+
+  return userWithoutPassword;
+};
+
+async function generateAndSaveVerificationToken(
+  userId: string
+): Promise<string> {
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+
+  await prisma.verificationToken.create({
+    data: {
+      token,
+      userId,
+      expiresAt,
+    },
+  });
+
+  // TODO:  Send the token via email to the user for verification
+
+  logger.info(
+    `Verification token generated for user ${userId}. Token: ${token} `
+  );
+  logger.info(`Implementation required `);
+
+  return token;
+}
+
+export async function saveRefreshToken(userId: string, token: string) {
+  const expirationDate = new Date();
+  // Decode JWT to get expiration timestamp (exp)
+  const decodedToken = jwt.decode(token) as jwt.JwtPayload;
+
+  if (decodedToken && decodedToken.exp) {
+    expirationDate.setTime(decodedToken.exp * 1000);
+  } else {
+    // Fallback if decoding fails (7 days default)
+    expirationDate.setDate(expirationDate.getDate() + 7);
+  }
+
+  await prisma.refreshToken.create({
+    data: {
+      userId,
+      token,
+      expiresAt: expirationDate,
+    },
+  });
+}
+
+export async function refreshTokens(refreshToken: string) {
+  // 1. Verify refresh token signature
+  const payload = jwt.verify(refreshToken, JWT_SECRET) as JwtPayload;
+  const userId = payload.id;
+
+  // 2. Check if the token exists and is valid in the database
+  const dbToken = await prisma.refreshToken.findUnique({
+    where: { token: refreshToken },
+  });
+
+  if (!dbToken || dbToken.expiresAt < new Date()) {
+    throw new ApiError(AuthErrorMessages.INVALID_OR_EXPIRED_REFRESH_TOKEN, 401);
+  }
+
+  // 3. Revoke the old refresh token (one-time use)
+  await prisma.refreshToken.delete({ where: { token: refreshToken } });
+
+  // 4. Find user to get role for the new access token
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    throw new Error("User not found.");
+  }
+
+  // 5. Generate NEW tokens
+  const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+    generateTokens(userId, user.role);
+
+  // 6. Save the NEW refresh token
+  await saveRefreshToken(userId, newRefreshToken);
+
+  return {
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+  };
+}
+
+export async function verifyEmail(
+  token: string
+): Promise<PrismaNamespace.User> {
+  const verificationRecord = await prisma.verificationToken.findUnique({
+    where: { token },
+    include: { user: true },
+  });
+
+  if (!verificationRecord) {
+    throw new ApiError(AuthErrorMessages.INVALID_VERIFICATION_TOKEN, 400);
+  }
+
+  // 2. Check token expiration
+  if (verificationRecord.expiresAt < new Date()) {
+    // Delete the expired token to clean up
+    await prisma.verificationToken.delete({ where: { token } });
+    throw new ApiError(AuthErrorMessages.INVALID_VERIFICATION_TOKEN, 400);
+  }
+
+  // 3. Mark the user as verified
+  const updatedUser = await prisma.user.update({
+    where: { id: verificationRecord.userId },
+    data: { isVerified: true },
+  });
+
+  // 4. Delete the token (it's one-time use)
+  await prisma.verificationToken.delete({ where: { token } });
+
+  logger.info(`User ${updatedUser.email} has been verified.`);
+  return updatedUser;
+}

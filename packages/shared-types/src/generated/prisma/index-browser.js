@@ -126,7 +126,26 @@ exports.Prisma.UserScalarFieldEnum = {
   password: 'password',
   role: 'role',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  name: 'name',
+  isVerified: 'isVerified',
+  googleId: 'googleId'
+};
+
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.ProductScalarFieldEnum = {
@@ -199,15 +218,15 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 exports.Prisma.JsonNullValueFilter = {
   DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
-};
-
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
 };
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
@@ -225,6 +244,8 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  VerificationToken: 'VerificationToken',
+  RefreshToken: 'RefreshToken',
   Product: 'Product',
   Cart: 'Cart',
   CartItem: 'CartItem',

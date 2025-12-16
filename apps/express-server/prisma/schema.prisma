@@ -32,12 +32,37 @@ model User {
   role      Role     @default(BUYER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  name      String
+  isVerified Boolean  @default(false)
+  googleId  String?   @unique
 
   // Relations
   products  Product[]    // Products listed by this Seller
   orders    Order[]      // Orders placed by this Buyer
   cart      Cart?        // One-to-one relation to the Cart model
   enquiries Enquiry[]
+  verificationToken VerificationToken?
+  refreshToken      RefreshToken[]
+}
+
+// --- Email Verification Token ---
+model VerificationToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String   @unique // One token per user
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// --- Refresh Token Storage ---
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime // Used to check validity/clean up expired tokens
+  createdAt DateTime @default(now())
 }
 
 model Product {

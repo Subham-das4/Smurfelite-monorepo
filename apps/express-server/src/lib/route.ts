@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import productRoutes from "../modules/product/product.routes.js";
+import authRoutes from "../modules/auth/auth.routes.js";
 
 const apiRouter = Router();
 
@@ -12,6 +13,7 @@ apiRouter.get("/", (req, res) => {
 });
 
 apiRouter.use("/products", productRoutes);
+apiRouter.use("/auth", authRoutes);
 
 // Catch any routes that fall through
 apiRouter.use((req, res) => {
