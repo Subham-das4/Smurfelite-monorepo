@@ -11,7 +11,8 @@
     "rootDir": "./src",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "allowJs": true
   },
   "include": ["src/**/*", "../../../packages/shared-types/dist/index.d.ts"],
   "ts-node": {
