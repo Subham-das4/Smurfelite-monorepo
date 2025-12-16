@@ -1,9 +1,9 @@
-import { PrismaClient } from "@smurfelite/types/src/generated/prisma/index.js"; // Import from the monorepo shared package!
+import * as PrismaNamespace from "@smurfelite/types/src/generated/prisma/index.js"; // Import from the monorepo shared package!
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = global as unknown as {
-  prisma: PrismaClient | undefined;
+  prisma: PrismaNamespace.PrismaClient | undefined;
 };
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -18,7 +18,7 @@ const adapter = new PrismaPg(pool);
 // Instantiate the client or use the existing global instance
 export const prisma =
   globalForPrisma.prisma ||
-  new PrismaClient({
+  new PrismaNamespace.PrismaClient({
     // Optional: Log database queries for debugging/performance analysis
     log:
       process.env.NODE_ENV === "development"

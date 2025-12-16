@@ -12,12 +12,16 @@
   ],
   "scripts": {
     "dev": "turbo run dev --parallel",
-    "build": "turbo run build"
+    "build": "turbo run build",
+    "start:dev": "concurrently \"pnpm --filter=@smurfelite/express-server dev\" \"pnpm --filter=nextjs-app dev\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "turbo": "^2.6.3"
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
   }
 }

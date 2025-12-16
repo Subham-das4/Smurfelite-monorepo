@@ -6,7 +6,7 @@ import {
   getProductDetails,
   getAllProducts,
 } from "./product.service.js";
-import { ProductFilters } from "../../types/product.types.ts";
+import { ProductFilters } from "../../types/product.types.js";
 
 // --- 1. Create Product ---
 export async function createProductController(

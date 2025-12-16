@@ -1,8 +1,7 @@
-import { InputJsonValue } from "@prisma/client/runtime/client";
-import { Product } from "@smurfelite/types/src/generated/prisma/index.js";
+import * as PrismaNamespace from "@smurfelite/types/src/generated/prisma/index.js";
 
 export type ProductCreateInput = Omit<
-  Product,
+  PrismaNamespace.Product,
   | "id"
   | "createdAt"
   | "updatedAt"
@@ -19,7 +18,7 @@ export type ProductCreateInput = Omit<
   accountPassword: string;
   accountEmail: string;
   accountEmailPassword: string;
-  specifications: InputJsonValue;
+  specifications: PrismaNamespace.Prisma.InputJsonValue;
 };
 
 export type ProductUpdateData = Partial<ProductCreateInput>;
@@ -31,6 +30,6 @@ export interface ProductFilters {
   search?: string;
   page: number;
   pageSize: number;
-  sortBy?: keyof Product;
+  sortBy?: keyof PrismaNamespace.Product;
   sortOrder?: "asc" | "desc";
 }

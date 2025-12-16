@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import logger from "./logger.ts";
+import type { Request, Response, NextFunction } from "express";
+import logger from "./logger.js";
 
 class ApiError extends Error {
   public statusCode: number;

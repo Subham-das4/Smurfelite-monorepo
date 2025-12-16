@@ -1,13 +1,13 @@
-import { Prisma, Product } from "@smurfelite/types";
+import * as PrismaNamespace from "@smurfelite/types/src/generated/prisma/index.js";
 import prisma from "../../lib/prisma.js";
 import { encrypt, decrypt } from "../../services/encryption.service.js";
 import {
   ProductCreateInput,
   ProductFilters,
   ProductUpdateData,
-} from "../../types/product.types.ts";
-import ApiError from "../../utils/errors.ts";
-import { ProductErrors } from "./product.messages.ts";
+} from "../../types/product.types.js";
+import ApiError from "../../utils/errors.js";
+import { ProductErrors } from "./product.messages.js";
 
 export async function checkProductOwnership(
   productId: string,
@@ -47,14 +47,17 @@ export async function createProduct(data: ProductCreateInput) {
     ...safeData
   } = data;
 
-  const productInput: Omit<Prisma.ProductCreateInput, "seller"> = {
+  const productInput: Omit<
+    PrismaNamespace.Prisma.ProductCreateInput,
+    "seller"
+  > = {
     ...safeData,
     ...encryptedData,
   };
 
   //  Save the product with encrypted bytes
   const product = await prisma.product.create({
-    data: productInput as Prisma.ProductCreateInput,
+    data: productInput as PrismaNamespace.Prisma.ProductCreateInput,
   });
 
   // We return the actual Product type from the DB, masking sensitive fields
@@ -108,7 +111,7 @@ export async function updateProduct(
   // In a real app, you would fetch the product and compare its sellerId to the current user's ID.
   // For now, we assume this check happens successfully, or the caller is an Admin.
 
-  const dataToUpdate: Prisma.ProductUpdateInput = {};
+  const dataToUpdate: PrismaNamespace.Prisma.ProductUpdateInput = {};
 
   // 2. Encrypt sensitive fields if they are included in the update payload
   const keysToSkip: Array<keyof ProductUpdateData> = [
@@ -158,7 +161,7 @@ export async function deleteProduct(productId: string) {
   } catch (error) {
     // Handle case where product might not exist
     if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error instanceof PrismaNamespace.Prisma.PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
       throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
@@ -171,7 +174,7 @@ export async function getAllProducts(filters: ProductFilters) {
   const { page, pageSize, sortBy, sortOrder } = filters;
 
   // 1. Build the WHERE clause (same as before)
-  const where: Prisma.ProductWhereInput = {
+  const where: PrismaNamespace.Prisma.ProductWhereInput = {
     isAvailable: true, // Only show active listings
   };
 
@@ -179,7 +182,7 @@ export async function getAllProducts(filters: ProductFilters) {
     where.gameType = filters.gameType;
   }
 
-  const priceFilter: Prisma.FloatFilter = {};
+  const priceFilter: PrismaNamespace.Prisma.FloatFilter = {};
   if (filters.minPrice) {
     priceFilter.gte = parseFloat(filters.minPrice);
   }
@@ -200,7 +203,7 @@ export async function getAllProducts(filters: ProductFilters) {
   const take = pageSize;
   const skip = (page - 1) * pageSize;
 
-  const orderBy: Prisma.ProductOrderByWithRelationInput = {};
+  const orderBy: PrismaNamespace.Prisma.ProductOrderByWithRelationInput = {};
 
   if (sortBy && sortOrder) {
     if (typeof sortBy === "string") {
