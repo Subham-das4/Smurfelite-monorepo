@@ -1,5 +1,6 @@
 // apps/express-server/src/services/encryption.service.ts
 import * as crypto from "crypto";
+import { Buffer } from "node:buffer";
 
 // The critical key for AES-256 encryption/decryption
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
@@ -16,7 +17,7 @@ if (!ENCRYPTION_KEY || ENCRYPTION_KEY.length !== 32) {
   );
 }
 
-export function encrypt(text: string): Buffer {
+export function encrypt(text: string): Uint8Array<ArrayBuffer> {
   // 1. Generate a random Initialization Vector (IV)
   const iv = crypto.randomBytes(IV_LENGTH);
 
@@ -37,9 +38,10 @@ export function encrypt(text: string): Buffer {
   return Buffer.from(combinedString, "utf8");
 }
 
-export function decrypt(encryptedBuffer: Buffer): string {
+export function decrypt(encryptedBuffer: Uint8Array<ArrayBuffer>): string {
   // 1. Convert the buffer back to the combined IV:encrypted string
-  const combinedString = encryptedBuffer.toString("utf8");
+  // const combinedString = encryptedBuffer.toString("utf8");
+  const combinedString = encryptedBuffer.toString();
 
   // 2. Split the IV and encrypted data
   const parts = combinedString.split(":");
