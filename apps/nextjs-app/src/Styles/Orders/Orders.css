@@ -1,0 +1,71 @@
+.orders_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    min-height: 50vh;
+    width: 100%;
+    background-color: rgb(241,243,246);
+}
+.orders{
+    width: 100%;
+    max-width: var(--max-layout-width);
+    padding-top: 20px;
+}
+
+.order_card{
+    margin-bottom: 20px;
+    background-color: white;
+    width: 100%;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.247);
+}
+.order_card:hover{
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.555);
+}
+.order_card > .sub_order{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 10% repeat(3, calc((80% / 3)));
+    padding: 10px 20px;
+    column-gap: calc((10% / 4));
+    
+}
+.order_card > .sub_order > .picture{
+    width: 100%;
+    max-width: 100px;
+    aspect-ratio: 1/1;
+    background-image: url('../../assets/GamePage/csgo.png');
+    background-position: center;
+    background-size: cover;
+}
+.order_card > .sub_order > .date_section{
+    display: flex;
+    flex-direction: column;
+}
+.order_card > .sub_order > .date_section svg{
+    color: forestgreen;
+    font-size: 0.7rem;
+}
+.order_card > .sub_order > .date_section > .help{
+    color: blue;
+    cursor: pointer;
+    position: relative;
+    width: fit-content;
+}
+.order_card > .sub_order > .date_section > .help::before{
+    position: absolute;
+    content: "";
+    width: 0%;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    height: 2px;
+    background-color: blue;
+    transition: all 0.3s ease;
+}
+.order_card > .sub_order > .date_section > .help:hover:before{
+    width: 100%;
+}
+.order_card > .sub_order > .date_section > .help:hover{
+    
+}

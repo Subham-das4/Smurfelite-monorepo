@@ -1,0 +1,45 @@
+.privacy_policy{
+    max-width: var( --max-layout-width); 
+    margin: auto;
+    padding: 15px 5px;
+    font-size: 1.2rem;
+}
+.privacy_policy > h2{
+    text-align: center;
+    font-weight: bolder;
+}
+
+.privacy_policy > p{
+    margin-bottom: 30px;
+}
+
+.privacy_policy > .question {
+    font-weight: bolder;
+}
+
+.privacy_policy > .heading {
+    font-weight: bolder;
+}
+
+.return-policy{
+    max-width: var( --max-layout-width); 
+    margin: auto;
+    padding: 15px 5px;
+    font-size: 1.2rem;
+}
+.return-policy > h2{
+    text-align: center;
+    font-weight: bolder;
+}
+
+.return-policy > p{
+    margin-bottom: 30px;
+}
+
+.return-policy > .question {
+    font-weight: bolder;
+}
+
+.return-policy > .heading {
+    font-weight: bolder;
+}
