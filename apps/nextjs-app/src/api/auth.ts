@@ -1,7 +1,7 @@
 import { logout, RootState, setCredentials, setUser } from '@/store';
 import { baseApi } from './baseApi';
 import { userApi } from './user';
-import { LoginRequest, LoginResponse, User } from '@smurfelite/types';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User } from '@smurfelite/types';
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -53,8 +53,17 @@ export const authApi = baseApi.injectEndpoints({
             },
         }),
 
+        /////////////////////
+        // Register API Endpoint
+        register: builder.mutation<RegisterResponse, RegisterRequest>({
+            query: (payload) => ({
+                url: '/auth/register',
+                method: 'POST',
+                body: payload,
+            }),
+        }),
     }),
 });
 
-export const { useLoginMutation, useLogoutMutation } = authApi;
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation } = authApi;
 

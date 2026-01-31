@@ -1,3 +1,5 @@
+import { Role } from './src/generated/prisma/index';
+
 export * from './src/generated/prisma/index';
 
 export interface EnquiryPayload {
@@ -33,4 +35,16 @@ export interface ForgotPasswordRequest {
 export interface ValidateOtpRequest {
     email: string;
     otp: number;
+}
+
+export interface RegisterRequest {
+    email: string;
+    password: string;
+    name: string;
+}
+
+export interface RegisterResponse extends BaseResponse {
+    data: {
+        message: string;
+    }
 }
