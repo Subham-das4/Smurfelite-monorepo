@@ -5,6 +5,7 @@ import React from 'react'
 import { Bounce, ToastContainer } from 'react-toastify';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
+import { Header } from '@/components/pages/layout';
 
 export const GlobalProvider: React.FC<{
     children: React.ReactNode;
@@ -12,6 +13,7 @@ export const GlobalProvider: React.FC<{
     return (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
+                <Header />
                 <ToastContainer
                     stacked
                     position="bottom-right"
@@ -33,6 +35,7 @@ export const GlobalProvider: React.FC<{
                         </button>
                     )}
                 />
+
                 {children}
             </PersistGate>
         </Provider>

@@ -1,4 +1,4 @@
-import { User } from './types';
+import { User } from "@smurfelite/types";
 
 export interface UserState {
     user: User | null;
@@ -14,4 +14,10 @@ export interface AuthState {
     forgotPassword: {
         loading: boolean;
     };
+    isLoginModalOpen: boolean;
+}
+
+export interface CartState {
+    cart: any[];
+    count: number;
 }

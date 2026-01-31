@@ -6,6 +6,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 // Import Slices
 import userReducer from './user/slice';
 import { authReducer } from './auth/slice';
+import cartReducer from './cart/slice';
 import { baseApi } from '@/api';
 
 // Encryption configuration
@@ -26,6 +27,7 @@ const persistConfig = {
 const rootReducers = combineReducers({
     user: userReducer,
     auth: authReducer,
+    cart: cartReducer,
     [baseApi.reducerPath]: baseApi.reducer,
 });
 

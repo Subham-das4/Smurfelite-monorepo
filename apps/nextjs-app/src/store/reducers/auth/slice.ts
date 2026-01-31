@@ -12,6 +12,7 @@ const initialState: AuthState = {
     forgotPassword: {
         loading: false,
     },
+    isLoginModalOpen: false,
 };
 
 const authSlice = createSlice({
@@ -23,6 +24,9 @@ const authSlice = createSlice({
             state.isAuthenticated = true;
             state.refreshToken = action.payload.refreshToken;
         },
+        setIsLoginModalOpen: (state, action: PayloadAction<boolean>) => {
+            state.isLoginModalOpen = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(logout, () => initialState);
@@ -30,4 +34,4 @@ const authSlice = createSlice({
 });
 
 export const authReducer = authSlice.reducer;
-export const { setCredentials } = authSlice.actions;
+export const { setCredentials, setIsLoginModalOpen } = authSlice.actions;

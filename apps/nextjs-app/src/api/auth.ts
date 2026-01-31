@@ -1,8 +1,7 @@
 import { logout, RootState, setCredentials, setUser } from '@/store';
 import { baseApi } from './baseApi';
-import { ForgotPasswordRequest, LoginRequest, LoginResponse, ValidateOtpRequest } from '@/types/api';
-import { User } from '@/types';
 import { userApi } from './user';
+import { LoginRequest, LoginResponse, User } from '@smurfelite/types';
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -54,27 +53,8 @@ export const authApi = baseApi.injectEndpoints({
             },
         }),
 
-        /////////////////////
-        // Validate OTP API Endpoint
-        validateOtp: builder.mutation<null, ValidateOtpRequest>({
-            query: (payload) => ({
-                url: '/auth/otp/validate',
-                method: 'POST',
-                body: { ...payload, purpose: 'forgot_password' },
-            }),
-        }),
-
-        /////////////////////
-        // Forgot Password API Endpoint
-        forgotPassword: builder.mutation<null, ForgotPasswordRequest>({
-            query: (payload) => ({
-                url: '/auth/forgot_password',
-                method: 'POST',
-                body: payload,
-            }),
-        }),
     }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useForgotPasswordMutation, useValidateOtpMutation } = authApi;
+export const { useLoginMutation, useLogoutMutation } = authApi;
 

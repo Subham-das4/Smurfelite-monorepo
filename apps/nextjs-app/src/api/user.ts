@@ -1,4 +1,4 @@
-import { User } from '@/types';
+import { User } from '@smurfelite/types';
 import { baseApi } from './baseApi';
 import { setUser } from '@/store';
 
