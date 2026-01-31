@@ -2,7 +2,7 @@
   "name": "@smurfelite/types",
   "version": "1.0.0",
   "main": "./src/generated/prisma/index.js",
-  "types": "./src/generated/prisma/index.d.ts",
+  "types": "./index.ts",
   "files": [
     "src/generated"
   ],
