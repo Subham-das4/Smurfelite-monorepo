@@ -9,13 +9,12 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { logout } from '@/store/reducers/user/slice';
 import { setCredentials } from '@/store/reducers/auth/slice';
-import { LoginResponse } from '@/types/api';
-import { RootState } from '@/store';
+import { LoginResponse } from '@smurfelite/types';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_ILLUM_APP_API ?? '',
+    baseUrl: process.env.NEXT_PUBLIC_EXPRESS_SERVER_API ?? '',
     prepareHeaders: (headers, { getState }) => {
-        const token = (getState() as RootState).auth.token;
+        const token = (getState() as { auth: { token: string } }).auth.token;
         if (token) headers.set('authorization', `Bearer ${token}`);
         headers.set('Content-Type', 'application/json');
         headers.set('withCredentials', 'true');
@@ -31,7 +30,8 @@ const baseQueryWithReauth: BaseQueryFn<
     let result = await baseQuery(args, api, extraOptions);
 
     if (result.error && result.error.status === 401) {
-        const state = (api.getState() as RootState); const refreshToken = state.auth.refreshToken;
+        const state = (api.getState() as { auth: { refreshToken: string } });
+        const refreshToken = state.auth.refreshToken;
         const refreshResult = (await baseQuery(
             {
                 url: '/auth/refresh', method: 'POST', body: {
@@ -42,12 +42,10 @@ const baseQueryWithReauth: BaseQueryFn<
             extraOptions
         )) as QueryReturnValue<LoginResponse, FetchBaseQueryError, FetchBaseQueryMeta>;
 
-        if (refreshResult.data?.data) {
-            const data = refreshResult.data.data;
+        if (refreshResult.data?.accessToken) {
             api.dispatch(setCredentials({
-                token: data.access_token,
-                refreshToken: data.refresh_token,
-
+                token: refreshResult.data.accessToken,
+                refreshToken: refreshResult.data.refreshToken,
             }));
 
             result = await baseQuery(args, api, extraOptions);

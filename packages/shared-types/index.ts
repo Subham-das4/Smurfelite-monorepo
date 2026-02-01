@@ -1,4 +1,4 @@
-import { Role } from './src/generated/prisma/index';
+import { Role, User } from './src/generated/prisma/index';
 
 export * from './src/generated/prisma/index';
 
@@ -18,13 +18,11 @@ export interface BaseResponse {
 
 }
 
-export interface LoginResponse extends BaseResponse {
-    data: {
-        access_token: string;
-        refresh_token: string;
-        expires_in: number;
-        token_type: string;
-    }
+export interface LoginResponse {
+    user: Omit<User, "password">;
+    accessToken: string;
+    refreshToken: string;
+    message: string;
 }
 
 export interface ForgotPasswordRequest {
@@ -47,4 +45,16 @@ export interface RegisterResponse extends BaseResponse {
     data: {
         message: string;
     }
+}
+
+export interface GoogleOAuthResponse {
+    iss: string;
+    azp: string;
+    aud: string;
+    sub: string;
+    email: string;
+    email_verified: boolean;
+    nbf: number;
+    name: string;
+    picture: string;
 }

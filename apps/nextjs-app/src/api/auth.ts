@@ -1,7 +1,7 @@
 import { logout, RootState, setCredentials, setUser } from '@/store';
 import { baseApi } from './baseApi';
-import { userApi } from './user';
 import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User } from '@smurfelite/types';
+import { CredentialResponse } from '@react-oauth/google';
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -15,22 +15,17 @@ export const authApi = baseApi.injectEndpoints({
             }),
             onQueryStarted: async (_, { queryFulfilled, dispatch }) => {
                 try {
-                    const { data: { data } } = await queryFulfilled;
+                    const { data: { user, accessToken, refreshToken } } = await queryFulfilled;
                     dispatch(setCredentials({
-                        token: data.access_token,
-                        refreshToken: data.refresh_token,
+                        token: accessToken,
+                        refreshToken: refreshToken,
                     }));
-                    dispatch(setUser(data as unknown as User));
-                    dispatch(
-                        userApi.endpoints.getUser.initiate(undefined, {
-                            subscribe: false,
-                            forceRefetch: true,
-                        })
-                    );
+                    dispatch(setUser(user as unknown as User));
                 } catch (error) {
                     console.error(error);
                 }
             },
+            invalidatesTags: ['User'],
         }),
 
         /////////////////////
@@ -62,8 +57,30 @@ export const authApi = baseApi.injectEndpoints({
                 body: payload,
             }),
         }),
+
+        /////////////////////
+        // Google OAuth API Endpoint
+        googleOAuth: builder.mutation<LoginResponse, CredentialResponse>({
+            query: (payload) => ({
+                url: '/auth/google',
+                method: 'POST',
+                body: payload,
+            }),
+            onQueryStarted: async (_, { queryFulfilled, dispatch }) => {
+                try {
+                    const { data: { user, accessToken, refreshToken } } = await queryFulfilled;
+                    dispatch(setCredentials({
+                        token: accessToken,
+                        refreshToken: refreshToken,
+                    }));
+                    dispatch(setUser(user as unknown as User));
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+        }),
     }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } = authApi;
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useGoogleOAuthMutation } = authApi;
 

@@ -35,6 +35,7 @@ model User {
   name      String
   isVerified Boolean  @default(false)
   googleId  String?   @unique
+  googleProfilePicture String? @default("")
 
   // Relations
   products  Product[]    // Products listed by this Seller

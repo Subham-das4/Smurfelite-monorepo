@@ -6,6 +6,7 @@ import {
   generateTokens,
   refreshTokens,
   verifyEmail,
+  verifyGoogleOAuth,
 } from "./auth.service.js";
 import ApiError from "../../utils/errors.js";
 import { AuthErrorMessages } from "./auth.message.js";
@@ -31,6 +32,7 @@ export async function registerController(
       password,
       name,
       role: role || "USER",
+      googleProfilePicture: "",
     });
 
     res.status(201).json({
@@ -80,18 +82,6 @@ export async function loginController(
   }
 }
 
-export const googleAuthController = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  // passport.authenticate will manage the redirect to Google
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-    session: false, // We use JWT, not session cookies
-  })(req, res, next);
-};
-
 async function sendAuthTokens(res: Response, user: User) {
   const { accessToken, refreshToken } = generateTokens(user.id, user.role);
 
@@ -119,39 +109,17 @@ async function sendAuthTokens(res: Response, user: User) {
   });
 }
 
-export const googleAuthCallback = (
+export const googleAuthController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  passport.authenticate(
-    "google",
-    {
-      session: false,
-      failureRedirect: `${process.env.FRONTEND_URL}/login?error=google_failed`, // Redirect to frontend login on failure
-    },
-    async (err: any, user: User | undefined, info: any) => {
-      if (err || !user) {
-        logger.error("Google callback authentication failed:", err || info);
-        return res.redirect(
-          `${process.env.FRONTEND_URL}/login?error=google_auth_failed`
-        );
-      }
-
-      try {
-        // Success: User object is now available, generate and send tokens
-        await sendAuthTokens(res, user);
-      } catch (tokenError) {
-        logger.error(
-          "Failed to generate tokens after Google auth:",
-          tokenError
-        );
-        return res
-          .status(500)
-          .json({ message: "Internal server error during token generation." });
-      }
-    }
-  )(req, res, next);
+  try {
+    const user = await verifyGoogleOAuth(req.body.credential);
+    return sendAuthTokens(res, user);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export async function refreshController(

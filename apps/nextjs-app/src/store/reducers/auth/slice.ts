@@ -25,6 +25,10 @@ const authSlice = createSlice({
             state.refreshToken = action.payload.refreshToken;
         },
         setIsLoginModalOpen: (state, action: PayloadAction<boolean>) => {
+            // If user is authenticated and modal is already open, don't open it again
+            if (state.isAuthenticated &&
+                action.payload
+            ) return;
             state.isLoginModalOpen = action.payload;
         },
     },

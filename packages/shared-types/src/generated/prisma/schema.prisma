@@ -27,15 +27,16 @@ enum OrderStatus {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  password   String // Hashed password for login
-  role       Role     @default(BUYER)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  name       String
-  isVerified Boolean  @default(false)
-  googleId   String?  @unique
+  id                   String   @id @default(uuid())
+  email                String   @unique
+  password             String // Hashed password for login
+  role                 Role     @default(BUYER)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  name                 String
+  isVerified           Boolean  @default(false)
+  googleId             String?  @unique
+  googleProfilePicture String?  @default("")
 
   // Relations
   products          Product[] // Products listed by this Seller

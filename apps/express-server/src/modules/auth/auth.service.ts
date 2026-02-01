@@ -7,6 +7,9 @@ import { JwtPayload, UserRegistrationInput } from "../../types/auth.types.js";
 import jwt, { SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 import logger from "../../utils/logger.js";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS!);
@@ -206,4 +209,68 @@ export async function verifyEmail(
 
   logger.info(`User ${updatedUser.email} has been verified.`);
   return updatedUser;
+}
+
+export async function verifyGoogleOAuth(credential: string): Promise<PrismaNamespace.User> {
+  const ticket = await client.verifyIdToken({
+    idToken: credential,
+    audience: process.env.GOOGLE_OAUTH_CLIENT_ID, // Verify it was meant for you
+  });
+
+  const payload = ticket.getPayload();
+  const googleId = payload?.['sub']; // Unique Google ID
+  const email = payload?.['email'];
+  const name = payload?.['name'] || '';
+  const profilePicture = payload?.['picture'] || '';
+
+  if (!email) {
+    throw new ApiError(AuthErrorMessages.INVALID_GOOGLE_PROFILE, 400);
+  }
+
+  // 1. Find or Create the user (UPSERT logic)
+  let user = await prisma.user.findUnique({ where: { googleId } });
+
+  if (!user) {
+    // Check for existing user by email (local account linking)
+    user = await prisma.user.findUnique({ where: { email } });
+
+    if (user) {
+      // User exists via local login, link the Google ID
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { googleId: googleId },
+      });
+      logger.info(
+        `Linked Google account for existing user: ${user.email}`
+      );
+    } else {
+      // New user, create the account
+      user = await prisma.user.create({
+        data: {
+          googleId: googleId,
+          email: email,
+          name: name,
+          isVerified: true, // Auto-verify email from Google
+          role: PrismaNamespace.Role.BUYER,
+          password: "", // No password for OAuth users
+          googleProfilePicture: profilePicture,
+        },
+      });
+      logger.info(`New user created via Google OAuth: ${user.email}`);
+    }
+
+  }
+
+  if (user) {
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name: name,
+        googleProfilePicture: profilePicture,
+      },
+    });
+    logger.info(`Google profile picture updated for user: ${user.email}`);
+  }
+
+  return user;
 }

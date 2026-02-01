@@ -1,14 +1,16 @@
 import { useAppDispatch, useAppSelector } from "@/hooks"
 import { useState } from "react"
-import { useLoginMutation, useRegisterMutation } from "@/api/auth"
+import { useGoogleOAuthMutation, useLoginMutation, useRegisterMutation } from "@/api/auth"
 import { setIsLoginModalOpen } from "@/store"
 import { LoginRequest, RegisterRequest } from "@smurfelite/types"
 import { toast } from "react-toastify"
+import { GoogleOAuth } from "../googleOAuth"
 export const LoginRegister = () => {
     const dispatch = useAppDispatch()
     const { isLoginModalOpen } = useAppSelector(state => state.auth)
     const [register, { isLoading: isRegisterLoading }] = useRegisterMutation()
     const [login, { isLoading: isLoginLoading }] = useLoginMutation()
+    const [_, { isLoading: isGoogleOAuthLoading }] = useGoogleOAuthMutation()
 
     const [formState, setformState] = useState({
         registerUsername: "",
@@ -78,12 +80,15 @@ export const LoginRegister = () => {
                     <label htmlFor="chk" aria-hidden="true">Login</label>
                     <input type="email" onChange={e => handleInpputChange("loginEmail", e.target.value)} value={formState.loginEmail} placeholder="Email" required />
                     <input type="password" onChange={e => handleInpputChange("loginPassword", e.target.value)} value={formState.loginPassword} placeholder="Password" required />
-                    <button disabled={isLoginLoading} type='submit'>
+                    <button disabled={isLoginLoading || isGoogleOAuthLoading} type='submit'>
                         {isLoginLoading ? <section className='loading'></section>
                             : "Login"
                         }
                     </button>
-                    {/* <button className='external_login'  ><GoogleOAuth isProcessing={isProcessing} setIsProcessing={setIsProcessing} /></button> */}
+                    <button type="button" className='external_login' disabled={isGoogleOAuthLoading}  ><GoogleOAuth
+                        setIsProcessing={() => { }}
+
+                    /></button>
                 </form>
             </div>
         </div>

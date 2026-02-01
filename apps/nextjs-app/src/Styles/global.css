@@ -1,6 +1,8 @@
 /* Google Fonts - Must be at the top before all other rules */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap");
 
+@import "react-toastify/dist/ReactToastify.css";
+
 :root {
   --primary-color: #7243f2;
   --font-current-theme1: "Syne", sans-serif;
