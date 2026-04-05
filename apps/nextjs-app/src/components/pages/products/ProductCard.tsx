@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { MdStar } from "react-icons/md";
 import type { BadgeVariant, ProductListing } from "./types";
 
@@ -30,7 +31,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onBuy }) => {
   } = product;
 
   return (
-    <div className="group flex flex-col h-full bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 dark:border-gray-800">
+    <Link
+      href={`/products/${id}`}
+      className="group flex flex-col h-full bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 dark:border-gray-800"
+    >
       {/* Image */}
       <div className="relative h-48 overflow-hidden bg-gray-900">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -107,13 +111,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onBuy }) => {
           </div>
 
           <button
-            onClick={() => onBuy(id)}
+            onClick={(e) => {
+              e.preventDefault();
+              onBuy(id);
+            }}
             className="bg-primary hover:bg-primary-hover active:scale-95 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-150 cursor-pointer shadow-sm hover:shadow-primary/30 hover:shadow-md"
           >
             Buy Now
           </button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };

@@ -12,7 +12,9 @@ interface PageProps {
   params: Promise<{ productId: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { productId } = await params;
   // TODO: fetch real product data for metadata
   return {
@@ -30,7 +32,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   return (
     <main className="flex-1 w-full max-w-[1280px] mx-auto px-4 md:px-8 py-6 md:py-10">
-      <Breadcrumb items={product.breadcrumb} />
+      {/* <Breadcrumb items={product.breadcrumb} /> */}
 
       {/* Hero: gallery + purchase card */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16">
