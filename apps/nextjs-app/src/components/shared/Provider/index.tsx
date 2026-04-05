@@ -39,7 +39,7 @@ export const GlobalProvider: React.FC<{
               </button>
             )}
           />
-          {/* <LoginRegister /> */}
+          <LoginRegister />
           <Header />
 
           {children}

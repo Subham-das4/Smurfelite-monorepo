@@ -20,7 +20,7 @@ import { Role, User } from "@smurfelite/types";
 export async function registerController(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { email, password, name, role } = req.body;
@@ -51,7 +51,7 @@ export async function registerController(
 export async function loginController(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { email, password } = req.body;
@@ -106,6 +106,7 @@ async function sendAuthTokens(res: Response, user: User) {
       email: user.email,
       name: user.name,
       role: user.role,
+      googleProfilePicture: user.googleProfilePicture,
     },
     accessToken: accessToken,
     message: "Authentication successful.",
@@ -115,7 +116,7 @@ async function sendAuthTokens(res: Response, user: User) {
 export const googleAuthController = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const user = await verifyGoogleOAuth(req.body.credential);
@@ -128,7 +129,7 @@ export const googleAuthController = async (
 export async function refreshController(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   // Get refresh token from HTTP-only cookie
   const refreshToken = req.cookies.refreshToken;
@@ -165,7 +166,7 @@ export async function refreshController(
 export async function logoutController(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const refreshToken = req.cookies?.refreshToken;
@@ -180,7 +181,7 @@ export async function logoutController(
 export async function forgotPasswordController(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { email } = req.body;
@@ -197,7 +198,7 @@ export async function forgotPasswordController(
 export async function resetPasswordController(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const { token, newPassword } = req.body;
@@ -216,7 +217,7 @@ export async function resetPasswordController(
 export async function verifyEmailController(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const { token } = req.query;
 

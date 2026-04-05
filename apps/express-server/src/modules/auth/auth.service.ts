@@ -7,10 +7,7 @@ import { JwtPayload, UserRegistrationInput } from "../../types/auth.types.js";
 import jwt, { SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 import logger from "../../utils/logger.js";
-import { OAuth2Client } from "google-auth-library";
 import { createCart } from "../cart/cart.service.js";
-
-const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS!);
@@ -264,16 +261,25 @@ export async function resetPassword(
 }
 
 export async function verifyGoogleOAuth(credential: string): Promise<PrismaNamespace.User> {
-  const ticket = await client.verifyIdToken({
-    idToken: credential,
-    audience: process.env.GOOGLE_OAUTH_CLIENT_ID, // Verify it was meant for you
+  const userInfoResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+    headers: { Authorization: `Bearer ${credential}` },
   });
 
-  const payload = ticket.getPayload();
-  const googleId = payload?.['sub']; // Unique Google ID
-  const email = payload?.['email'];
-  const name = payload?.['name'] || '';
-  const profilePicture = payload?.['picture'] || '';
+  if (!userInfoResponse.ok) {
+    throw new ApiError(AuthErrorMessages.INVALID_GOOGLE_PROFILE, 401);
+  }
+
+  const payload = await userInfoResponse.json() as {
+    sub: string;
+    email: string;
+    name?: string;
+    picture?: string;
+  };
+
+  const googleId = payload.sub;
+  const email = payload.email;
+  const name = payload.name ?? '';
+  const profilePicture = payload.picture ?? '';
 
   if (!email) {
     throw new ApiError(AuthErrorMessages.INVALID_GOOGLE_PROFILE, 400);

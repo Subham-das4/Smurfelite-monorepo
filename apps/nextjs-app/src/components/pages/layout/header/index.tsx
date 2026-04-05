@@ -3,9 +3,8 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FaAngleDown } from "react-icons/fa";
 import { SiShopify } from "react-icons/si";
-import { HiMenuAlt3, HiX } from "react-icons/hi";
+import { HiMenuAlt3, HiX, HiUser } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setIsLoginModalOpen, logout } from "@/store";
 import { SITE_NAME } from "@/constants";
@@ -87,21 +86,50 @@ export const Header = () => {
                 className="hidden md:block text-gray-600 dark:text-gray-300 hover:text-primary font-medium transition-colors"
                 onClick={() => dispatch(setIsLoginModalOpen(true))}
               >
-                User Login
+                Login
               </button>
             ) : (
               <div ref={dropdownRef} className="hidden md:block relative">
+                {/* Avatar trigger */}
                 <button
-                  className="flex items-center gap-1 text-gray-700 dark:text-gray-200 font-medium hover:text-primary transition-colors"
                   onClick={() => setUserDropdownOpen((v) => !v)}
+                  className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center ring-2 ring-transparent hover:ring-primary/40 transition-all focus:outline-none"
+                  aria-label="User menu"
                 >
-                  {user?.name}
-                  <FaAngleDown
-                    className={`transition-transform duration-200 ${userDropdownOpen ? "rotate-180" : ""}`}
-                  />
+                  {user?.googleProfilePicture ? (
+                    <Image
+                      src={user.googleProfilePicture}
+                      alt={user.name ?? "User avatar"}
+                      width={40}
+                      height={40}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : user?.name ? (
+                    <span className="w-full h-full bg-primary text-on-primary flex items-center justify-center text-sm font-bold uppercase">
+                      {user.name.charAt(0)}
+                    </span>
+                  ) : (
+                    <span className="w-full h-full bg-primary text-on-primary flex items-center justify-center">
+                      <HiUser className="text-lg" />
+                    </span>
+                  )}
                 </button>
+
+                {/* Dropdown */}
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
+                  <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
+                    {user?.name && (
+                      <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-800">
+                        <p className="text-xs font-semibold text-gray-800 dark:text-gray-100 truncate">
+                          {user.name}
+                        </p>
+                        {user.email && (
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                            {user.email}
+                          </p>
+                        )}
+                      </div>
+                    )}
                     <button
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                       onClick={() => {
@@ -174,7 +202,7 @@ export const Header = () => {
                   setMobileOpen(false);
                 }}
               >
-                User Login
+                Login
               </button>
             ) : (
               <>

@@ -22,6 +22,22 @@ const baseQuery = fetchBaseQuery({
     },
 });
 
+/**
+ * Routes that should never trigger a token refresh on 401.
+ * A 401 from these endpoints means invalid credentials or an expired
+ * token link — not an expired session — so dispatching logout would be wrong.
+ */
+const NO_REAUTH_ROUTES = new Set([
+    '/auth/login',
+    '/auth/register',
+    '/auth/google',
+    '/auth/logout',
+    '/auth/forgot-password',
+    '/auth/reset-password',
+    '/auth/refresh',
+    '/auth/verify-email',
+]);
+
 const baseQueryWithReauth: BaseQueryFn<
     string | FetchArgs,
     unknown,
@@ -29,7 +45,10 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
     let result = await baseQuery(args, api, extraOptions);
 
-    if (result.error && result.error.status === 401) {
+    const requestUrl = typeof args === 'string' ? args : (args as FetchArgs).url ?? '';
+    const isNoReauthRoute = NO_REAUTH_ROUTES.has(requestUrl);
+
+    if (result.error && result.error.status === 401 && !isNoReauthRoute) {
         // Attempt to refresh — backend reads the refresh token from the HTTP-only cookie
         const refreshResult = await baseQuery(
             { url: '/auth/refresh', method: 'POST' },
