@@ -1,6 +1,12 @@
 "use client";
 
-import { MdStar } from "react-icons/md";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { MdStar, MdShoppingCart, MdCheck } from "react-icons/md";
+import { HiArrowRight } from "react-icons/hi";
+import { toast } from "react-toastify";
+import { useAppDispatch } from "@/hooks";
+import { addToCart } from "@/store/reducers/cart/slice";
 import type { ProductTag } from "./types";
 
 interface TrustFeature {
@@ -32,6 +38,7 @@ const TRUST_FEATURES: TrustFeature[] = [
 ];
 
 interface ProductPurchaseCardProps {
+  id: string;
   title: string;
   tags: ProductTag[];
   rating: number;
@@ -39,9 +46,12 @@ interface ProductPurchaseCardProps {
   price: number;
   originalPrice: number;
   discountPercent: number;
+  image: string;
+  platform?: string;
 }
 
 export function ProductPurchaseCard({
+  id,
   title,
   tags,
   rating,
@@ -49,7 +59,47 @@ export function ProductPurchaseCard({
   price,
   originalPrice,
   discountPercent,
+  image,
+  platform,
 }: ProductPurchaseCardProps) {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [added, setAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        id,
+        name: title,
+        price,
+        quantity: 1,
+        image,
+        platform,
+      }),
+    );
+
+    toast.success(`"${title}" added to cart!`, {
+      autoClose: 2500,
+    });
+
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
+
+  const handleBuyNow = () => {
+    dispatch(
+      addToCart({
+        id,
+        name: title,
+        price,
+        quantity: 1,
+        image,
+        platform,
+      }),
+    );
+    router.push("/cart");
+  };
+
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-6 md:p-8 flex flex-col gap-6 h-fit sticky top-24">
       {/* Tags + Title + Rating */}
@@ -101,22 +151,37 @@ export function ProductPurchaseCard({
         </div>
 
         <div className="grid grid-cols-2 gap-3 mt-2">
+          {/* Add to Cart */}
           <button
-            className="col-span-2 h-14 bg-primary hover:bg-primary/90 text-white text-lg font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(127,19,236,0.15)] hover:shadow-[0_0_30px_rgba(127,19,236,0.3)] flex items-center justify-center gap-2"
-            onClick={() => {}}
+            onClick={handleAddToCart}
+            disabled={added}
+            className="col-span-2 h-14 bg-primary hover:bg-primary/90 disabled:bg-primary/70 text-white text-lg font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(127,19,236,0.15)] hover:shadow-[0_0_30px_rgba(127,19,236,0.3)] flex items-center justify-center gap-2"
           >
-            <span className="material-symbols-outlined">shopping_cart</span>
-            Add to Cart
+            {added ? (
+              <>
+                <MdCheck className="text-xl" />
+                Added to Cart!
+              </>
+            ) : (
+              <>
+                <MdShoppingCart className="text-xl" />
+                Add to Cart
+              </>
+            )}
           </button>
+
+          {/* Buy Now */}
           <button
-            className="h-12 border border-slate-200 hover:bg-slate-50 text-slate-900 font-bold rounded-xl transition-colors"
-            onClick={() => {}}
+            onClick={handleBuyNow}
+            className="h-12 border border-slate-200 hover:bg-slate-50 text-slate-900 font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
           >
             Buy Now
+            <HiArrowRight className="text-base" />
           </button>
+
+          {/* Wishlist */}
           <button
             className="h-12 border border-slate-200 hover:bg-slate-50 text-slate-400 hover:text-red-400 rounded-xl transition-colors flex items-center justify-center"
-            onClick={() => {}}
             aria-label="Add to wishlist"
           >
             <span className="material-symbols-outlined">favorite</span>

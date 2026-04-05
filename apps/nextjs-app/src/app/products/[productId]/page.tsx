@@ -44,6 +44,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </div>
         <div className="lg:col-span-5 flex flex-col h-full">
           <ProductPurchaseCard
+            id={product.id}
             title={product.title}
             tags={product.tags}
             rating={product.rating}
@@ -51,6 +52,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
             price={product.price}
             originalPrice={product.originalPrice}
             discountPercent={product.discountPercent}
+            image={product.images[0]?.url ?? ""}
+            platform={
+              product.tags.find((t) => t.label.startsWith("Region"))?.label
+            }
           />
         </div>
       </div>
