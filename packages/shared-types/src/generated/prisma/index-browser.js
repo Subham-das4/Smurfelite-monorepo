@@ -141,6 +141,14 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.RefreshTokenScalarFieldEnum = {
   id: 'id',
   token: 'token',
@@ -160,6 +168,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   transactionBlock: 'transactionBlock',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  imageUrl: 'imageUrl',
   accountUsername: 'accountUsername',
   accountPassword: 'accountPassword',
   accountEmail: 'accountEmail',
@@ -185,6 +194,7 @@ exports.Prisma.OrderScalarFieldEnum = {
   status: 'status',
   totalAmount: 'totalAmount',
   paymentIntent: 'paymentIntent',
+  paymentProvider: 'paymentProvider',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   buyerId: 'buyerId'
@@ -247,6 +257,7 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
 exports.Prisma.ModelName = {
   User: 'User',
   VerificationToken: 'VerificationToken',
+  PasswordResetToken: 'PasswordResetToken',
   RefreshToken: 'RefreshToken',
   Product: 'Product',
   Cart: 'Cart',

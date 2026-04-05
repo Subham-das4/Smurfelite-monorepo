@@ -7,6 +7,9 @@ import {
   refreshTokens,
   verifyEmail,
   verifyGoogleOAuth,
+  logoutUser,
+  forgotPassword,
+  resetPassword,
 } from "./auth.service.js";
 import ApiError from "../../utils/errors.js";
 import { AuthErrorMessages } from "./auth.message.js";
@@ -156,6 +159,57 @@ export async function refreshController(
     return res.status(401).json({
       message: AuthErrorMessages.INVALID_OR_EXPIRED_REFRESH_TOKEN,
     });
+  }
+}
+
+export async function logoutController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+    await logoutUser(refreshToken);
+    res.clearCookie("refreshToken");
+    return res.status(200).json({ message: "Logged out successfully." });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function forgotPasswordController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required." });
+    }
+    const message = await forgotPassword(email);
+    return res.status(200).json({ message });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function resetPasswordController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Token and new password are required." });
+    }
+    await resetPassword(token, newPassword);
+    return res.status(200).json({ message: "Password reset successfully." });
+  } catch (error) {
+    next(error);
   }
 }
 

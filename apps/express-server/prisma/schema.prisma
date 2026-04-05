@@ -44,6 +44,7 @@ model User {
   enquiries Enquiry[]
   verificationToken VerificationToken?
   refreshToken      RefreshToken[]
+  passwordResetToken PasswordResetToken?
 }
 
 // --- Email Verification Token ---
@@ -51,6 +52,16 @@ model VerificationToken {
   id        String   @id @default(uuid())
   token     String   @unique
   userId    String   @unique // One token per user
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// --- Password Reset Token ---
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String   @unique // One reset token per user at a time
   user      User     @relation(fields: [userId], references: [id])
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -78,6 +89,8 @@ model Product {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   
+  imageUrl       String?  // Optional product image URL
+
   // Account Credentials - STORED ENCRYPTED
   accountUsername Bytes   // Encrypted 'username' (Maps to BYTEA in Postgres)
   accountPassword Bytes
@@ -131,7 +144,8 @@ model Order {
   id            String      @id @default(uuid())
   status        OrderStatus @default(PENDING)
   totalAmount   Float
-  paymentIntent String?     @unique // Stripe/PayPal Payment Intent ID
+  paymentIntent   String?     @unique // Stripe/PayPal Payment Intent ID
+  paymentProvider String?             // e.g., "paypal", "stripe"
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   

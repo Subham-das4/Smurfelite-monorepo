@@ -7,7 +7,7 @@ const logFormat = printf(({ level, message, timestamp, stack }) => {
 });
 
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === "development" ? "debug" : "info",
+  level: process.env.NODE_ENV === "development" ? "http" : "info",
   transports: [
     new winston.transports.Console({
       format: combine(

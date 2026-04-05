@@ -213,6 +213,56 @@ export async function verifyEmail(
   return updatedUser;
 }
 
+export async function logoutUser(refreshToken: string): Promise<void> {
+  if (!refreshToken) return;
+  await prisma.refreshToken.deleteMany({ where: { token: refreshToken } });
+}
+
+export async function forgotPassword(email: string): Promise<string> {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    // Return silently to avoid email enumeration attacks
+    return "If that email is registered, a reset link has been sent.";
+  }
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+  await prisma.passwordResetToken.upsert({
+    where: { userId: user.id },
+    update: { token, expiresAt },
+    create: { token, userId: user.id, expiresAt },
+  });
+
+  // TODO: Send reset email
+  logger.info(`Password reset token generated for ${email}. Token: ${token}`);
+
+  return "If that email is registered, a reset link has been sent.";
+}
+
+export async function resetPassword(
+  token: string,
+  newPassword: string
+): Promise<void> {
+  const record = await prisma.passwordResetToken.findUnique({
+    where: { token },
+  });
+
+  if (!record || record.expiresAt < new Date()) {
+    throw new ApiError("Invalid or expired password reset token.", 400);
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: record.userId },
+      data: { password: hashedPassword },
+    }),
+    prisma.passwordResetToken.delete({ where: { token } }),
+  ]);
+}
+
 export async function verifyGoogleOAuth(credential: string): Promise<PrismaNamespace.User> {
   const ticket = await client.verifyIdToken({
     idToken: credential,

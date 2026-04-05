@@ -9,6 +9,11 @@ import {
 import { authenticate, authorize } from "../auth/auth.middleware.js";
 import { Role } from "@smurfelite/types";
 import { verifySeller } from "./product.middleware.js";
+import { validate } from "../../utils/validate.js";
+import {
+  createProductSchema,
+  updateProductSchema,
+} from "../../schemas/product.schemas.js";
 
 const router = Router();
 
@@ -23,12 +28,12 @@ router.get("/:productId", getProductDetailsController);
 router.use(authenticate, authorize([Role.ADMIN, Role.SELLER]));
 
 // 1. Create a new product listing
-router.post("/", createProductController);
+router.post("/", validate(createProductSchema), createProductController);
 
 router.use(verifySeller);
 
 // 2. Update existing product details
-router.put("/:productId", updateProductController);
+router.put("/:productId", validate(updateProductSchema), updateProductController);
 
 // 3. Delete a product listing
 router.delete("/:productId", deleteProductController);
