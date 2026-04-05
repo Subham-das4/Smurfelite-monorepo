@@ -1,12 +1,14 @@
 import Link from "next/link";
-import type { SimilarProduct } from "./types";
+import type { ProductListItem } from "@smurfelite/types";
 import { SimilarProductCard } from "./SimilarProductCard";
 
 interface SimilarProductsProps {
-  products: SimilarProduct[];
+  products: ProductListItem[];
 }
 
 export function SimilarProducts({ products }: SimilarProductsProps) {
+  if (products.length === 0) return null;
+
   return (
     <section className="mb-10">
       <div className="flex items-center justify-between mb-6">

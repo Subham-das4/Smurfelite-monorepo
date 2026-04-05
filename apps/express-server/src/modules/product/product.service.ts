@@ -189,7 +189,15 @@ export async function getAllProducts(filters: ProductFilters) {
   };
 
   if (filters.gameType) {
-    where.gameType = filters.gameType;
+    // Support comma-separated game types, e.g. "Valorant,CS:GO 2"
+    const gameTypes = filters.gameType.split(",").map((g) => g.trim()).filter(Boolean);
+    if (gameTypes.length === 1) {
+      where.gameType = { contains: gameTypes[0], mode: "insensitive" };
+    } else if (gameTypes.length > 1) {
+      where.OR = gameTypes.map((g) => ({
+        gameType: { contains: g, mode: "insensitive" },
+      }));
+    }
   }
 
   const priceFilter: PrismaNamespace.Prisma.FloatFilter = {};
@@ -237,7 +245,9 @@ export async function getAllProducts(filters: ProductFilters) {
         title: true,
         description: true,
         price: true,
+        isAvailable: true,
         specifications: true,
+        imageUrl: true,
         sellerId: true,
         createdAt: true,
         updatedAt: true,

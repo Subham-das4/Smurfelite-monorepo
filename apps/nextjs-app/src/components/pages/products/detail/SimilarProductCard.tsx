@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import type { SimilarProduct } from "./types";
+import type { ProductListItem } from "@smurfelite/types";
+
+const PLACEHOLDER_GRADIENT =
+  "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%)";
 
 interface SimilarProductCardProps {
-  product: SimilarProduct;
+  product: ProductListItem;
 }
 
 export function SimilarProductCard({ product }: SimilarProductCardProps) {
-  const { id, title, subtitle, imageUrl, imageAlt, level, price } = product;
+  const { id, title, gameType, imageUrl, price } = product;
 
   return (
     <Link
@@ -17,39 +20,25 @@ export function SimilarProductCard({ product }: SimilarProductCardProps) {
     >
       <div
         className="aspect-video bg-cover bg-center relative"
-        style={{ backgroundImage: `url('${imageUrl}')` }}
+        style={{
+          backgroundImage: imageUrl ? `url('${imageUrl}')` : undefined,
+          background: imageUrl ? undefined : PLACEHOLDER_GRADIENT,
+        }}
         role="img"
-        aria-label={imageAlt}
-      >
-        <div className="absolute top-2 right-2 bg-black/70 text-white text-xs font-bold px-2 py-1 rounded">
-          Level {level}
-        </div>
-      </div>
+        aria-label={title}
+      />
 
-      <div className="p-4 flex flex-col gap-3">
-        <div>
-          <h4 className="text-slate-900 font-bold leading-tight group-hover:text-primary transition-colors">
-            {title}
-          </h4>
-          <p className="text-slate-500 text-sm mt-1">{subtitle}</p>
-        </div>
-
-        <div className="flex items-center justify-between mt-auto">
+      <div className="p-4 flex flex-col gap-2">
+        <span className="text-primary text-xs font-bold uppercase tracking-widest">
+          {gameType}
+        </span>
+        <h4 className="text-slate-900 font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+          {title}
+        </h4>
+        <div className="flex items-center justify-between mt-auto pt-1">
           <span className="text-slate-900 font-bold text-lg">
             ${price.toFixed(2)}
           </span>
-          <button
-            className="size-8 rounded-lg bg-slate-100 text-slate-700 hover:bg-primary hover:text-white flex items-center justify-center transition-colors"
-            onClick={(e) => {
-              e.preventDefault();
-              // TODO: dispatch addToCart action
-            }}
-            aria-label={`Add ${title} to cart`}
-          >
-            <span className="material-symbols-outlined text-[18px]">
-              add_shopping_cart
-            </span>
-          </button>
         </div>
       </div>
     </Link>

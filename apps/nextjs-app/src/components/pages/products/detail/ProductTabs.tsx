@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import type { ProductSpecification } from "./types";
 
 type TabId = "description" | "specifications";
 
@@ -10,17 +9,17 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "specifications", label: "Specifications" },
 ];
 
-interface ProductTabsProps {
-  description: string;
-  highlights: string[];
-  specifications: ProductSpecification[];
+interface SpecEntry {
+  key: string;
+  value: string;
 }
 
-export function ProductTabs({
-  description,
-  highlights,
-  specifications,
-}: ProductTabsProps) {
+interface ProductTabsProps {
+  description: string | null;
+  specs: SpecEntry[];
+}
+
+export function ProductTabs({ description, specs }: ProductTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("description");
 
   return (
@@ -50,15 +49,13 @@ export function ProductTabs({
         hidden={activeTab !== "description"}
         className="text-slate-600 leading-relaxed space-y-4"
       >
-        {description.split("\n\n").map((paragraph, i) => (
-          <p key={i}>{paragraph}</p>
-        ))}
-        <h4 className="text-slate-900 font-bold pt-2">Key Highlights:</h4>
-        <ul className="list-disc pl-5 space-y-1">
-          {highlights.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
+        {description ? (
+          description.split("\n\n").map((paragraph, i) => (
+            <p key={i}>{paragraph}</p>
+          ))
+        ) : (
+          <p className="text-slate-400 italic">No description available.</p>
+        )}
       </div>
 
       <div
@@ -66,23 +63,27 @@ export function ProductTabs({
         role="tabpanel"
         hidden={activeTab !== "specifications"}
       >
-        <table className="w-full text-sm border-collapse">
-          <tbody>
-            {specifications.map((spec, index) => (
-              <tr
-                key={spec.key}
-                className={index % 2 === 0 ? "bg-slate-50" : "bg-white"}
-              >
-                <td className="px-4 py-3 font-semibold text-slate-700 w-2/5 border border-slate-200">
-                  {spec.key}
-                </td>
-                <td className="px-4 py-3 text-slate-600 border border-slate-200">
-                  {spec.value}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {specs.length > 0 ? (
+          <table className="w-full text-sm border-collapse">
+            <tbody>
+              {specs.map((spec, index) => (
+                <tr
+                  key={spec.key}
+                  className={index % 2 === 0 ? "bg-slate-50" : "bg-white"}
+                >
+                  <td className="px-4 py-3 font-semibold text-slate-700 w-2/5 border border-slate-200">
+                    {spec.key}
+                  </td>
+                  <td className="px-4 py-3 text-slate-600 border border-slate-200">
+                    {spec.value}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="text-slate-400 italic text-sm">No specifications available.</p>
+        )}
       </div>
     </div>
   );

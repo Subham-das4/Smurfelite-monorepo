@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MdStar, MdShoppingCart, MdCheck } from "react-icons/md";
+import { MdShoppingCart, MdCheck } from "react-icons/md";
 import { HiArrowRight } from "react-icons/hi";
 import { toast } from "react-toastify";
-import { useAppDispatch } from "@/hooks";
-import { addToCart } from "@/store/reducers/cart/slice";
-import type { ProductTag } from "./types";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { setIsLoginModalOpen } from "@/store/reducers/auth/slice";
+import { useAddToCartMutation } from "@/api/cart";
 
 interface TrustFeature {
   icon: string;
@@ -40,98 +40,60 @@ const TRUST_FEATURES: TrustFeature[] = [
 interface ProductPurchaseCardProps {
   id: string;
   title: string;
-  tags: ProductTag[];
-  rating: number;
-  reviewCount: number;
+  gameType: string;
   price: number;
-  originalPrice: number;
-  discountPercent: number;
-  image: string;
-  platform?: string;
+  imageUrl?: string | null;
 }
 
 export function ProductPurchaseCard({
   id,
   title,
-  tags,
-  rating,
-  reviewCount,
+  gameType,
   price,
-  originalPrice,
-  discountPercent,
-  image,
-  platform,
+  imageUrl,
 }: ProductPurchaseCardProps) {
+  void imageUrl;
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const { isAuthenticated } = useAppSelector((s) => s.auth);
+  const [addToCart, { isLoading: isAddingToCart }] = useAddToCartMutation();
   const [added, setAdded] = useState(false);
 
-  const handleAddToCart = () => {
-    dispatch(
-      addToCart({
-        id,
-        name: title,
-        price,
-        quantity: 1,
-        image,
-        platform,
-      }),
-    );
-
-    toast.success(`"${title}" added to cart!`, {
-      autoClose: 2500,
-    });
-
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      dispatch(setIsLoginModalOpen(true));
+      return;
+    }
+    const result = await addToCart(id);
+    if ("error" in result) {
+      toast.error("Failed to add to cart. Please try again.");
+      return;
+    }
+    toast.success(`"${title}" added to cart!`, { autoClose: 2500 });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
 
-  const handleBuyNow = () => {
-    dispatch(
-      addToCart({
-        id,
-        name: title,
-        price,
-        quantity: 1,
-        image,
-        platform,
-      }),
-    );
+  const handleBuyNow = async () => {
+    if (!isAuthenticated) {
+      dispatch(setIsLoginModalOpen(true));
+      return;
+    }
+    await addToCart(id);
     router.push("/cart");
   };
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-6 md:p-8 flex flex-col gap-6 h-fit sticky top-24">
-      {/* Tags + Title + Rating */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 flex-wrap">
-          {tags.map((tag) => (
-            <span
-              key={tag.label}
-              className={
-                tag.variant === "primary"
-                  ? "px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-lg border border-primary/20"
-                  : "px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg border border-slate-200"
-              }
-            >
-              {tag.label}
-            </span>
-          ))}
-        </div>
+      {/* Game type + Title */}
+      <div className="space-y-3">
+        <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-lg border border-primary/20">
+          {gameType}
+        </span>
 
         <h1 className="text-3xl md:text-4xl font-bold leading-tight text-slate-900">
           {title}
         </h1>
-
-        <div className="flex items-center gap-2 text-sm text-slate-500">
-          <div className="flex text-amber-400">
-            {Array.from({ length: 5 }, (_, i) => (
-              <MdStar key={i} className="text-[20px]" />
-            ))}
-          </div>
-          <span className="text-slate-900 font-medium">{rating.toFixed(1)}</span>
-          <span>({reviewCount} Reviews)</span>
-        </div>
       </div>
 
       <div className="h-px bg-slate-100 w-full" />
@@ -142,19 +104,13 @@ export function ProductPurchaseCard({
           <span className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
             ${price.toFixed(2)}
           </span>
-          <span className="text-xl text-slate-400 line-through font-medium">
-            ${originalPrice.toFixed(2)}
-          </span>
-          <span className="ml-auto text-green-600 text-sm font-bold bg-green-100 px-2 py-1 rounded">
-            Save {discountPercent}%
-          </span>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mt-2">
           {/* Add to Cart */}
           <button
             onClick={handleAddToCart}
-            disabled={added}
+            disabled={added || isAddingToCart}
             className="col-span-2 h-14 bg-primary hover:bg-primary/90 disabled:bg-primary/70 text-white text-lg font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(127,19,236,0.15)] hover:shadow-[0_0_30px_rgba(127,19,236,0.3)] flex items-center justify-center gap-2"
           >
             {added ? (
@@ -165,7 +121,7 @@ export function ProductPurchaseCard({
             ) : (
               <>
                 <MdShoppingCart className="text-xl" />
-                Add to Cart
+                {isAuthenticated ? "Add to Cart" : "Login to Buy"}
               </>
             )}
           </button>
@@ -173,18 +129,11 @@ export function ProductPurchaseCard({
           {/* Buy Now */}
           <button
             onClick={handleBuyNow}
-            className="h-12 border border-slate-200 hover:bg-slate-50 text-slate-900 font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
+            disabled={isAddingToCart}
+            className="h-12 border border-slate-200 hover:bg-slate-50 text-slate-900 font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5 col-span-2"
           >
             Buy Now
             <HiArrowRight className="text-base" />
-          </button>
-
-          {/* Wishlist */}
-          <button
-            className="h-12 border border-slate-200 hover:bg-slate-50 text-slate-400 hover:text-red-400 rounded-xl transition-colors flex items-center justify-center"
-            aria-label="Add to wishlist"
-          >
-            <span className="material-symbols-outlined">favorite</span>
           </button>
         </div>
       </div>
