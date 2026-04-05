@@ -68,15 +68,16 @@ model RefreshToken {
 }
 
 model Product {
-  id             String   @id @default(uuid())
-  gameType       String // e.g., "League of Legends", "Valorant"
-  title          String
-  description    String?
-  price          Float
-  isAvailable    Boolean  @default(true)
-  specifications Json // Stores JSON key/value pairs for account specs (e.g., "Rank": "Diamond")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id               String   @id @default(uuid())
+  gameType         String // e.g., "League of Legends", "Valorant"
+  title            String
+  description      String?
+  price            Float
+  isAvailable      Boolean  @default(true)
+  specifications   Json // Stores JSON key/value pairs for account specs (e.g., "Rank": "Diamond")
+  transactionBlock Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   // Account Credentials - STORED ENCRYPTED
   accountUsername      Bytes // Encrypted 'username' (Maps to BYTEA in Postgres)

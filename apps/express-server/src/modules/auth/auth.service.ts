@@ -8,6 +8,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 import logger from "../../utils/logger.js";
 import { OAuth2Client } from "google-auth-library";
+import { createCart } from "../cart/cart.service.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
 
@@ -21,11 +22,11 @@ if (!JWT_SECRET || !SALT_ROUNDS || isNaN(SALT_ROUNDS) || !TOKEN_EXPIRATION) {
 }
 
 export function generateTokens(userId: string, userRole: string) {
-  const accessToken = jwt.sign({ userId, role: userRole }, JWT_SECRET, {
+  const accessToken = jwt.sign({ id: userId, role: userRole }, JWT_SECRET, {
     expiresIn: TOKEN_EXPIRATION,
   } as jwt.SignOptions);
 
-  const refreshToken = jwt.sign({ userId }, JWT_SECRET, {
+  const refreshToken = jwt.sign({ id: userId }, JWT_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || "7d",
   } as jwt.SignOptions);
 
@@ -203,6 +204,7 @@ export async function verifyEmail(
     where: { id: verificationRecord.userId },
     data: { isVerified: true },
   });
+  await createCart(updatedUser.id);
 
   // 4. Delete the token (it's one-time use)
   await prisma.verificationToken.delete({ where: { token } });
@@ -256,6 +258,7 @@ export async function verifyGoogleOAuth(credential: string): Promise<PrismaNames
           googleProfilePicture: profilePicture,
         },
       });
+      await createCart(user.id);
       logger.info(`New user created via Google OAuth: ${user.email}`);
     }
 

@@ -2,6 +2,7 @@ import * as PrismaNamespace from "@smurfelite/types/src/generated/prisma/index.j
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcrypt";
+import { createCart } from "../modules/cart/cart.service.js";
 
 const globalForPrisma = global as unknown as {
   prisma: PrismaNamespace.PrismaClient | undefined;
@@ -57,5 +58,24 @@ export async function ensureAdminUser() {
         name: "Default Admin",
       },
     });
+  }
+}
+
+export async function ensureBuyerUser() {
+  if (process.env.NODE_ENV === "production") return; // Skip in production
+  const buyer = await prisma.user.findFirst({
+    where: { role: PrismaNamespace.Role.BUYER },
+  });
+  if (!buyer) {
+    const user = await prisma.user.create({
+      data: {
+        email: process.env.DEFAULT_BUYER_EMAIL || "buyer@buyer.com",
+        password: await bcrypt.hash(process.env.DEFAULT_BUYER_PASSWORD || "buyer123", 12),
+        role: PrismaNamespace.Role.BUYER,
+        isVerified: true,
+        name: "Default Buyer",
+      },
+    });
+    await createCart(user.id);
   }
 }

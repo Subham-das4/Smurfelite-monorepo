@@ -79,21 +79,31 @@ export async function getProductDetails(
   });
 
   if (!product) throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
-
   // Check if the sensitive fields are actually Buffers (the expected type from DB)
-  if (!(product.accountUsername instanceof Buffer)) {
-    throw new ApiError(ProductErrors.PRODUCT_CORRUPTED, 500);
+  if (!Buffer.isBuffer(product.accountEmail)) {
+    // If it's a Uint8Array but not a "Buffer", convert it
+    if (product.accountEmail instanceof Uint8Array) {
+      product.accountEmail = Buffer.from(product.accountEmail);
+    } else {
+      throw new ApiError(ProductErrors.PRODUCT_CORRUPTED, 500);
+    }
   }
 
   // 🛑 STEP 3: Decrypt the sensitive account details
   let decryptedCredentials: Record<string, string> = {};
   if (decryptData) {
     decryptedCredentials = {
-      accountUsername: decrypt(product.accountUsername),
-      accountPassword: decrypt(product.accountPassword),
-      accountEmail: decrypt(product.accountEmail),
-      accountEmailPassword: decrypt(product.accountEmailPassword),
+      accountUsername: decrypt(Buffer.from(product.accountUsername)),
+      accountPassword: decrypt(Buffer.from(product.accountPassword)),
+      accountEmail: decrypt(Buffer.from(product.accountEmail)),
+      accountEmailPassword: decrypt(Buffer.from(product.accountEmailPassword)),
     };
+  }
+  else {
+    delete (product as any).accountUsername;
+    delete (product as any).accountPassword;
+    delete (product as any).accountEmail;
+    delete (product as any).accountEmailPassword;
   }
 
   // 🛑 STEP 4: Return the full, decrypted product details
@@ -203,17 +213,17 @@ export async function getAllProducts(filters: ProductFilters) {
   const take = pageSize;
   const skip = (page - 1) * pageSize;
 
-  const orderBy: PrismaNamespace.Prisma.ProductOrderByWithRelationInput = {};
+  const orderBy: PrismaNamespace.Prisma.ProductOrderByWithRelationInput[] = [
+  ];
 
   if (sortBy && sortOrder) {
     if (typeof sortBy === "string") {
       // Key mapping order is important in Prisma; we set the primary sort first
-      orderBy[sortBy] = sortOrder;
-      orderBy.createdAt = "desc";
+      orderBy.push({ [sortBy]: sortOrder });
     }
-  } else {
-    orderBy.createdAt = "desc";
   }
+
+  orderBy.push({ createdAt: "desc" });
 
   // We need two queries: one for the paginated data, one for the total count.
   const [products, totalCount] = await prisma.$transaction([

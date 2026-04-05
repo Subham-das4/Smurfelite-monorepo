@@ -32,11 +32,13 @@ export const authenticate = (
     // 3. Verify the token using the secret
     const payload: JwtPayload = jwt.verify(
       token,
-      process.env.JWT_SECRET!
+      process.env.JWT_SECRET!,
+      // { algorithms: ['RS256'] }
     ) as JwtPayload;
 
     // Check if required data exists in payload
     if (!payload.id || !payload.role) {
+      console.log(payload)
       throw new Error("Invalid token payload.");
     }
 

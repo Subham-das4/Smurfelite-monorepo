@@ -5190,6 +5190,7 @@ export namespace Prisma {
     description: string | null
     price: number | null
     isAvailable: boolean | null
+    transactionBlock: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     accountUsername: Bytes | null
@@ -5206,6 +5207,7 @@ export namespace Prisma {
     description: string | null
     price: number | null
     isAvailable: boolean | null
+    transactionBlock: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     accountUsername: Bytes | null
@@ -5223,6 +5225,7 @@ export namespace Prisma {
     price: number
     isAvailable: number
     specifications: number
+    transactionBlock: number
     createdAt: number
     updatedAt: number
     accountUsername: number
@@ -5249,6 +5252,7 @@ export namespace Prisma {
     description?: true
     price?: true
     isAvailable?: true
+    transactionBlock?: true
     createdAt?: true
     updatedAt?: true
     accountUsername?: true
@@ -5265,6 +5269,7 @@ export namespace Prisma {
     description?: true
     price?: true
     isAvailable?: true
+    transactionBlock?: true
     createdAt?: true
     updatedAt?: true
     accountUsername?: true
@@ -5282,6 +5287,7 @@ export namespace Prisma {
     price?: true
     isAvailable?: true
     specifications?: true
+    transactionBlock?: true
     createdAt?: true
     updatedAt?: true
     accountUsername?: true
@@ -5386,6 +5392,7 @@ export namespace Prisma {
     price: number
     isAvailable: boolean
     specifications: JsonValue
+    transactionBlock: boolean
     createdAt: Date
     updatedAt: Date
     accountUsername: Bytes
@@ -5422,6 +5429,7 @@ export namespace Prisma {
     price?: boolean
     isAvailable?: boolean
     specifications?: boolean
+    transactionBlock?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountUsername?: boolean
@@ -5443,6 +5451,7 @@ export namespace Prisma {
     price?: boolean
     isAvailable?: boolean
     specifications?: boolean
+    transactionBlock?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountUsername?: boolean
@@ -5461,6 +5470,7 @@ export namespace Prisma {
     price?: boolean
     isAvailable?: boolean
     specifications?: boolean
+    transactionBlock?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountUsername?: boolean
@@ -5479,6 +5489,7 @@ export namespace Prisma {
     price?: boolean
     isAvailable?: boolean
     specifications?: boolean
+    transactionBlock?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountUsername?: boolean
@@ -5488,7 +5499,7 @@ export namespace Prisma {
     sellerId?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameType" | "title" | "description" | "price" | "isAvailable" | "specifications" | "createdAt" | "updatedAt" | "accountUsername" | "accountPassword" | "accountEmail" | "accountEmailPassword" | "sellerId", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameType" | "title" | "description" | "price" | "isAvailable" | "specifications" | "transactionBlock" | "createdAt" | "updatedAt" | "accountUsername" | "accountPassword" | "accountEmail" | "accountEmailPassword" | "sellerId", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     seller?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | Product$itemsArgs<ExtArgs>
@@ -5517,6 +5528,7 @@ export namespace Prisma {
       price: number
       isAvailable: boolean
       specifications: Prisma.JsonValue
+      transactionBlock: boolean
       createdAt: Date
       updatedAt: Date
       accountUsername: Prisma.Bytes
@@ -5957,6 +5969,7 @@ export namespace Prisma {
     readonly price: FieldRef<"Product", 'Float'>
     readonly isAvailable: FieldRef<"Product", 'Boolean'>
     readonly specifications: FieldRef<"Product", 'Json'>
+    readonly transactionBlock: FieldRef<"Product", 'Boolean'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
     readonly accountUsername: FieldRef<"Product", 'Bytes'>
@@ -11945,6 +11958,7 @@ export namespace Prisma {
     price: 'price',
     isAvailable: 'isAvailable',
     specifications: 'specifications',
+    transactionBlock: 'transactionBlock',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     accountUsername: 'accountUsername',
@@ -12394,6 +12408,7 @@ export namespace Prisma {
     price?: FloatFilter<"Product"> | number
     isAvailable?: BoolFilter<"Product"> | boolean
     specifications?: JsonFilter<"Product">
+    transactionBlock?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     accountUsername?: BytesFilter<"Product"> | Bytes
@@ -12414,6 +12429,7 @@ export namespace Prisma {
     price?: SortOrder
     isAvailable?: SortOrder
     specifications?: SortOrder
+    transactionBlock?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountUsername?: SortOrder
@@ -12437,6 +12453,7 @@ export namespace Prisma {
     price?: FloatFilter<"Product"> | number
     isAvailable?: BoolFilter<"Product"> | boolean
     specifications?: JsonFilter<"Product">
+    transactionBlock?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     accountUsername?: BytesFilter<"Product"> | Bytes
@@ -12457,6 +12474,7 @@ export namespace Prisma {
     price?: SortOrder
     isAvailable?: SortOrder
     specifications?: SortOrder
+    transactionBlock?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountUsername?: SortOrder
@@ -12482,6 +12500,7 @@ export namespace Prisma {
     price?: FloatWithAggregatesFilter<"Product"> | number
     isAvailable?: BoolWithAggregatesFilter<"Product"> | boolean
     specifications?: JsonWithAggregatesFilter<"Product">
+    transactionBlock?: BoolWithAggregatesFilter<"Product"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     accountUsername?: BytesWithAggregatesFilter<"Product"> | Bytes
@@ -13014,6 +13033,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -13033,6 +13053,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -13052,6 +13073,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -13071,6 +13093,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -13090,6 +13113,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -13107,6 +13131,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -13123,6 +13148,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -13743,6 +13769,7 @@ export namespace Prisma {
     price?: SortOrder
     isAvailable?: SortOrder
     specifications?: SortOrder
+    transactionBlock?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountUsername?: SortOrder
@@ -13763,6 +13790,7 @@ export namespace Prisma {
     description?: SortOrder
     price?: SortOrder
     isAvailable?: SortOrder
+    transactionBlock?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountUsername?: SortOrder
@@ -13779,6 +13807,7 @@ export namespace Prisma {
     description?: SortOrder
     price?: SortOrder
     isAvailable?: SortOrder
+    transactionBlock?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountUsername?: SortOrder
@@ -14887,6 +14916,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -14905,6 +14935,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -15070,6 +15101,7 @@ export namespace Prisma {
     price?: FloatFilter<"Product"> | number
     isAvailable?: BoolFilter<"Product"> | boolean
     specifications?: JsonFilter<"Product">
+    transactionBlock?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     accountUsername?: BytesFilter<"Product"> | Bytes
@@ -15721,6 +15753,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -15739,6 +15772,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -15798,6 +15832,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -15816,6 +15851,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -15985,6 +16021,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -16003,6 +16040,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -16068,6 +16106,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -16086,6 +16125,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -16192,6 +16232,7 @@ export namespace Prisma {
     price: number
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accountUsername: Bytes
@@ -16232,6 +16273,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -16250,6 +16292,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes
@@ -16268,6 +16311,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountUsername?: BytesFieldUpdateOperationsInput | Bytes

@@ -74,6 +74,7 @@ model Product {
   price          Float
   isAvailable    Boolean  @default(true)
   specifications Json     // Stores JSON key/value pairs for account specs (e.g., "Rank": "Diamond")
+  transactionBlock Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   

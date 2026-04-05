@@ -157,6 +157,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   price: 'price',
   isAvailable: 'isAvailable',
   specifications: 'specifications',
+  transactionBlock: 'transactionBlock',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   accountUsername: 'accountUsername',

@@ -15,7 +15,7 @@ export type UserRegistrationInput = Omit<
 // Extend the Request interface to include user data
 // This allows TypeScript to recognize req.user
 export interface AuthenticatedRequest extends Request {
-  user?: {
+  user: {
     id: string;
     role: PrismaNamespace.Role;
   };
