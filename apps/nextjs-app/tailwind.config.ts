@@ -10,6 +10,9 @@ module.exports = {
         "surface-light": "#FFFFFF",
         "surface-dark": "#27272A", // Slightly lighter dark
         "accent-dark": "#1F1F23", // Deep background for sections
+        "primary-dark": "#6a0ec6",
+        "border-light": "#e0dbe6",
+        "border-dark": "#3b2d4a",
       },
       fontFamily: {
         display: ["Inter", "sans-serif"],

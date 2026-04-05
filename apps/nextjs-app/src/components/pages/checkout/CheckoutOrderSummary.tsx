@@ -1,0 +1,149 @@
+"use client";
+
+import React, { useState } from "react";
+import Image from "next/image";
+import { MdHelp, MdLock, MdVerifiedUser } from "react-icons/md";
+import { useAppSelector } from "@/hooks";
+
+const SERVICE_FEE = 4.5;
+
+export const CheckoutOrderSummary: React.FC = () => {
+  const { items, totalAmount } = useAppSelector((state) => state.cart);
+  const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+
+  const cartItems = Object.values(items);
+  const total = totalAmount + SERVICE_FEE - discount;
+
+  const handleApplyPromo = () => {
+    // TODO: validate promo code via API
+    void promoCode;
+    setDiscount(0);
+  };
+
+  return (
+    <div className="sticky top-24">
+      <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden">
+        {/* Product list */}
+        <div className="p-6 border-b border-border-light dark:border-border-dark bg-primary/5">
+          <h3 className="text-lg font-bold mb-4">Order Summary</h3>
+          <div className="flex flex-col gap-4">
+            {cartItems.map((item) => (
+              <div key={item.id} className="flex gap-4">
+                <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-border-light dark:border-border-dark">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                  />
+                  {item.platform && (
+                    <div className="absolute bottom-0 right-0 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-tl-md">
+                      {item.platform}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col justify-center flex-1 min-w-0">
+                  <h4 className="font-bold text-base leading-tight truncate">
+                    {item.name}
+                  </h4>
+                  {item.subtitle && (
+                    <p className="text-sm text-[#756189] dark:text-gray-400 mt-1">
+                      {item.subtitle}
+                    </p>
+                  )}
+                  <div className="flex gap-2 mt-2">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                      Instant Delivery
+                    </span>
+                  </div>
+                </div>
+                <div className="font-bold text-lg shrink-0">
+                  ${(item.price * item.quantity).toFixed(2)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Promo code */}
+        <div className="p-6 border-b border-border-light dark:border-border-dark">
+          <div className="flex gap-3">
+            <input
+              type="text"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              className="form-input flex-1 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark h-11 px-3 text-sm placeholder-[#756189] focus:ring-2 focus:ring-primary focus:border-primary"
+              placeholder="Gift card or discount code"
+            />
+            <button
+              type="button"
+              onClick={handleApplyPromo}
+              className="bg-[#e0dbe6] dark:bg-[#3b2d4a] hover:bg-gray-300 dark:hover:bg-gray-600 text-[#141118] dark:text-white rounded-lg h-11 px-4 text-sm font-bold transition-colors"
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+
+        {/* Price breakdown */}
+        <div className="p-6 flex flex-col gap-3">
+          <div className="flex justify-between text-sm text-[#756189] dark:text-gray-400">
+            <span>Subtotal</span>
+            <span className="text-[#141118] dark:text-white font-medium">
+              ${totalAmount.toFixed(2)}
+            </span>
+          </div>
+          <div className="flex justify-between text-sm text-[#756189] dark:text-gray-400">
+            <span className="flex items-center gap-1">
+              Service Fee
+              <MdHelp
+                className="text-base cursor-help"
+                title="Platform security fee"
+              />
+            </span>
+            <span className="text-[#141118] dark:text-white font-medium">
+              ${SERVICE_FEE.toFixed(2)}
+            </span>
+          </div>
+          {discount > 0 && (
+            <div className="flex justify-between text-sm text-green-600 dark:text-green-400 font-medium">
+              <span>Discount</span>
+              <span>-${discount.toFixed(2)}</span>
+            </div>
+          )}
+          <div className="h-[1px] bg-border-light dark:bg-border-dark my-2" />
+          <div className="flex justify-between items-center">
+            <span className="text-lg font-bold">Total</span>
+            <div className="flex items-end gap-2">
+              <span className="text-sm text-[#756189] dark:text-gray-400 mb-1">
+                USD
+              </span>
+              <span className="text-2xl font-bold tracking-tight text-primary">
+                ${total.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Trust badges */}
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-center">
+          <MdLock className="text-2xl text-primary mb-1" />
+          <span className="text-xs font-bold">Secure Checkout</span>
+          <span className="text-[10px] text-[#756189] dark:text-gray-400">
+            256-bit SSL Encrypted
+          </span>
+        </div>
+        <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-center">
+          <MdVerifiedUser className="text-2xl text-primary mb-1" />
+          <span className="text-xs font-bold">Money Back</span>
+          <span className="text-[10px] text-[#756189] dark:text-gray-400">
+            7-Day Guarantee
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
