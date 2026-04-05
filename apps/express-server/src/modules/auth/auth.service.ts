@@ -298,6 +298,9 @@ export async function verifyGoogleOAuth(credential: string): Promise<PrismaNames
         where: { id: user.id },
         data: { googleId: googleId },
       });
+      // Ensure the linked account has a cart (may be missing for accounts created before cart feature)
+      const existingCart = await prisma.cart.findUnique({ where: { userId: user.id } });
+      if (!existingCart) await createCart(user.id);
       logger.info(
         `Linked Google account for existing user: ${user.email}`
       );
