@@ -43,7 +43,7 @@ export const GlobalProvider: React.FC<{
           {/* <Header /> */}
 
           {children}
-          {/* <Footer /> */}
+          <Footer />
         </PersistGate>
       </Provider>{" "}
     </GoogleOAuthProvider>
