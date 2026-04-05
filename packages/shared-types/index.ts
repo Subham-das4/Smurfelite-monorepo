@@ -1,13 +1,29 @@
-import { Role, User } from './src/generated/prisma/index';
+import { Role, OrderStatus, User } from './src/generated/prisma/index';
 
 export * from './src/generated/prisma/index';
 
+// ─────────────────────────────────────────
+// Enquiry
+// ─────────────────────────────────────────
+
 export interface EnquiryPayload {
-    name: string;
-    email: string;
-    phone: string;
+    subject: string;
     message: string;
 }
+
+export interface EnquiryResponse {
+    id: string;
+    subject: string;
+    message: string;
+    isClosed: boolean;
+    createdAt: string;
+    userId: string;
+}
+
+// ─────────────────────────────────────────
+// Auth
+// ─────────────────────────────────────────
+
 export interface LoginRequest {
     email: string;
     password: string;
@@ -15,7 +31,6 @@ export interface LoginRequest {
 
 export interface BaseResponse {
     success: boolean;
-
 }
 
 export interface LoginResponse {
@@ -27,7 +42,11 @@ export interface LoginResponse {
 
 export interface ForgotPasswordRequest {
     email: string;
+}
 
+export interface ResetPasswordRequest {
+    token: string;
+    newPassword: string;
 }
 
 export interface ValidateOtpRequest {
@@ -41,10 +60,9 @@ export interface RegisterRequest {
     name: string;
 }
 
-export interface RegisterResponse extends BaseResponse {
-    data: {
-        message: string;
-    }
+export interface RegisterResponse {
+    message: string;
+    user: Omit<User, "password">;
 }
 
 export interface GoogleOAuthResponse {
@@ -57,4 +75,200 @@ export interface GoogleOAuthResponse {
     nbf: number;
     name: string;
     picture: string;
+}
+
+// ─────────────────────────────────────────
+// User Profile
+// ─────────────────────────────────────────
+
+export interface UserProfileResponse {
+    id: string;
+    email: string;
+    name: string;
+    role: Role;
+    isVerified: boolean;
+    googleProfilePicture: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface UpdateUserRequest {
+    name?: string;
+    googleProfilePicture?: string;
+}
+
+export interface ChangePasswordRequest {
+    currentPassword: string;
+    newPassword: string;
+}
+
+// ─────────────────────────────────────────
+// Products
+// ─────────────────────────────────────────
+
+export interface ProductFilters {
+    page?: number;
+    pageSize?: number;
+    gameType?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+}
+
+export interface ProductMeta {
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+    sortBy?: string;
+    sortOrder?: string;
+}
+
+/** Safe public product — no encrypted credential fields */
+export interface ProductListItem {
+    id: string;
+    gameType: string;
+    title: string;
+    description: string | null;
+    price: number;
+    isAvailable: boolean;
+    specifications: Record<string, unknown>;
+    imageUrl: string | null;
+    sellerId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface ProductListResponse {
+    products: ProductListItem[];
+    meta: ProductMeta;
+}
+
+export interface CreateProductRequest {
+    gameType: string;
+    title: string;
+    description?: string;
+    price: number;
+    specifications: Record<string, unknown>;
+    sellerId: string;
+    imageUrl?: string;
+    accountUsername: string;
+    accountPassword: string;
+    accountEmail: string;
+    accountEmailPassword: string;
+}
+
+export interface UpdateProductRequest {
+    gameType?: string;
+    title?: string;
+    description?: string;
+    price?: number;
+    specifications?: Record<string, unknown>;
+    imageUrl?: string;
+    isAvailable?: boolean;
+    accountUsername?: string;
+    accountPassword?: string;
+    accountEmail?: string;
+    accountEmailPassword?: string;
+}
+
+// ─────────────────────────────────────────
+// Cart
+// ─────────────────────────────────────────
+
+export interface CartProductSummary {
+    id: string;
+    title: string;
+    gameType: string;
+    price: number;
+    specifications: Record<string, unknown>;
+    imageUrl: string | null;
+}
+
+export interface CartItemResponse {
+    cartId: string;
+    productId: string;
+    quantity: number;
+    product: CartProductSummary;
+}
+
+export interface CartResponse {
+    items: CartItemResponse[];
+    count: number;
+    totalPrice: number;
+}
+
+// ─────────────────────────────────────────
+// Orders
+// ─────────────────────────────────────────
+
+export interface CreateOrderRequest {
+    productIds: string[];
+}
+
+export interface OrderProductSummary {
+    id: string;
+    title: string;
+    gameType: string;
+    price: number;
+}
+
+export interface OrderItemResponse {
+    orderId: string;
+    productId: string;
+    priceAtPurchase: number;
+    quantity: number;
+    product?: OrderProductSummary;
+}
+
+export interface OrderResponse {
+    id: string;
+    status: OrderStatus;
+    totalAmount: number;
+    paymentIntent: string | null;
+    paymentProvider: string | null;
+    buyerId: string;
+    createdAt: string;
+    updatedAt: string;
+    items: OrderItemResponse[];
+}
+
+export interface OrderCredential {
+    productId: string;
+    title: string;
+    gameType: string;
+    accountUsername: string;
+    accountPassword: string;
+    accountEmail: string;
+    accountEmailPassword: string;
+}
+
+export interface OrderCredentialsResponse {
+    orderId: string;
+    credentials: OrderCredential[];
+}
+
+// ─────────────────────────────────────────
+// Payments — PayPal
+// ─────────────────────────────────────────
+
+export interface CreatePayPalOrderRequest {
+    internalOrderId: string;
+}
+
+export interface CreatePayPalOrderResponse {
+    paypalOrderId: string;
+    status: string;
+}
+
+export interface CapturePayPalOrderRequest {
+    paypalOrderId: string;
+    internalOrderId: string;
+}
+
+export interface CapturePayPalOrderResponse {
+    message: string;
+    order: OrderResponse;
 }
