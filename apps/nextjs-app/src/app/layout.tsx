@@ -43,17 +43,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-
-
     <html lang="en">
       <head>
-        {/* Bootstrap Here */}
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-          crossOrigin="anonymous"
-        />
         <Script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
@@ -63,11 +54,9 @@ export default function RootLayout({
       </head>
       {/* Bootstrap Ends */}
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} ${dmSans.variable} ${anton.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} ${dmSans.variable} ${anton.variable} antialiased bg-background-light dark:bg-accent-dark text-gray-900 dark:text-white transition-colors duration-300`}
       >
-        <GlobalProvider>
-          {children}
-        </GlobalProvider>
+        <GlobalProvider>{children}</GlobalProvider>
       </body>
     </html>
   );

@@ -1,141 +1,24 @@
 /* Google Fonts - Must be at the top before all other rules */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap");
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 @import "react-toastify/dist/ReactToastify.css";
 
-:root {
-  --primary-color: #7243f2;
-  --font-current-theme1: "Syne", sans-serif;
-  --font-current-theme2: "DM Sans", sans-serif;
-  --heading-font-family: var(--font-current-theme1);
-  --body-font-family: var(--font-current-theme2);
-  --z-index-navbar: 200;
-  --max-layout-width: 1300px;
-  --theme-color1-lighter: #9977f6;
-  --theme-color1: #7243f2;
-  --theme-color1: #7243f2;
-  --theme-color1-rgb: 114, 67, 242;
-  --theme-color1-lighter: #9977f6;
-  --theme-color1-darker: #4b10ed;
-  --theme-color2: #1d1729;
-  --theme-color2-rgb: 29, 23, 41;
-  --theme-color2-lighter: #362b4d;
-  --theme-color2-darker: #040305;
-  --theme-color3: #ae8fff;
-  --theme-color3-rgb: 174, 143, 255;
-  --theme-color3-lighter: #d7c7ff;
-  --theme-color3-darker: #8557ff;
-  --theme-color4: #87c03d;
-  --theme-color4-rgb: 135, 192, 61;
-  --theme-color4-lighter: #a1cf67;
-  --theme-color4-darker: #69952f;
-  --text-color-bg-theme-color1: #fff;
-  --text-color-bg-theme-color2: #fff;
-  --text-color-bg-theme-color3: #fff;
-  --text-color-bg-theme-color4: #fff;
-  --hover-theme-color: #7243f2;
-  --sidebar-default-theme-color: var(--theme-color1);
-  --footer-default-theme-color: var(--theme-color3);
-  --footer-default-hover-theme-color: var(--theme-color3);
-  --footer-default-text-color-on-bg-theme-color: var(
-    --text-color-bg-theme-color3
-  );
+/* Tailwind CSS v4 — full import. Tailwind wraps styles in @layer so Bootstrap's
+   unlayered CSS naturally wins the cascade on existing pages. */
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+  --color-background-light: #f3f4f6;
+  --color-background-dark: #18181b;
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #27272a;
+  --color-accent-dark: #1f1f23;
+  --font-family-display: "Inter", sans-serif;
+  --font-family-body: "Inter", sans-serif;
 }
-:root {
-  --payment-z-index: 2001;
-  --toast-message-z-index: 2000;
-  --login-z-index: 1200;
-  --navbar-z-index: 1000;
-  --carouse-arrow-z-index: 501;
-  --carousel-z-index: 500;
-}
-*,
-::after,
-::before {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body {
-  max-width: 100vw;
-  min-height: 100vh;
-  font-family: var(--body-font-family);
-}
-
-::selection {
-  background: #333;
-  color: #fff;
-  text-shadow: none;
-}
-
-::-moz-selection {
-  background: #333;
-  color: #fff;
-  text-shadow: none;
-}
-
-::-webkit-selection {
-  background: #333;
-  color: #fff;
-  text-shadow: none;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
-a {
-  text-decoration: none !important;
-  color: unset !important;
-}
-.pointer {
-  cursor: pointer;
-}
-
-/* Button Styles */
-@import "./Button/ButtonPrimary.css";
-
-/* Carousel Styles */
-@import "./Carousel/Carousel.css";
-
-/* Cart Page Styles */
-@import "./CartPage/CartPage.css";
-
-/* Footer Styles */
-@import "./Footer/Footer.css";
-
-/* Game Page Styles */
-@import "./GamePage/GamePage.css";
-@import "./GamePage/Pagination.css";
-@import "./GamePage/ProductImage.css";
-
-/* Home Page Styles */
-@import "./HomePage/About.css";
-@import "./HomePage/Contact.css";
-@import "./HomePage/Services.css";
-
-/* Login Styles */
-@import "./Login/Login.css";
-
-/* Navbar Styles */
-@import "./Navbar/Navbar_fixed.css";
-@import "./Navbar/Navbar_lg.css";
-@import "./Navbar/Navbar_mobile.css";
-
-/* Orders Styles */
-@import "./Orders/Orders.css";
-
-/* Payment Styles */
-@import "./Payment/PaymentStatus.css";
-
-/* Privacy Policy Styles */
-@import "./Privacypolicy/PrivacyPolicy.css";
-
-/* Product Page Styles */
-@import "./ProductPage/ProductPage.css";
-
-/* Toast Styles */
-@import "./Toast/Toast.css";
-
-/* Verification Styles */
-@import "./Verification/Verification.css";
