@@ -3,10 +3,22 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import morgan from "morgan";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import prisma, { ensureAdminUser, ensureBuyerUser } from "./lib/prisma.js";
 import apiRouter from "./lib/route.js";
 import { globalErrorHandler } from "./utils/errors.js";
 import logger from "./utils/logger.js";
+
+// Ensure logs/ directory exists before opening streams
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const logsDir = path.resolve(__dirname, "../logs");
+if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
+
+const httpLogStream = fs.createWriteStream(path.join(logsDir, "http.log"), {
+  flags: "a",
+});
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -33,7 +45,12 @@ app.use(
 // ----------------------------------------
 app.use(
   morgan("combined", {
-    stream: { write: (message) => logger.http(message.trim()) },
+    stream: {
+      write: (message) => {
+        logger.http(message.trim());   // console via Winston
+        httpLogStream.write(message);  // logs/http.log file
+      },
+    },
   })
 );
 
