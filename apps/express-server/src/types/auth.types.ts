@@ -1,4 +1,4 @@
-import * as PrismaNamespace from "@smurfelite/types/src/generated/prisma/index.js";
+import * as PrismaNamespace from "./prisma.js";
 import { Request } from "express";
 
 export interface JwtPayload {

@@ -10,6 +10,8 @@ import {
 } from 'redux-persist';
 import rootPersistedReducers from './reducers';
 import { baseApi } from '@/api';
+// Ensure RTK Query endpoint injections run before the store is created (tree-shaking safe).
+import '@/api/payments';
 
 export const store = configureStore({
     reducer: rootPersistedReducers,

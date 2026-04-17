@@ -1,4 +1,4 @@
-import * as PrismaNamespace from "@smurfelite/types";
+import * as PrismaNamespace from "../../types/prisma.js";
 import prisma from "../../lib/prisma.js";
 import ApiError from "../../utils/errors.js";
 import { AuthErrorMessages } from "./auth.message.js";

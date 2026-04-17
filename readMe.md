@@ -8,6 +8,16 @@ Database:
 1. App-> pgadmin
 2. generate types -> pnpm prisma generate (on express repo)
 
+## Payments (NOWPayments, sandbox)
+
+1. Copy [`apps/express-server/.env.example`](apps/express-server/.env.example) to `apps/express-server/.env` and set `NOWPAYMENTS_API_KEY` and `NOWPAYMENTS_IPN_SECRET` from the NOWPayments **sandbox** dashboard.
+2. Set `PUBLIC_API_BASE_URL` to the **public HTTPS origin** of the Express API (no trailing slash), e.g. `https://abc123.ngrok.io`. NOWPayments cannot send IPN webhooks to `localhost`; use ngrok or Cloudflare Tunnel while developing.
+3. IPN endpoint: `POST /api/payments/nowpayments/ipn` (signature header `x-nowpayments-sig`, verified with `NOWPAYMENTS_IPN_SECRET`).
+4. Buyer flow: `POST /api/orders` then `POST /api/payments/nowpayments/create-invoice` with `{ "internalOrderId": "<uuid>" }`; redirect the browser to `invoiceUrl`.
+5. Production: switch `NOWPAYMENTS_API_BASE_URL` to `https://api.nowpayments.io/v1` and use production API keys.
+
+Manual checks: valid signature + `payment_status` `finished` moves order to `PROCESSING`; invalid signature returns `401`; duplicate IPN is idempotent; cancel URL returns the user to `/checkout/cancel`.
+
 <!-- ****************************************** -->
 <!-- ****************************************** -->
 <!-- ********** Postman script **************** -->

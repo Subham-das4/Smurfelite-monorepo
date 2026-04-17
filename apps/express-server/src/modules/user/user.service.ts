@@ -1,4 +1,4 @@
-import { Role } from "@smurfelite/types";
+import { Role } from "../../types/prisma.js";
 import { prisma } from "../../lib/prisma.js";
 import ApiError from "../../utils/errors.js";
 import bcrypt from "bcrypt";

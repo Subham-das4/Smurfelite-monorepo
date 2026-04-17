@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthenticatedRequest } from "../../types/auth.types.js";
 import { checkProductOwnership } from "./product.service.js";
-import * as PrismaNamespace from "@smurfelite/types";
+import * as PrismaNamespace from "../../types/prisma.js";
 import { ProductErrors } from "./product.messages.js";
 import ApiError from "../../utils/errors.js";
 

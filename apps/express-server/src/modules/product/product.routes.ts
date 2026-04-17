@@ -7,7 +7,7 @@ import {
   getAllProductsController,
 } from "./product.controller.js";
 import { authenticate, authorize } from "../auth/auth.middleware.js";
-import { Role } from "@smurfelite/types";
+import { Role } from "../../types/prisma.js";
 import { verifySeller } from "./product.middleware.js";
 import { validate } from "../../utils/validate.js";
 import {

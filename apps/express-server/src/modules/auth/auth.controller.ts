@@ -13,9 +13,8 @@ import {
 } from "./auth.service.js";
 import ApiError from "../../utils/errors.js";
 import { AuthErrorMessages } from "./auth.message.js";
-import passport from "passport";
 import logger from "../../utils/logger.js";
-import { Role, User } from "@smurfelite/types";
+import { Role, User } from "../../types/prisma.js";
 
 export async function registerController(
   req: Request,

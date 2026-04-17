@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Role } from "@smurfelite/types";
+import { Role } from "../../types/prisma.js";
 import { authenticate, authorize } from "../auth/auth.middleware.js";
 import {
   getErrorLogsController,

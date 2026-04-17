@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { getCartController, addToCartController, removeFromCartController } from "./cart.controller.js";
 import { authenticate, authorize } from "../auth/auth.middleware.js";
-import { Role } from "@smurfelite/types";
+import { Role } from "../../types/prisma.js";
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../../types/auth.types.js";
-import { Role } from "@smurfelite/types";
+import { Role } from "../../types/prisma.js";
 import {
   getMe,
   updateMe,

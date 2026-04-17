@@ -1,4 +1,4 @@
-import * as PrismaNamespace from "@smurfelite/types";
+import * as PrismaNamespace from "../../types/prisma.js";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import logger from "../../utils/logger.js";

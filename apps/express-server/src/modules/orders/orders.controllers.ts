@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../../types/auth.types.js";
-import { Role, OrderStatus } from "@smurfelite/types";
+import { Role, OrderStatus } from "../../types/prisma.js";
 import {
   createOrder,
   getOrderById,

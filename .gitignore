@@ -51,3 +51,4 @@ lerna-debug.log*
 Thumbs.db
 
 migrations/
+.cursor

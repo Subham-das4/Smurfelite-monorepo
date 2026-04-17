@@ -1,4 +1,4 @@
-import * as PrismaNamespace from "@smurfelite/types/src/generated/prisma/index.js"; // Import from the monorepo shared package!
+import * as PrismaNamespace from "../types/prisma.js";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcrypt";

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Role } from "@smurfelite/types";
+import { Role } from "../types/prisma.js";
 
 export const updateMeSchema = z.object({
   name: z.string().min(1).optional(),

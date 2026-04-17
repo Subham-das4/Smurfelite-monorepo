@@ -1,4 +1,4 @@
-import * as PrismaNamespace from "@smurfelite/types/src/generated/prisma/index.js";
+import * as PrismaNamespace from "../../types/prisma.js";
 import prisma from "../../lib/prisma.js";
 import { encrypt, decrypt } from "../../services/encryption.service.js";
 import {

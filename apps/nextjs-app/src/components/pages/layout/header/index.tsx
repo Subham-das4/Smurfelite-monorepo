@@ -22,7 +22,7 @@ export const Header = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { user } = useAppSelector((state) => state.user);
-  const { count: cartCount } = useAppSelector((state) => state.cart);
+  const cartCount = useAppSelector((state) => state.cart.totalQuantity);
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);

@@ -1,4 +1,4 @@
-import * as PrismaNamespace from "@smurfelite/types";
+import * as PrismaNamespace from "./prisma.js";
 
 export type GetCartQueryReturn = ({
     items: ({

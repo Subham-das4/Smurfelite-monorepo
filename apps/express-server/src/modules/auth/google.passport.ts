@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import * as PrismaNamespace from "@smurfelite/types";
+import * as PrismaNamespace from "../../types/prisma.js";
 import prisma from "../../lib/prisma.js";
 import logger from "../../utils/logger.js";
 
