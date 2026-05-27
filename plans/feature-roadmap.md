@@ -149,8 +149,8 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 4.3 Product detail cleanup
 
-- [ ] Remove or clearly label mock reviews in `detail/data.ts`
-- [ ] Hide reviews panel until real review system exists
+- [x] Remove or clearly label mock reviews in `detail/data.ts`
+- [x] Hide reviews panel until real review system exists (`PRODUCT_REVIEWS_ENABLED`)
 
 ### 4.4 Checkout UX
 

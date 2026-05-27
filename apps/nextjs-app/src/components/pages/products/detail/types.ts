@@ -51,8 +51,6 @@ export interface ProductDetail {
   id: string;
   title: string;
   tags: ProductTag[];
-  rating: number;
-  reviewCount: number;
   price: number;
   originalPrice: number;
   discountPercent: number;
@@ -62,8 +60,14 @@ export interface ProductDetail {
   description: string;
   highlights: string[];
   specifications: ProductSpecification[];
-  reviews: ProductReview[];
-  overallRating: number;
   similarProducts: SimilarProduct[];
   breadcrumb: BreadcrumbItem[];
+  /** @deprecated Mock-only — removed until review API exists */
+  rating?: number;
+  /** @deprecated Mock-only — removed until review API exists */
+  reviewCount?: number;
+  /** @deprecated Mock-only — removed until review API exists */
+  reviews?: ProductReview[];
+  /** @deprecated Mock-only — removed until review API exists */
+  overallRating?: number;
 }

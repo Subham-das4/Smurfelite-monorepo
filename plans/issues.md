@@ -203,24 +203,6 @@ Prioritized list of known bugs, gaps, and technical debt. Update this file as is
 
 ---
 
-### 🟡 ISS-013 — Product detail uses mock reviews/stats
-
-| Field | Value |
-| ----- | ----- |
-| **Severity** | Medium |
-| **Area** | Products UI |
-| **Phase fix** | Phase 4 |
-
-**Problem:** Reviews and stats in `detail/data.ts` are static placeholders, not API-driven.
-
-**Files:**
-- `apps/nextjs-app/src/components/pages/products/detail/data.ts`
-- `apps/nextjs-app/src/components/pages/products/detail/ReviewsPanel.tsx`
-
-**Suggested fix:** Remove mock data or add real review system later.
-
----
-
 ### 🟡 ISS-014 — Similar products use gameType filter only
 
 | Field | Value |
@@ -366,5 +348,9 @@ See [feature-roadmap.md](./feature-roadmap.md).
 ### ✅ ISS-001 — Enquiry API contract mismatch (2026-05-27, Phase 3.3)
 
 Guest contact form aligned with backend: `Enquiry` model stores `name`, `email`, `phone`; `POST /enquiries` is public with optional auth; help@ notification email on create.
+
+### ✅ ISS-013 — Product detail mock reviews (2026-05-27, Phase 4.3)
+
+Mock reviews removed from `detail/data.ts`; `ReviewsPanel` gated by `PRODUCT_REVIEWS_ENABLED = false`; live product page uses API data only.
 
 When fixing an issue, move it here with date and PR reference.

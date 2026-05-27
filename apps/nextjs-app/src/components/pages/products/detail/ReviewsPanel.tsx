@@ -1,4 +1,5 @@
 import { MdStar, MdStarHalf } from "react-icons/md";
+import { PRODUCT_REVIEWS_ENABLED } from "./config";
 import type { ProductReview } from "./types";
 
 interface ReviewCardProps {
@@ -35,11 +36,16 @@ interface ReviewsPanelProps {
   reviews: ProductReview[];
 }
 
-export function ReviewsPanel({
-  overallRating,
-  reviewCount,
-  reviews,
-}: ReviewsPanelProps) {
+/**
+ * Hidden until PRODUCT_REVIEWS_ENABLED is true and a real review API exists.
+ */
+export function ReviewsPanel(props: ReviewsPanelProps) {
+  if (!PRODUCT_REVIEWS_ENABLED) {
+    return null;
+  }
+
+  const { overallRating, reviewCount, reviews } = props;
+
   return (
     <aside className="bg-white border border-slate-200 rounded-xl p-6 h-fit">
       <h3 className="text-xl font-bold text-slate-900 mb-4">
@@ -69,7 +75,10 @@ export function ReviewsPanel({
         ))}
       </div>
 
-      <button className="w-full mt-6 py-2 text-sm text-primary border border-primary/30 rounded-lg hover:bg-primary/5 transition-colors">
+      <button
+        type="button"
+        className="w-full mt-6 py-2 text-sm text-primary border border-primary/30 rounded-lg hover:bg-primary/5 transition-colors"
+      >
         View All Reviews
       </button>
     </aside>

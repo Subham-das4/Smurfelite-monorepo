@@ -1,3 +1,7 @@
+/**
+ * @deprecated Dev/storybook fixture only — production uses GET /api/products/:id.
+ * Mock customer reviews were removed (Phase 4.3). Do not use for live UI.
+ */
 import type { ProductDetail } from "./types";
 
 export const MOCK_PRODUCT: ProductDetail = {
@@ -8,8 +12,6 @@ export const MOCK_PRODUCT: ProductDetail = {
     { label: "Full Access", variant: "secondary" },
     { label: "Region: NA", variant: "secondary" },
   ],
-  rating: 5.0,
-  reviewCount: 124,
   price: 149.99,
   originalPrice: 299.0,
   discountPercent: 50,
@@ -95,25 +97,6 @@ export const MOCK_PRODUCT: ProductDetail = {
     { key: "Delivery Method", value: "Instant Email Delivery" },
     { key: "Warranty", value: "Lifetime Warranty" },
   ],
-  reviews: [
-    {
-      id: "review-1",
-      author: "Alex M.",
-      avatarGradient: "from-primary to-blue-600",
-      rating: 5,
-      date: "2 days ago",
-      body: "Instant delivery as promised! The skins are amazing and the rank is legit. Highly recommend this seller.",
-    },
-    {
-      id: "review-2",
-      author: "Sarah K.",
-      avatarGradient: "from-green-500 to-emerald-700",
-      rating: 5,
-      date: "1 week ago",
-      body: "Everything worked perfectly. Changed email and password immediately without issues.",
-    },
-  ],
-  overallRating: 4.9,
   breadcrumb: [
     { label: "Home", href: "/" },
     { label: "Valorant Accounts", href: "/products" },

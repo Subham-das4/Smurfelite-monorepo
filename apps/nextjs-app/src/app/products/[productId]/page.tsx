@@ -117,7 +117,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
       {/* Account statistics derived from specifications */}
       <AccountStats specs={specs} />
 
-      {/* Description + Specifications */}
+      {/* Description + Specifications (reviews panel hidden — see detail/config.ts) */}
       <div className="mb-16">
         <ProductTabs description={product.description} specs={specs} />
       </div>
