@@ -163,6 +163,8 @@ exports.Prisma.ProductScalarFieldEnum = {
   title: 'title',
   description: 'description',
   price: 'price',
+  status: 'status',
+  sellerDelisted: 'sellerDelisted',
   isAvailable: 'isAvailable',
   specifications: 'specifications',
   transactionBlock: 'transactionBlock',
@@ -244,6 +246,15 @@ exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   SELLER: 'SELLER',
   BUYER: 'BUYER'
+};
+
+exports.ProductStatus = exports.$Enums.ProductStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  SOLD: 'SOLD',
+  DELISTED_BY_SELLER: 'DELISTED_BY_SELLER',
+  BANNED_BY_ADMIN: 'BANNED_BY_ADMIN'
 };
 
 exports.OrderStatus = exports.$Enums.OrderStatus = {

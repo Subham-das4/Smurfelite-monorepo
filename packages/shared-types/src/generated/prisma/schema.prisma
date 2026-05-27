@@ -26,6 +26,15 @@ enum OrderStatus {
   REFUNDED
 }
 
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  PENDING_VERIFICATION
+  SOLD
+  DELISTED_BY_SELLER
+  BANNED_BY_ADMIN
+}
+
 model User {
   id                   String   @id @default(uuid())
   email                String   @unique
@@ -79,16 +88,18 @@ model RefreshToken {
 }
 
 model Product {
-  id               String   @id @default(uuid())
+  id               String        @id @default(uuid())
   gameType         String // e.g., "League of Legends", "Valorant"
   title            String
   description      String?
   price            Float
-  isAvailable      Boolean  @default(true)
+  status           ProductStatus @default(DRAFT)
+  sellerDelisted   Boolean       @default(false)
+  isAvailable      Boolean       @default(true)
   specifications   Json // Stores JSON key/value pairs for account specs (e.g., "Rank": "Diamond")
-  transactionBlock Boolean  @default(false)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  transactionBlock Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
   imageUrl String? // Optional product image URL
 

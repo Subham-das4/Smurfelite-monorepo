@@ -1,4 +1,4 @@
-import { Role, OrderStatus, User } from "./src/generated/prisma/index";
+import { Role, OrderStatus, User, ProductStatus } from "./src/generated/prisma/index";
 
 export * from "./src/generated/prisma/index";
 
@@ -137,6 +137,8 @@ export interface ProductListItem {
   title: string;
   description: string | null;
   price: number;
+  status: ProductStatus;
+  sellerDelisted: boolean;
   isAvailable: boolean;
   specifications: Record<string, unknown>;
   imageUrl: string | null;
@@ -171,6 +173,8 @@ export interface UpdateProductRequest {
   price?: number;
   specifications?: Record<string, unknown>;
   imageUrl?: string;
+  status?: ProductStatus;
+  sellerDelisted?: boolean;
   isAvailable?: boolean;
   accountUsername?: string;
   accountPassword?: string;

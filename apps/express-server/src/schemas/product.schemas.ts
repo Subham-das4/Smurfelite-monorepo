@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+const productStatusSchema = z.enum([
+  "DRAFT",
+  "ACTIVE",
+  "PENDING_VERIFICATION",
+  "SOLD",
+  "DELISTED_BY_SELLER",
+  "BANNED_BY_ADMIN",
+]);
+
 export const createProductSchema = z.object({
   gameType: z.string().min(1, "gameType is required."),
   title: z.string().min(1, "Title is required."),
@@ -21,6 +30,8 @@ export const updateProductSchema = z.object({
   price: z.number().positive().optional(),
   specifications: z.record(z.string(), z.unknown()).optional(),
   imageUrl: z.string().url().optional(),
+  status: productStatusSchema.optional(),
+  sellerDelisted: z.boolean().optional(),
   isAvailable: z.boolean().optional(),
   accountUsername: z.string().min(1).optional(),
   accountPassword: z.string().min(1).optional(),

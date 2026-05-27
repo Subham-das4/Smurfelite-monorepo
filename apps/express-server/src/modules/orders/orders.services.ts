@@ -3,6 +3,7 @@ import { OrderStatus } from "../../types/prisma.js";
 import { prisma } from "../../lib/prisma.js";
 import { decrypt } from "../../services/encryption.service.js";
 import ApiError from "../../utils/errors.js";
+import { isProductPurchasable } from "../product/product.constants.js";
 
 export const createOrder = async (userId: string, productIds: string[]) => {
   const itemMap = productIds.reduce(
@@ -24,9 +25,7 @@ export const createOrder = async (userId: string, productIds: string[]) => {
       throw new ApiError("One or more products no longer exist.", 404);
     }
 
-    const unavailable = products.filter(
-      (p) => !p.isAvailable || p.transactionBlock
-    );
+    const unavailable = products.filter((p) => !isProductPurchasable(p));
     if (unavailable.length > 0) {
       const names = unavailable.map((p) => p.title).join(", ");
       throw new ApiError(

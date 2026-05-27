@@ -8,6 +8,8 @@ import {
 } from "../../types/product.types.js";
 import ApiError from "../../utils/errors.js";
 import { ProductErrors } from "./product.messages.js";
+import { ProductStatus } from "../../types/prisma.js";
+import { PUBLIC_LISTABLE_PRODUCT_WHERE } from "./product.constants.js";
 
 export async function checkProductOwnership(
   productId: string,
@@ -53,6 +55,7 @@ export async function createProduct(data: ProductCreateInput) {
   > = {
     ...safeData,
     ...encryptedData,
+    status: ProductStatus.ACTIVE,
   };
 
   //  Save the product with encrypted bytes
@@ -79,6 +82,15 @@ export async function getProductDetails(
   });
 
   if (!product) throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
+
+  if (
+    product.status !== ProductStatus.ACTIVE ||
+    product.sellerDelisted ||
+    !product.isAvailable
+  ) {
+    throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
+  }
+
   // Check if the sensitive fields are actually Buffers (the expected type from DB)
   if (!Buffer.isBuffer(product.accountEmail)) {
     // If it's a Uint8Array but not a "Buffer", convert it
@@ -185,7 +197,7 @@ export async function getAllProducts(filters: ProductFilters) {
 
   // 1. Build the WHERE clause (same as before)
   const where: PrismaNamespace.Prisma.ProductWhereInput = {
-    isAvailable: true, // Only show active listings
+    ...PUBLIC_LISTABLE_PRODUCT_WHERE,
   };
 
   if (filters.gameType) {
@@ -245,6 +257,8 @@ export async function getAllProducts(filters: ProductFilters) {
         title: true,
         description: true,
         price: true,
+        status: true,
+        sellerDelisted: true,
         isAvailable: true,
         specifications: true,
         imageUrl: true,

@@ -87,6 +87,18 @@ export const OrderStatus: {
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
+
+export const ProductStatus: {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  SOLD: 'SOLD',
+  DELISTED_BY_SELLER: 'DELISTED_BY_SELLER',
+  BANNED_BY_ADMIN: 'BANNED_BY_ADMIN'
+};
+
+export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus]
+
 }
 
 export type Role = $Enums.Role
@@ -96,6 +108,10 @@ export const Role: typeof $Enums.Role
 export type OrderStatus = $Enums.OrderStatus
 
 export const OrderStatus: typeof $Enums.OrderStatus
+
+export type ProductStatus = $Enums.ProductStatus
+
+export const ProductStatus: typeof $Enums.ProductStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -6361,6 +6377,8 @@ export namespace Prisma {
     title: string | null
     description: string | null
     price: number | null
+    status: $Enums.ProductStatus | null
+    sellerDelisted: boolean | null
     isAvailable: boolean | null
     transactionBlock: boolean | null
     createdAt: Date | null
@@ -6379,6 +6397,8 @@ export namespace Prisma {
     title: string | null
     description: string | null
     price: number | null
+    status: $Enums.ProductStatus | null
+    sellerDelisted: boolean | null
     isAvailable: boolean | null
     transactionBlock: boolean | null
     createdAt: Date | null
@@ -6397,6 +6417,8 @@ export namespace Prisma {
     title: number
     description: number
     price: number
+    status: number
+    sellerDelisted: number
     isAvailable: number
     specifications: number
     transactionBlock: number
@@ -6426,6 +6448,8 @@ export namespace Prisma {
     title?: true
     description?: true
     price?: true
+    status?: true
+    sellerDelisted?: true
     isAvailable?: true
     transactionBlock?: true
     createdAt?: true
@@ -6444,6 +6468,8 @@ export namespace Prisma {
     title?: true
     description?: true
     price?: true
+    status?: true
+    sellerDelisted?: true
     isAvailable?: true
     transactionBlock?: true
     createdAt?: true
@@ -6462,6 +6488,8 @@ export namespace Prisma {
     title?: true
     description?: true
     price?: true
+    status?: true
+    sellerDelisted?: true
     isAvailable?: true
     specifications?: true
     transactionBlock?: true
@@ -6568,6 +6596,8 @@ export namespace Prisma {
     title: string
     description: string | null
     price: number
+    status: $Enums.ProductStatus
+    sellerDelisted: boolean
     isAvailable: boolean
     specifications: JsonValue
     transactionBlock: boolean
@@ -6606,6 +6636,8 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     price?: boolean
+    status?: boolean
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications?: boolean
     transactionBlock?: boolean
@@ -6629,6 +6661,8 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     price?: boolean
+    status?: boolean
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications?: boolean
     transactionBlock?: boolean
@@ -6649,6 +6683,8 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     price?: boolean
+    status?: boolean
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications?: boolean
     transactionBlock?: boolean
@@ -6669,6 +6705,8 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     price?: boolean
+    status?: boolean
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications?: boolean
     transactionBlock?: boolean
@@ -6682,7 +6720,7 @@ export namespace Prisma {
     sellerId?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameType" | "title" | "description" | "price" | "isAvailable" | "specifications" | "transactionBlock" | "createdAt" | "updatedAt" | "imageUrl" | "accountUsername" | "accountPassword" | "accountEmail" | "accountEmailPassword" | "sellerId", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameType" | "title" | "description" | "price" | "status" | "sellerDelisted" | "isAvailable" | "specifications" | "transactionBlock" | "createdAt" | "updatedAt" | "imageUrl" | "accountUsername" | "accountPassword" | "accountEmail" | "accountEmailPassword" | "sellerId", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     seller?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | Product$itemsArgs<ExtArgs>
@@ -6709,6 +6747,8 @@ export namespace Prisma {
       title: string
       description: string | null
       price: number
+      status: $Enums.ProductStatus
+      sellerDelisted: boolean
       isAvailable: boolean
       specifications: Prisma.JsonValue
       transactionBlock: boolean
@@ -7151,6 +7191,8 @@ export namespace Prisma {
     readonly title: FieldRef<"Product", 'String'>
     readonly description: FieldRef<"Product", 'String'>
     readonly price: FieldRef<"Product", 'Float'>
+    readonly status: FieldRef<"Product", 'ProductStatus'>
+    readonly sellerDelisted: FieldRef<"Product", 'Boolean'>
     readonly isAvailable: FieldRef<"Product", 'Boolean'>
     readonly specifications: FieldRef<"Product", 'Json'>
     readonly transactionBlock: FieldRef<"Product", 'Boolean'>
@@ -13165,6 +13207,8 @@ export namespace Prisma {
     title: 'title',
     description: 'description',
     price: 'price',
+    status: 'status',
+    sellerDelisted: 'sellerDelisted',
     isAvailable: 'isAvailable',
     specifications: 'specifications',
     transactionBlock: 'transactionBlock',
@@ -13341,6 +13385,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProductStatus'
+   */
+  export type EnumProductStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProductStatus[]'
+   */
+  export type ListEnumProductStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStatus[]'>
     
 
 
@@ -13675,6 +13733,8 @@ export namespace Prisma {
     title?: StringFilter<"Product"> | string
     description?: StringNullableFilter<"Product"> | string | null
     price?: FloatFilter<"Product"> | number
+    status?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
+    sellerDelisted?: BoolFilter<"Product"> | boolean
     isAvailable?: BoolFilter<"Product"> | boolean
     specifications?: JsonFilter<"Product">
     transactionBlock?: BoolFilter<"Product"> | boolean
@@ -13697,6 +13757,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     price?: SortOrder
+    status?: SortOrder
+    sellerDelisted?: SortOrder
     isAvailable?: SortOrder
     specifications?: SortOrder
     transactionBlock?: SortOrder
@@ -13722,6 +13784,8 @@ export namespace Prisma {
     title?: StringFilter<"Product"> | string
     description?: StringNullableFilter<"Product"> | string | null
     price?: FloatFilter<"Product"> | number
+    status?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
+    sellerDelisted?: BoolFilter<"Product"> | boolean
     isAvailable?: BoolFilter<"Product"> | boolean
     specifications?: JsonFilter<"Product">
     transactionBlock?: BoolFilter<"Product"> | boolean
@@ -13744,6 +13808,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     price?: SortOrder
+    status?: SortOrder
+    sellerDelisted?: SortOrder
     isAvailable?: SortOrder
     specifications?: SortOrder
     transactionBlock?: SortOrder
@@ -13771,6 +13837,8 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Product"> | string
     description?: StringNullableWithAggregatesFilter<"Product"> | string | null
     price?: FloatWithAggregatesFilter<"Product"> | number
+    status?: EnumProductStatusWithAggregatesFilter<"Product"> | $Enums.ProductStatus
+    sellerDelisted?: BoolWithAggregatesFilter<"Product"> | boolean
     isAvailable?: BoolWithAggregatesFilter<"Product"> | boolean
     specifications?: JsonWithAggregatesFilter<"Product">
     transactionBlock?: BoolWithAggregatesFilter<"Product"> | boolean
@@ -14369,6 +14437,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -14390,6 +14460,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -14411,6 +14483,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -14432,6 +14506,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -14453,6 +14529,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -14472,6 +14550,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -14490,6 +14570,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -15091,6 +15173,13 @@ export namespace Prisma {
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
   }
+
+  export type EnumProductStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductStatusFilter<$PrismaModel> | $Enums.ProductStatus
+  }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -15148,6 +15237,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     price?: SortOrder
+    status?: SortOrder
+    sellerDelisted?: SortOrder
     isAvailable?: SortOrder
     specifications?: SortOrder
     transactionBlock?: SortOrder
@@ -15171,6 +15262,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     price?: SortOrder
+    status?: SortOrder
+    sellerDelisted?: SortOrder
     isAvailable?: SortOrder
     transactionBlock?: SortOrder
     createdAt?: SortOrder
@@ -15189,6 +15282,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     price?: SortOrder
+    status?: SortOrder
+    sellerDelisted?: SortOrder
     isAvailable?: SortOrder
     transactionBlock?: SortOrder
     createdAt?: SortOrder
@@ -15219,6 +15314,16 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type EnumProductStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProductStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProductStatusFilter<$PrismaModel>
+    _max?: NestedEnumProductStatusFilter<$PrismaModel>
   }
   export type JsonWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -15840,6 +15945,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type EnumProductStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ProductStatus
+  }
+
   export type BytesFieldUpdateOperationsInput = {
     set?: Bytes
   }
@@ -16252,6 +16361,13 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedEnumProductStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductStatusFilter<$PrismaModel> | $Enums.ProductStatus
+  }
+
   export type NestedBytesFilter<$PrismaModel = never> = {
     equals?: Bytes | BytesFieldRefInput<$PrismaModel>
     in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
@@ -16273,6 +16389,16 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedEnumProductStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProductStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProductStatusFilter<$PrismaModel>
+    _max?: NestedEnumProductStatusFilter<$PrismaModel>
   }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -16347,6 +16473,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -16367,6 +16495,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -16555,6 +16685,8 @@ export namespace Prisma {
     title?: StringFilter<"Product"> | string
     description?: StringNullableFilter<"Product"> | string | null
     price?: FloatFilter<"Product"> | number
+    status?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
+    sellerDelisted?: BoolFilter<"Product"> | boolean
     isAvailable?: BoolFilter<"Product"> | boolean
     specifications?: JsonFilter<"Product">
     transactionBlock?: BoolFilter<"Product"> | boolean
@@ -17342,6 +17474,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -17362,6 +17496,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -17423,6 +17559,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -17443,6 +17581,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -17620,6 +17760,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -17640,6 +17782,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -17709,6 +17853,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -17729,6 +17875,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -17841,6 +17989,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
@@ -17884,6 +18034,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -17904,6 +18056,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
@@ -17924,6 +18078,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
