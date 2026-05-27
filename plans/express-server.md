@@ -65,6 +65,8 @@ apps/express-server/
 | `/payments/nowpayments` | Mixed | Create invoice (auth), IPN webhook (public) |
 | `/users` | Auth | Profile; admin list/role/delete |
 | `/enquiries` | Auth | Create, list mine; admin list/close/delete |
+| `/wallets` | Auth | Seller wallet (501 placeholder) |
+| `/email` | Public | Email module status (`GET /status`) |
 | `/logs` | — | Log endpoints |
 
 ### Products (`/products`)
@@ -215,6 +217,9 @@ From `.env.example` + runtime requirements:
 | `NOWPAYMENTS_IPN_SECRET` | Payments | Webhook HMAC |
 | `PAYMENT_BYPASS` | Dev/E2E | Skip NOWPayments (default `false`) |
 | `ORDER_PENDING_TIMEOUT_MINUTES` | Orders | Auto-cancel unpaid PENDING orders (default **30**) |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_SECURE` | Email | Shared SMTP server (same host for all mailboxes) |
+| `EMAIL_*_ADDRESS` / `EMAIL_*_NAME` | Email | Sender profiles: `FINANCE`, `HELP`, `PURCHASE` |
+| `EMAIL_*_USER` / `EMAIL_*_PASS` | Email | Per-sender SMTP login (each mailbox has its own credentials) |
 
 **Planned additions:**
 - Embedding provider keys

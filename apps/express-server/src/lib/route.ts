@@ -13,6 +13,7 @@ import bypassRoutes from "../modules/payments/bypass/bypass.routes.js";
 import gameCategoryRoutes from "../modules/game-category/game-category.routes.js";
 import disputeRoutes from "../modules/dispute/dispute.routes.js";
 import walletRoutes from "../modules/wallet/wallet.routes.js";
+import emailRoutes from "../modules/email/email.routes.js";
 
 const apiRouter = Router();
 
@@ -34,6 +35,7 @@ apiRouter.use("/enquiries", enquiryRoutes);
 apiRouter.use("/game-categories", gameCategoryRoutes);
 apiRouter.use("/disputes", disputeRoutes);
 apiRouter.use("/wallets", walletRoutes);
+apiRouter.use("/email", emailRoutes);
 apiRouter.use("/logs", logRoutes);
 
 // Catch any routes that fall through

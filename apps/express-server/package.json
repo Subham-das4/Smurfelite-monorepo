@@ -18,11 +18,13 @@
     "smoke:through-2.2": "tsx --env-file=.env scripts/smoke/run.mts through 2.2",
     "smoke:through-2.3": "tsx --env-file=.env scripts/smoke/run.mts through 2.3",
     "smoke:through-2.5": "tsx --env-file=.env scripts/smoke/run.mts through 2.5",
+    "smoke:through-3.1": "tsx --env-file=.env scripts/smoke/run.mts through 3.1",
     "smoke:phase-1": "tsx --env-file=.env scripts/smoke/run.mts phase 1",
     "smoke:phase-2.1": "tsx --env-file=.env scripts/smoke/run.mts phase 2.1",
     "smoke:phase-2.2": "tsx --env-file=.env scripts/smoke/run.mts phase 2.2",
     "smoke:phase-2.3": "tsx --env-file=.env scripts/smoke/run.mts phase 2.3",
-    "smoke:phase-2.5": "tsx --env-file=.env scripts/smoke/run.mts phase 2.5"
+    "smoke:phase-2.5": "tsx --env-file=.env scripts/smoke/run.mts phase 2.5",
+    "smoke:phase-3.1": "tsx --env-file=.env scripts/smoke/run.mts phase 3.1"
   },
   "dependencies": {
     "@paypal/paypal-server-sdk": "^2.2.0",
@@ -41,6 +43,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
+    "nodemailer": "^8.0.9",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.16.3",
@@ -56,6 +59,7 @@
     "@types/express-rate-limit": "^6.0.2",
     "@types/morgan": "^1.9.10",
     "@types/node": "^20.11.0",
+    "@types/nodemailer": "^8.0.0",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.17",
     "@types/pg": "^8.16.0",

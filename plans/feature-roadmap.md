@@ -107,12 +107,11 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 3.1 SMTP module
 
-- [ ] Add `nodemailer` dependency
-- [ ] Create `services/email.service.ts` with shared SMTP transport
-- [ ] Env: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`
-- [ ] Env per sender: `EMAIL_FINANCE_ADDRESS`, `EMAIL_FINANCE_NAME`, etc.
-- [ ] Env: `EMAIL_HELP_*`, `EMAIL_PURCHASE_*` (address + display name each)
-- [ ] Helper: `sendEmail({ from: 'purchase' | 'help' | 'finance', to, subject, html })`
+- [x] Add `nodemailer` dependency
+- [x] Create `services/email.service.ts` with shared SMTP transport
+- [x] Env: `SMTP_HOST`, `SMTP_PORT` (shared server)
+- [x] Env per sender: `EMAIL_*_ADDRESS`, `EMAIL_*_NAME`, `EMAIL_*_USER`, `EMAIL_*_PASS`
+- [x] Helper: `sendEmail({ from: 'purchase' | 'help' | 'finance', to, subject, html })`
 
 ### 3.2 Wire transactional emails
 

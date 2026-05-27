@@ -328,6 +328,24 @@ export interface CompleteBypassPaymentResponse {
 }
 
 // ─────────────────────────────────────────
+// Email (Phase 3.1)
+// ─────────────────────────────────────────
+
+export type EmailSenderKey = 'purchase' | 'help' | 'finance';
+
+export interface EmailSenderProfile {
+  address: string;
+  name: string;
+  credentialsConfigured: boolean;
+}
+
+export interface EmailModuleStatusResponse {
+  smtpConfigured: boolean;
+  mockTransport: boolean;
+  senders: Record<EmailSenderKey, EmailSenderProfile>;
+}
+
+// ─────────────────────────────────────────
 // Game categories (Phase 5 API)
 // ─────────────────────────────────────────
 
