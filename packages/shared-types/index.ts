@@ -358,6 +358,10 @@ export interface GameCategoryResponse {
   createdAt: string;
 }
 
+export interface GameCategoryListResponse {
+  categories: GameCategoryResponse[];
+}
+
 export interface CreateGameCategoryRequest {
   name: string;
   slug: string;
