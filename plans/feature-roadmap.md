@@ -203,11 +203,11 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 5.6 Wallet
 
-- [ ] Auto-create wallet on seller registration / first sale
-- [ ] Credit `pendingBalance` on order COMPLETED
-- [ ] Admin: `POST /wallets/:sellerId/payout` — move available → paid (manual record)
-- [ ] Admin: adjust frozen balance on dispute resolution
-- [ ] `GET /wallets/me` — seller balance read
+- [x] Auto-create wallet on seller registration / first sale
+- [x] Credit `pendingBalance` on order COMPLETED
+- [x] Admin: `POST /wallets/:sellerId/payout` — move available → paid (manual record)
+- [x] Admin: adjust frozen balance on dispute resolution
+- [x] `GET /wallets/me` — seller balance read
 
 ### 5.7 Similar products (pgvector)
 
@@ -219,14 +219,14 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 5.8 Auth hardening
 
-- [ ] Remove public `role` from register schema; default BUYER only
-- [ ] Update `lastLoginAt` on login success
-- [ ] Seller registration flow via admin promote or dedicated endpoint
+- [x] Remove public `role` from register schema; default BUYER only
+- [x] Update `lastLoginAt` on login success
+- [x] Seller registration flow via admin promote or dedicated endpoint
 
 ### 5.9 Payment status
 
-- [ ] Separate or map `PaymentStatus` alongside `OrderStatus`
-- [ ] IPN handlers update payment status (Phase 9)
+- [x] Separate or map `PaymentStatus` alongside `OrderStatus`
+- [x] IPN handlers update payment status (NOWPayments IPN + bypass fulfillment)
 
 **Depends on:** Phase 1  
 **Unblocks:** Phase 6, 7, 8

@@ -22,7 +22,7 @@ export async function registerController(
   next: NextFunction,
 ) {
   try {
-    const { email, password, name, role } = req.body;
+    const { email, password, name } = req.body;
 
     if (!email || !password || !name) {
       throw new ApiError(AuthErrorMessages.INVALID_REGISTRATION_DATA, 400);
@@ -33,7 +33,7 @@ export async function registerController(
       isVerified: false,
       password,
       name,
-      role: role || "USER",
+      role: Role.BUYER,
       googleProfilePicture: "",
     });
 

@@ -43,7 +43,7 @@ const checkIfUserExists = async (email: string): Promise<boolean> => {
 export const registerUser = async (
   userRegistrationInput: UserRegistrationInput
 ): Promise<Omit<PrismaNamespace.User, "password">> => {
-  const { email, password, name, role } = userRegistrationInput;
+  const { email, password, name } = userRegistrationInput;
   const existingUser = await checkIfUserExists(email);
   if (existingUser) {
     throw new ApiError(AuthErrorMessages.USER_ALREADY_EXISTS, 409);
@@ -58,7 +58,7 @@ export const registerUser = async (
       email,
       password: hashedPassword,
       name,
-      role,
+      role: PrismaNamespace.Role.BUYER,
     },
   });
 
@@ -347,16 +347,15 @@ export async function verifyGoogleOAuth(credential: string): Promise<PrismaNames
 
   }
 
-  if (user) {
-    user = await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        name: name,
-        googleProfilePicture: profilePicture,
-      },
-    });
-    logger.info(`Google profile picture updated for user: ${user.email}`);
-  }
+  user = await prisma.user.update({
+    where: { id: user!.id },
+    data: {
+      name: name,
+      googleProfilePicture: profilePicture,
+      lastLoginAt: new Date(),
+    },
+  });
+  logger.info(`Google OAuth login for user: ${user.email}`);
 
   return user;
 }

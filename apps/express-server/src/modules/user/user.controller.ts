@@ -9,6 +9,7 @@ import {
   getUserByIdAdmin,
   getUserProductsAdmin,
   updateUserRole,
+  promoteUserToSeller,
   deleteUser,
   delistSellerByAdmin,
   reactivateSellerByAdmin,
@@ -119,6 +120,19 @@ export const updateUserRoleController = async (
   try {
     const { role } = req.body;
     const result = await updateUserRole(req.params.userId, role as Role);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const promoteSellerController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await promoteUserToSeller(req.params.userId);
     res.status(200).json(result);
   } catch (error) {
     next(error);

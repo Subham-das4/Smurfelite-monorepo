@@ -146,17 +146,18 @@ export async function processNowPaymentsIpn(
     return;
   }
 
-  if (paymentStatus === "finished") {
-    await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        status: OrderStatus.PROCESSING,
-        ...(paymentId ? { paymentIntent: paymentId } : {}),
-        paymentProvider: "nowpayments",
-      },
-    });
+  const { applyIpnPaymentStatus } = await import(
+    "../../orders/payment-status.service.js"
+  );
+
+  const updated = await applyIpnPaymentStatus(orderId, paymentStatus, {
+    paymentProvider: "nowpayments",
+    paymentIntent: paymentId ?? undefined,
+  });
+
+  if (updated) {
     logger.info(
-      `NOWPayments IPN: order ${orderId} → PROCESSING (payment_id=${paymentId ?? "n/a"})`
+      `NOWPayments IPN: order ${orderId} paymentStatus=${updated.paymentStatus} status=${updated.status}`
     );
   }
 }

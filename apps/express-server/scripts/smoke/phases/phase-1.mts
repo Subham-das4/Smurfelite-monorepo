@@ -106,12 +106,11 @@ export async function runPhase1(ctx: SmokeContext): Promise<boolean> {
     });
   });
 
-  await runner.test("GET /wallets/me returns 501 placeholder (auth required)", async () => {
-    const { data } = await apiRequest<{ phase?: number }>(ctx, "/wallets/me", {
+  await runner.test("GET /wallets/me forbidden for buyer (seller only)", async () => {
+    await apiRequest(ctx, "/wallets/me", {
       token: ctx.buyerToken,
-      expectStatus: 501,
+      expectStatus: 403,
     });
-    runner.assert(data.phase === 5, "Expected phase 5 in wallet placeholder");
   });
 
   runner.section("Product listing filter (ACTIVE + listable)");

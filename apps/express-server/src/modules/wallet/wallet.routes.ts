@@ -1,16 +1,24 @@
-import { Router, Request, Response } from "express";
-import { authenticate } from "../auth/auth.middleware.js";
+import { Router } from "express";
+import { authenticate, authorize } from "../auth/auth.middleware.js";
+import { Role } from "../../types/prisma.js";
+import { validate } from "../../utils/validate.js";
+import { recordPayoutSchema } from "../../schemas/wallet.schemas.js";
+import {
+  getMyWalletController,
+  recordPayoutController,
+} from "./wallet.controller.js";
 
 const router = Router();
 
 router.use(authenticate);
 
-/** Placeholder — full API in Phase 5 */
-router.get("/me", (_req: Request, res: Response) => {
-  res.status(501).json({
-    message: "Wallet API not implemented yet.",
-    phase: 5,
-  });
-});
+router.get("/me", authorize([Role.SELLER]), getMyWalletController);
+
+router.post(
+  "/:sellerId/payout",
+  authorize([Role.ADMIN]),
+  validate(recordPayoutSchema),
+  recordPayoutController
+);
 
 export default router;

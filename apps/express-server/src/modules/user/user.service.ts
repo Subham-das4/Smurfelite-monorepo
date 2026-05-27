@@ -2,6 +2,7 @@ import { Role, ProductStatus } from "../../types/prisma.js";
 import { prisma } from "../../lib/prisma.js";
 import ApiError from "../../utils/errors.js";
 import bcrypt from "bcrypt";
+import { ensureSellerWallet } from "../wallet/wallet.service.js";
 
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS!) || 10;
 
@@ -256,11 +257,25 @@ export const updateUserRole = async (userId: string, role: Role) => {
       400
     );
   }
-  return prisma.user.update({
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new ApiError("User not found.", 404);
+
+  const updated = await prisma.user.update({
     where: { id: userId },
     data: { role },
     select: { id: true, email: true, name: true, role: true },
   });
+
+  if (role === Role.SELLER) {
+    await ensureSellerWallet(userId);
+  }
+
+  return updated;
+};
+
+export const promoteUserToSeller = async (userId: string) => {
+  return updateUserRole(userId, Role.SELLER);
 };
 
 export const delistSellerByAdmin = async (userId: string) => {
