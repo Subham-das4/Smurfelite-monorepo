@@ -87,3 +87,15 @@ export async function createBuyerContext(): Promise<SmokeContext> {
   const { accessToken, userId } = await login(apiBase, email, password);
   return { apiBase, buyerToken: accessToken, buyerId: userId };
 }
+
+export async function loginSeller(apiBase: string) {
+  const email = process.env.SMOKE_SELLER_EMAIL?.trim() || "seller@seller.com";
+  const password = process.env.SMOKE_SELLER_PASSWORD?.trim() || "seller123";
+  return login(apiBase, email, password);
+}
+
+export async function loginAdmin(apiBase: string) {
+  const email = process.env.SMOKE_ADMIN_EMAIL?.trim() || "admin@admin.com";
+  const password = process.env.SMOKE_ADMIN_PASSWORD?.trim() || "admin123";
+  return login(apiBase, email, password);
+}

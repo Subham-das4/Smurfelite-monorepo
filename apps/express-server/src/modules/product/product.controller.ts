@@ -2,26 +2,48 @@ import { Request, Response, NextFunction } from "express";
 import {
   createProduct,
   updateProduct,
-  deleteProduct,
+  softDeleteProduct,
   getProductDetails,
   getAllProducts,
+  publishProduct,
+  delistProductBySeller,
+  reactivateProductBySeller,
+  banProductByAdmin,
+  liftBanProductByAdmin,
 } from "./product.service.js";
 import { ProductFilters } from "../../types/product.types.js";
+import { AuthenticatedRequest } from "../../types/auth.types.js";
+import { Role } from "../../types/prisma.js";
+import ApiError from "../../utils/errors.js";
+import { ProductErrors } from "./product.messages.js";
 
-// --- 1. Create Product ---
+function resolveSellerId(req: AuthenticatedRequest, bodySellerId?: string): string {
+  if (req.user.role === Role.SELLER) {
+    return req.user.id;
+  }
+  if (req.user.role === Role.ADMIN) {
+    if (!bodySellerId) {
+      throw new ApiError(
+        "Admin must provide sellerId when creating a product.",
+        400
+      );
+    }
+    return bodySellerId;
+  }
+  throw new ApiError(ProductErrors.PRODUCT_FORBIDDEN, 403);
+}
+
 export async function createProductController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    if (!req.body.sellerId) {
-      return res
-        .status(401)
-        .json({ error: "Authentication required: Seller ID missing." });
-    }
+    const authReq = req as AuthenticatedRequest;
+    const { publish, sellerId: bodySellerId, ...productData } = req.body;
 
-    const product = await createProduct(req.body);
+    const sellerId = resolveSellerId(authReq, bodySellerId);
+    const product = await createProduct(sellerId, productData, { publish });
 
     res.status(201).json(product);
   } catch (error) {
@@ -29,7 +51,76 @@ export async function createProductController(
   }
 }
 
-// --- 2. Update Product Details ---
+export async function publishProductController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { productId } = req.params;
+    const product = await publishProduct(productId);
+    res.status(200).json(product);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function delistProductController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { productId } = req.params;
+    const product = await delistProductBySeller(productId);
+    res.status(200).json(product);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function reactivateProductController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { productId } = req.params;
+    const product = await reactivateProductBySeller(productId);
+    res.status(200).json(product);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function banProductController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { productId } = req.params;
+    const product = await banProductByAdmin(productId);
+    res.status(200).json(product);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function liftBanProductController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { productId } = req.params;
+    const product = await liftBanProductByAdmin(productId);
+    res.status(200).json(product);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function updateProductController(
   req: Request,
   res: Response,
@@ -43,7 +134,6 @@ export async function updateProductController(
       return res.status(400).json({ error: "No update data provided." });
     }
 
-    // The service will handle authorization (e.g., ensuring req.body.sellerId matches product.sellerId)
     const updatedProduct = await updateProduct(productId, updateData);
 
     res.status(200).json(updatedProduct);
@@ -52,7 +142,6 @@ export async function updateProductController(
   }
 }
 
-// --- 3. Delete Product Details ---
 export async function deleteProductController(
   req: Request,
   res: Response,
@@ -61,7 +150,7 @@ export async function deleteProductController(
   try {
     const { productId } = req.params;
 
-    await deleteProduct(productId);
+    await softDeleteProduct(productId);
 
     res.status(204).send();
   } catch (error) {
@@ -69,7 +158,6 @@ export async function deleteProductController(
   }
 }
 
-// --- 4. Get Product Details (Public/Seller View) ---
 export async function getProductDetailsController(
   req: Request,
   res: Response,
@@ -78,7 +166,6 @@ export async function getProductDetailsController(
   try {
     const { productId } = req.params;
 
-    // NOTE: The service decides whether to return encrypted (public) or decrypted (seller/buyer) data.
     const product = await getProductDetails(productId);
 
     if (!product) {
@@ -91,18 +178,16 @@ export async function getProductDetailsController(
   }
 }
 
-// --- 5. Get All Products with Filters (Public Listing) ---
 export async function getAllProductsController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    // req.query will contain filters like gameType, priceRange, etc.
     const filters: ProductFilters = {
       ...req.query,
-      page: req.query.page ? Number(req.query.page) : undefined,
-      pageSize: req.query.pageSize ? Number(req.query.pageSize) : undefined,
+      page: req.query.page ? Number(req.query.page) : 1,
+      pageSize: req.query.pageSize ? Number(req.query.pageSize) : 20,
     } as ProductFilters;
 
     const products = await getAllProducts(filters);

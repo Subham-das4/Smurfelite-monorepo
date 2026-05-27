@@ -6,7 +6,11 @@ import morgan from "morgan";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import prisma, { ensureAdminUser, ensureBuyerUser } from "./lib/prisma.js";
+import prisma, {
+  ensureAdminUser,
+  ensureBuyerUser,
+  ensureSellerUser,
+} from "./lib/prisma.js";
 import apiRouter from "./lib/route.js";
 import { globalErrorHandler } from "./utils/errors.js";
 import logger from "./utils/logger.js";
@@ -75,6 +79,7 @@ app.listen(PORT, () => {
       logger.info("Prisma Client successfully connected to PostgreSQL.");
       ensureAdminUser();
       ensureBuyerUser();
+      ensureSellerUser();
     })
     .catch((error) => {
       logger.error("Prisma connection failed on startup:", error);

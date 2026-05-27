@@ -14,6 +14,7 @@ import { runPhase3_3 } from "./phases/phase-3_3.mts";
 import { runPhase4_2 } from "./phases/phase-4_2.mts";
 import { runPhase4_3 } from "./phases/phase-4_3.mts";
 import { runPhase4_4 } from "./phases/phase-4_4.mts";
+import { runPhase5_1 } from "./phases/phase-5_1.mts";
 
 export type SmokePhase =
   | "1"
@@ -26,7 +27,8 @@ export type SmokePhase =
   | "3.3"
   | "4.2"
   | "4.3"
-  | "4.4";
+  | "4.4"
+  | "5.1";
 
 const PHASE_ORDER: SmokePhase[] = [
   "1",
@@ -40,6 +42,7 @@ const PHASE_ORDER: SmokePhase[] = [
   "4.2",
   "4.3",
   "4.4",
+  "5.1",
 ];
 
 const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
@@ -54,6 +57,7 @@ const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
   "4.2": runPhase4_2,
   "4.3": runPhase4_3,
   "4.4": runPhase4_4,
+  "5.1": runPhase5_1,
 };
 
 function printUsage(): void {
@@ -76,6 +80,7 @@ Phases:
   4.2  Buyer disputes (POST /disputes + /disputes/mine)
   4.3  Product detail API contract (no mock reviews)
   4.4  Checkout UX — unavailable products + bypass status
+  5.1  Product lifecycle — draft, publish, delist, ban, soft delete
 
 Examples:
   pnpm smoke:through-1      # Phase 1 only
@@ -87,6 +92,7 @@ Examples:
   pnpm smoke:through-3.3    # Phase 1 through 3.3
   pnpm smoke:through-4.2    # Phase 1 through 4.2
   pnpm smoke:through-4.4    # Phase 1 through 4.4 (full buyer polish API)
+  pnpm smoke:through-5.1    # Phase 1 through 5.1 (product lifecycle API)
   pnpm smoke:phase-2.5      # Phase 2.5 only (no prior phases)
   pnpm smoke:phase-3.1      # Phase 3.1 only
   pnpm smoke:phase-3.2      # Phase 3.2 only
@@ -94,14 +100,20 @@ Examples:
   pnpm smoke:phase-4.2      # Phase 4.2 only
   pnpm smoke:phase-4.3      # Phase 4.3 only
   pnpm smoke:phase-4.4      # Phase 4.4 only
+  pnpm smoke:phase-5.1      # Phase 5.1 only
 
 Environment:
   SMOKE_API_BASE     API base URL (default: http://localhost:\${PORT}/api)
   SMOKE_BUYER_EMAIL  Test buyer email (default: buyer@buyer.com)
   SMOKE_BUYER_PASSWORD
+  SMOKE_SELLER_EMAIL Test seller (default: seller@seller.com)
+  SMOKE_SELLER_PASSWORD
+  SMOKE_ADMIN_EMAIL  Test admin (default: admin@admin.com)
+  SMOKE_ADMIN_PASSWORD
   PAYMENT_BYPASS     Must be true for phase 2.1 / 2.3 bypass tests
 
 Requires: express-server running and PostgreSQL seeded with buyer@buyer.com
+          (seller@seller.com and admin@admin.com auto-created in dev on startup)
 `);
 }
 

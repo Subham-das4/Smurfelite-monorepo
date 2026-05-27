@@ -32,6 +32,10 @@ export const verifySeller = async (
 
     next();
   } catch (error) {
+    if (error instanceof ApiError) {
+      next(error);
+      return;
+    }
     next(new ApiError(ProductErrors.PRODUCT_AUTHORIZATION_FAILED, 403));
   }
 };

@@ -11,16 +11,36 @@ import { ProductErrors } from "./product.messages.js";
 import { ProductStatus } from "../../types/prisma.js";
 import { PUBLIC_LISTABLE_PRODUCT_WHERE } from "./product.constants.js";
 
+function maskSensitiveFields<T extends Record<string, unknown>>(product: T) {
+  return {
+    ...product,
+    accountUsername: "***ENCRYPTED***",
+    accountPassword: "***ENCRYPTED***",
+    accountEmail: "***ENCRYPTED***",
+    accountEmailPassword: "***ENCRYPTED***",
+  };
+}
+
+async function getProductOrThrow(productId: string) {
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+  });
+  if (!product || product.deletedAt) {
+    throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
+  }
+  return product;
+}
+
 export async function checkProductOwnership(
   productId: string,
   sellerId: string
 ): Promise<boolean> {
   const product = await prisma.product.findUnique({
     where: { id: productId },
-    select: { sellerId: true },
+    select: { sellerId: true, deletedAt: true },
   });
 
-  if (!product) {
+  if (!product || product.deletedAt) {
     throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
   }
 
@@ -31,8 +51,11 @@ export async function checkProductOwnership(
   return true;
 }
 
-export async function createProduct(data: ProductCreateInput) {
-  //  Encrypt sensitive fields before saving
+export async function createProduct(
+  sellerId: string,
+  data: ProductCreateInput,
+  options?: { publish?: boolean }
+) {
   const encryptedData = {
     accountUsername: encrypt(data.accountUsername),
     accountPassword: encrypt(data.accountPassword),
@@ -40,37 +63,152 @@ export async function createProduct(data: ProductCreateInput) {
     accountEmailPassword: encrypt(data.accountEmailPassword),
   };
 
-  // Destructure to exclude sensitive fields from data
   const {
     accountUsername,
     accountPassword,
     accountEmail,
     accountEmailPassword,
+    sellerId: _sellerId,
+    gameCategoryId,
     ...safeData
   } = data;
 
-  const productInput: Omit<
-    PrismaNamespace.Prisma.ProductCreateInput,
-    "seller"
-  > = {
-    ...safeData,
-    ...encryptedData,
-    status: ProductStatus.ACTIVE,
-  };
+  const publish = options?.publish === true;
+  const status = publish ? ProductStatus.ACTIVE : ProductStatus.DRAFT;
 
-  //  Save the product with encrypted bytes
   const product = await prisma.product.create({
-    data: productInput as PrismaNamespace.Prisma.ProductCreateInput,
+    data: {
+      ...safeData,
+      ...encryptedData,
+      status,
+      isAvailable: publish,
+      sellerDelisted: false,
+      seller: { connect: { id: sellerId } },
+      ...(gameCategoryId
+        ? { gameCategory: { connect: { id: gameCategoryId } } }
+        : {}),
+    },
   });
 
-  // We return the actual Product type from the DB, masking sensitive fields
-  return {
-    ...product,
-    accountUsername: "***ENCRYPTED***",
-    accountPassword: "***ENCRYPTED***",
-    accountEmail: "***ENCRYPTED***",
-    accountEmailPassword: "***ENCRYPTED***",
-  };
+  return maskSensitiveFields(product);
+}
+
+export async function publishProduct(productId: string) {
+  const product = await getProductOrThrow(productId);
+
+  if (product.status === ProductStatus.BANNED_BY_ADMIN) {
+    throw new ApiError(ProductErrors.INVALID_STATUS_TRANSITION, 400);
+  }
+  if (product.status === ProductStatus.SOLD) {
+    throw new ApiError(ProductErrors.INVALID_STATUS_TRANSITION, 400);
+  }
+  if (product.status === ProductStatus.ACTIVE) {
+    throw new ApiError(ProductErrors.PRODUCT_ALREADY_PUBLISHED, 400);
+  }
+  if (product.status !== ProductStatus.DRAFT) {
+    throw new ApiError(ProductErrors.PRODUCT_NOT_DRAFT, 400);
+  }
+
+  const updated = await prisma.product.update({
+    where: { id: productId },
+    data: {
+      status: ProductStatus.ACTIVE,
+      isAvailable: true,
+      sellerDelisted: false,
+    },
+  });
+
+  return maskSensitiveFields(updated);
+}
+
+export async function delistProductBySeller(productId: string) {
+  const product = await getProductOrThrow(productId);
+
+  if (product.status === ProductStatus.BANNED_BY_ADMIN) {
+    throw new ApiError(ProductErrors.INVALID_STATUS_TRANSITION, 400);
+  }
+  if (product.status === ProductStatus.SOLD) {
+    throw new ApiError(ProductErrors.INVALID_STATUS_TRANSITION, 400);
+  }
+  if (product.status !== ProductStatus.ACTIVE) {
+    throw new ApiError(ProductErrors.PRODUCT_NOT_DELISTABLE, 400);
+  }
+
+  const updated = await prisma.product.update({
+    where: { id: productId },
+    data: {
+      status: ProductStatus.DELISTED_BY_SELLER,
+      sellerDelisted: true,
+      isAvailable: false,
+    },
+  });
+
+  return maskSensitiveFields(updated);
+}
+
+export async function reactivateProductBySeller(productId: string) {
+  const product = await getProductOrThrow(productId);
+
+  if (product.status === ProductStatus.BANNED_BY_ADMIN) {
+    throw new ApiError(ProductErrors.INVALID_STATUS_TRANSITION, 400);
+  }
+  if (product.status === ProductStatus.SOLD) {
+    throw new ApiError(ProductErrors.INVALID_STATUS_TRANSITION, 400);
+  }
+  if (product.status !== ProductStatus.DELISTED_BY_SELLER) {
+    throw new ApiError(ProductErrors.PRODUCT_NOT_REACTIVATABLE, 400);
+  }
+
+  const updated = await prisma.product.update({
+    where: { id: productId },
+    data: {
+      status: ProductStatus.ACTIVE,
+      sellerDelisted: false,
+      isAvailable: true,
+    },
+  });
+
+  return maskSensitiveFields(updated);
+}
+
+export async function banProductByAdmin(productId: string) {
+  const product = await getProductOrThrow(productId);
+
+  if (product.status === ProductStatus.SOLD) {
+    throw new ApiError(ProductErrors.PRODUCT_NOT_BANNABLE, 400);
+  }
+  if (product.status === ProductStatus.BANNED_BY_ADMIN) {
+    return maskSensitiveFields(product);
+  }
+
+  const updated = await prisma.product.update({
+    where: { id: productId },
+    data: {
+      status: ProductStatus.BANNED_BY_ADMIN,
+      isAvailable: false,
+    },
+  });
+
+  return maskSensitiveFields(updated);
+}
+
+export async function liftBanProductByAdmin(productId: string) {
+  const product = await getProductOrThrow(productId);
+
+  if (product.status !== ProductStatus.BANNED_BY_ADMIN) {
+    throw new ApiError(ProductErrors.PRODUCT_NOT_BANNED, 400);
+  }
+
+  const updated = await prisma.product.update({
+    where: { id: productId },
+    data: {
+      status: ProductStatus.ACTIVE,
+      sellerDelisted: false,
+      isAvailable: true,
+    },
+  });
+
+  return maskSensitiveFields(updated);
 }
 
 export async function getProductDetails(
@@ -92,9 +230,7 @@ export async function getProductDetails(
     throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
   }
 
-  // Check if the sensitive fields are actually Buffers (the expected type from DB)
   if (!Buffer.isBuffer(product.accountEmail)) {
-    // If it's a Uint8Array but not a "Buffer", convert it
     if (product.accountEmail instanceof Uint8Array) {
       product.accountEmail = Buffer.from(product.accountEmail);
     } else {
@@ -102,7 +238,6 @@ export async function getProductDetails(
     }
   }
 
-  // 🛑 STEP 3: Decrypt the sensitive account details
   let decryptedCredentials: Record<string, string> = {};
   if (decryptData) {
     decryptedCredentials = {
@@ -111,15 +246,13 @@ export async function getProductDetails(
       accountEmail: decrypt(Buffer.from(product.accountEmail)),
       accountEmailPassword: decrypt(Buffer.from(product.accountEmailPassword)),
     };
-  }
-  else {
-    delete (product as any).accountUsername;
-    delete (product as any).accountPassword;
-    delete (product as any).accountEmail;
-    delete (product as any).accountEmailPassword;
+  } else {
+    delete (product as Record<string, unknown>).accountUsername;
+    delete (product as Record<string, unknown>).accountPassword;
+    delete (product as Record<string, unknown>).accountEmail;
+    delete (product as Record<string, unknown>).accountEmailPassword;
   }
 
-  // 🛑 STEP 4: Return the full, decrypted product details
   return {
     ...product,
     ...decryptedCredentials,
@@ -130,79 +263,71 @@ export async function updateProduct(
   productId: string,
   updateData: ProductUpdateData
 ) {
-  // 1. Authorization Check (Placeholder): Ensure the user modifying the product is the seller.
-  // In a real app, you would fetch the product and compare its sellerId to the current user's ID.
-  // For now, we assume this check happens successfully, or the caller is an Admin.
+  await getProductOrThrow(productId);
 
   const dataToUpdate: PrismaNamespace.Prisma.ProductUpdateInput = {};
 
-  // 2. Encrypt sensitive fields if they are included in the update payload
   const keysToSkip: Array<keyof ProductUpdateData> = [
     "accountUsername",
     "accountPassword",
     "accountEmail",
     "accountEmailPassword",
     "sellerId",
+    "status",
+    "sellerDelisted",
+    "isAvailable",
   ];
   keysToSkip.forEach((key) => {
     if (!updateData[key]) return;
-    (dataToUpdate as any)[key] = encrypt(updateData[key] as string);
+    (dataToUpdate as Record<string, unknown>)[key] = encrypt(
+      updateData[key] as string
+    );
   });
 
-  // 3. Include non-sensitive fields
-  // We iterate through the updateData keys and assign non-sensitive fields directly
   for (const key in updateData) {
     if (
       !keysToSkip.includes(key as keyof ProductUpdateData) &&
       updateData[key as keyof ProductUpdateData] !== undefined
     ) {
-      (dataToUpdate as any)[key] = updateData[key as keyof ProductUpdateData];
+      (dataToUpdate as Record<string, unknown>)[key] =
+        updateData[key as keyof ProductUpdateData];
     }
   }
 
-  // 4. Perform the update
   const updatedProduct = await prisma.product.update({
     where: { id: productId },
     data: dataToUpdate,
   });
 
-  return {
-    ...updatedProduct,
-    accountUsername: "***ENCRYPTED***", // Mask sensitive data
-  };
+  return maskSensitiveFields(updatedProduct);
 }
 
-export async function deleteProduct(productId: string) {
-  // 1. Authorization Check (Placeholder): Ensure the current user is the seller or an Admin.
+export async function softDeleteProduct(productId: string) {
+  const product = await getProductOrThrow(productId);
 
-  // 2. Delete the product
-  try {
-    await prisma.product.delete({
-      where: { id: productId },
-    });
-    return true;
-  } catch (error) {
-    // Handle case where product might not exist
-    if (
-      error instanceof PrismaNamespace.Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
-    }
-    throw new ApiError(ProductErrors.PRODUCT_DELETION_FAILED, 500);
+  if (product.deletedAt) {
+    throw new ApiError(ProductErrors.PRODUCT_ALREADY_DELETED, 400);
   }
+
+  await prisma.product.update({
+    where: { id: productId },
+    data: {
+      deletedAt: new Date(),
+      isAvailable: false,
+    },
+  });
+
+  return true;
 }
 
 export async function getAllProducts(filters: ProductFilters) {
   const { page, pageSize, sortBy, sortOrder } = filters;
 
-  // 1. Build the WHERE clause (same as before)
   const where: PrismaNamespace.Prisma.ProductWhereInput = {
     ...PUBLIC_LISTABLE_PRODUCT_WHERE,
   };
 
   if (filters.gameType) {
-    // Support comma-separated game types, e.g. "Valorant,CS:GO 2"
     const gameTypes = filters.gameType.split(",").map((g) => g.trim()).filter(Boolean);
     if (gameTypes.length === 1) {
       where.gameType = { contains: gameTypes[0], mode: "insensitive" };
@@ -234,19 +359,16 @@ export async function getAllProducts(filters: ProductFilters) {
   const take = pageSize;
   const skip = (page - 1) * pageSize;
 
-  const orderBy: PrismaNamespace.Prisma.ProductOrderByWithRelationInput[] = [
-  ];
+  const orderBy: PrismaNamespace.Prisma.ProductOrderByWithRelationInput[] = [];
 
   if (sortBy && sortOrder) {
     if (typeof sortBy === "string") {
-      // Key mapping order is important in Prisma; we set the primary sort first
       orderBy.push({ [sortBy]: sortOrder });
     }
   }
 
   orderBy.push({ createdAt: "desc" });
 
-  // We need two queries: one for the paginated data, one for the total count.
   const [products, totalCount] = await prisma.$transaction([
     prisma.product.findMany({
       skip: skip,

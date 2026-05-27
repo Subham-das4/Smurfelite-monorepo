@@ -79,3 +79,23 @@ export async function ensureBuyerUser() {
     await createCart(user.id);
   }
 }
+
+export async function ensureSellerUser() {
+  if (process.env.NODE_ENV === "production") return;
+  const email = process.env.DEFAULT_SELLER_EMAIL || "seller@seller.com";
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (!existing) {
+    await prisma.user.create({
+      data: {
+        email,
+        password: await bcrypt.hash(
+          process.env.DEFAULT_SELLER_PASSWORD || "seller123",
+          12
+        ),
+        role: PrismaNamespace.Role.SELLER,
+        isVerified: true,
+        name: "Default Seller",
+      },
+    });
+  }
+}

@@ -5,6 +5,11 @@ import {
   deleteProductController,
   getProductDetailsController,
   getAllProductsController,
+  publishProductController,
+  delistProductController,
+  reactivateProductController,
+  banProductController,
+  liftBanProductController,
 } from "./product.controller.js";
 import { authenticate, authorize } from "../auth/auth.middleware.js";
 import { Role } from "../../types/prisma.js";
@@ -17,25 +22,46 @@ import {
 
 const router = Router();
 
-// Get all products (with filters/search)
 router.get("/", getAllProductsController);
-
-// Get specific product details
 router.get("/:productId", getProductDetailsController);
 
-// Protected routes - require authentication and specific roles
-// Note: Every route defined after this middleware will require authentication
 router.use(authenticate, authorize([Role.ADMIN, Role.SELLER]));
 
-// 1. Create a new product listing
 router.post("/", validate(createProductSchema), createProductController);
 
-router.use(verifySeller);
+router.patch(
+  "/:productId/publish",
+  verifySeller,
+  publishProductController
+);
+router.patch(
+  "/:productId/delist",
+  verifySeller,
+  delistProductController
+);
+router.patch(
+  "/:productId/reactivate",
+  verifySeller,
+  reactivateProductController
+);
 
-// 2. Update existing product details
-router.put("/:productId", validate(updateProductSchema), updateProductController);
+router.patch(
+  "/:productId/ban",
+  authorize([Role.ADMIN]),
+  banProductController
+);
+router.patch(
+  "/:productId/lift-ban",
+  authorize([Role.ADMIN]),
+  liftBanProductController
+);
 
-// 3. Delete a product listing
-router.delete("/:productId", deleteProductController);
+router.put(
+  "/:productId",
+  verifySeller,
+  validate(updateProductSchema),
+  updateProductController
+);
+router.delete("/:productId", verifySeller, deleteProductController);
 
 export default router;

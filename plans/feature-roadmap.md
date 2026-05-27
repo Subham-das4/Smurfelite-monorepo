@@ -167,14 +167,13 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 5.1 Products
 
-- [ ] `POST /products` — default status DRAFT or PENDING_VERIFICATION
-- [ ] Admin endpoint: approve product → ACTIVE
-- [ ] Seller endpoint: publish draft → PENDING_VERIFICATION or ACTIVE
-- [ ] Mark sold on fulfillment (automatic)
-- [ ] Seller delist own product → DELISTED_BY_SELLER
-- [ ] Admin ban product → BANNED_BY_ADMIN
-- [ ] Soft delete / delist vs hard delete policy
-- [ ] Filter public listing: ACTIVE + seller not delisted + category not restricted
+- [x] `POST /products` — default DRAFT; optional `publish: true` → ACTIVE (no admin approval)
+- [x] `PATCH /products/:id/publish` — seller publishes draft → ACTIVE
+- [x] Mark sold on fulfillment (automatic, Phase 2.2)
+- [x] `PATCH /products/:id/delist` / `reactivate` — seller delist → DELISTED_BY_SELLER
+- [x] `PATCH /products/:id/ban` / `lift-ban` — admin ban → BANNED_BY_ADMIN and restore
+- [x] `DELETE /products/:id` — soft delete (`deletedAt`)
+- [x] Filter public listing: ACTIVE + not seller-delisted + available + not deleted
 
 ### 5.2 Game categories (admin API)
 
