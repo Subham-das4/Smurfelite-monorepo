@@ -9,11 +9,23 @@ const PLACEHOLDER_GRADIENT =
 
 interface ProductCardProps {
   product: ProductListItem;
-  onBuy: (productId: string) => void;
+  onAddToCart: (productId: string) => void;
+  onBuyNow: (productId: string) => void;
+  isMutating?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onBuy }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onAddToCart,
+  onBuyNow,
+  isMutating = false,
+}) => {
   const { id, gameType, title, description, price, imageUrl } = product;
+
+  const stopCardNavigation = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
   return (
     <Link
@@ -58,23 +70,38 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onBuy }) => {
           </p>
         )}
 
-        {/* Price + CTA */}
-        <div className="flex items-end justify-between pt-4 border-t border-gray-100 dark:border-gray-700 mt-auto">
+        {/* Price + CTAs */}
+        <div className="flex flex-col gap-3 pt-4 border-t border-gray-100 dark:border-gray-700 mt-auto">
           <div>
             <span className="text-2xl font-extrabold text-gray-900 dark:text-white leading-none">
               ${price.toFixed(2)}
             </span>
           </div>
 
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              onBuy(id);
-            }}
-            className="bg-primary hover:bg-primary-hover active:scale-95 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-150 cursor-pointer shadow-sm hover:shadow-primary/30 hover:shadow-md"
-          >
-            Buy Now
-          </button>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={(e) => {
+                stopCardNavigation(e);
+                onAddToCart(id);
+              }}
+              disabled={isMutating}
+              className="bg-primary hover:bg-primary-hover active:scale-95 disabled:opacity-60 disabled:pointer-events-none text-white text-xs sm:text-sm font-semibold px-2 sm:px-3 py-2.5 rounded-xl transition-all duration-150 cursor-pointer shadow-sm hover:shadow-primary/30 hover:shadow-md"
+            >
+              Add to cart
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                stopCardNavigation(e);
+                onBuyNow(id);
+              }}
+              disabled={isMutating}
+              className="border border-slate-200 dark:border-gray-600 hover:bg-slate-50 dark:hover:bg-gray-800 active:scale-95 disabled:opacity-60 disabled:pointer-events-none text-gray-900 dark:text-white text-xs sm:text-sm font-semibold px-2 sm:px-3 py-2.5 rounded-xl transition-all duration-150 cursor-pointer"
+            >
+              Buy now
+            </button>
+          </div>
         </div>
       </div>
     </Link>

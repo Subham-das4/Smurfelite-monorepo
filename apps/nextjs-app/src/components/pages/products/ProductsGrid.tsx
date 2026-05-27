@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import type { ProductListItem, ProductMeta } from '@smurfelite/types';
 import { ProductCard } from './ProductCard';
@@ -8,7 +8,7 @@ import { Pagination } from './Pagination';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { setIsLoginModalOpen } from '@/store/reducers/auth/slice';
 import { useAddToCartMutation } from '@/api/cart';
-import { toast } from 'react-toastify';
+import { notifyAddToCartResult } from '@/lib/addToCartFeedback';
 
 interface ProductsGridProps {
   products: ProductListItem[];
@@ -24,18 +24,53 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({ products, meta, curr
   const { isAuthenticated } = useAppSelector((s) => s.auth);
   const [addToCart] = useAddToCartMutation();
   const [, startTransition] = useTransition();
+  const [pendingProductId, setPendingProductId] = useState<string | null>(null);
 
-  const handleBuy = async (productId: string) => {
+  const runAuthenticatedAdd = async (
+    productId: string,
+    productTitle: string,
+    opts?: {
+      afterReady?: () => void;
+      suppressDuplicateToast?: boolean;
+    },
+  ) => {
+    setPendingProductId(productId);
+    try {
+      const result = await addToCart(productId);
+      const outcome = notifyAddToCartResult(result, {
+        productTitle,
+        suppressDuplicateToast: opts?.suppressDuplicateToast,
+      });
+      if (
+        (outcome === 'added' || outcome === 'duplicate') &&
+        opts?.afterReady
+      ) {
+        opts.afterReady();
+      }
+    } finally {
+      setPendingProductId(null);
+    }
+  };
+
+  const handleAddToCart = async (productId: string) => {
     if (!isAuthenticated) {
       dispatch(setIsLoginModalOpen(true));
       return;
     }
-    const result = await addToCart(productId);
-    if ('error' in result) {
-      toast.error('Failed to add to cart. Please try again.');
-    } else {
-      toast.success('Added to cart!', { autoClose: 2000 });
+    const product = products.find((p) => p.id === productId);
+    await runAuthenticatedAdd(productId, product?.title ?? '');
+  };
+
+  const handleBuyNow = async (productId: string) => {
+    if (!isAuthenticated) {
+      dispatch(setIsLoginModalOpen(true));
+      return;
     }
+    const product = products.find((p) => p.id === productId);
+    await runAuthenticatedAdd(productId, product?.title ?? '', {
+      afterReady: () => router.push(`/checkout/${productId}`),
+      suppressDuplicateToast: true,
+    });
   };
 
   const handlePageChange = (page: number) => {
@@ -71,7 +106,13 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({ products, meta, curr
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} onBuy={handleBuy} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
+            isMutating={pendingProductId === product.id}
+          />
         ))}
       </div>
 

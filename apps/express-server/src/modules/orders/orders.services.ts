@@ -1,4 +1,5 @@
-import { OrderStatus } from "@smurfelite/types";
+import { ORDER_SERVICE_FEE_USD } from "../../constants/order-pricing.js";
+import { OrderStatus } from "../../types/prisma.js";
 import { prisma } from "../../lib/prisma.js";
 import { decrypt } from "../../services/encryption.service.js";
 import ApiError from "../../utils/errors.js";
@@ -34,9 +35,10 @@ export const createOrder = async (userId: string, productIds: string[]) => {
       );
     }
 
-    const totalAmount = products.reduce((sum, p) => {
+    const productSum = products.reduce((sum, p) => {
       return sum + p.price * itemMap[p.id];
     }, 0);
+    const totalAmount = productSum + ORDER_SERVICE_FEE_USD;
 
     const order = await tx.order.create({
       data: {

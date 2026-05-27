@@ -1,9 +1,24 @@
 {
   "name": "@smurfelite/types",
   "version": "1.0.0",
-  "main": "./src/generated/prisma/index.js",
+  "main": "./index.ts",
   "types": "./index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "import": "./index.ts",
+      "default": "./index.ts"
+    },
+    "./src/generated/prisma/index.js": "./src/generated/prisma/index.js",
+    "./pricing": {
+      "types": "./pricing.ts",
+      "import": "./pricing.ts",
+      "default": "./pricing.ts"
+    }
+  },
   "files": [
+    "index.ts",
+    "pricing.ts",
     "src/generated"
   ],
   "scripts": {

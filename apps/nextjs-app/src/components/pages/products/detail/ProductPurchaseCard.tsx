@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MdShoppingCart, MdCheck } from "react-icons/md";
 import { HiArrowRight } from "react-icons/hi";
-import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setIsLoginModalOpen } from "@/store/reducers/auth/slice";
 import { useAddToCartMutation } from "@/api/cart";
+import { notifyAddToCartResult } from "@/lib/addToCartFeedback";
 
 interface TrustFeature {
   icon: string;
@@ -65,13 +65,11 @@ export function ProductPurchaseCard({
       return;
     }
     const result = await addToCart(id);
-    if ("error" in result) {
-      toast.error("Failed to add to cart. Please try again.");
-      return;
+    const outcome = notifyAddToCartResult(result, { productTitle: title });
+    if (outcome === "added") {
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
     }
-    toast.success(`"${title}" added to cart!`, { autoClose: 2500 });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
   };
 
   const handleBuyNow = async () => {
@@ -79,8 +77,14 @@ export function ProductPurchaseCard({
       dispatch(setIsLoginModalOpen(true));
       return;
     }
-    await addToCart(id);
-    router.push("/cart");
+    const result = await addToCart(id);
+    const outcome = notifyAddToCartResult(result, {
+      productTitle: title,
+      suppressDuplicateToast: true,
+    });
+    if (outcome === "added" || outcome === "duplicate") {
+      router.push(`/checkout/${id}`);
+    }
   };
 
   return (

@@ -8,6 +8,7 @@ import orderRoutes from "../modules/orders/orders.routes.js";
 import userRoutes from "../modules/user/user.routes.js";
 import enquiryRoutes from "../modules/enquiry/enquiry.routes.js";
 import logRoutes from "../modules/logs/logs.routes.js";
+import nowpaymentsRoutes from "../modules/payments/nowpayments/nowpayments.routes.js";
 
 const apiRouter = Router();
 
@@ -22,7 +23,7 @@ apiRouter.use("/products", productRoutes);
 apiRouter.use("/auth", authRoutes);
 apiRouter.use("/cart", cartRoutes);
 apiRouter.use("/orders", orderRoutes);
-// apiRouter.use("/payments/", paypalRoutes);
+apiRouter.use("/payments/nowpayments", nowpaymentsRoutes);
 apiRouter.use("/users", userRoutes);
 apiRouter.use("/enquiries", enquiryRoutes);
 apiRouter.use("/logs", logRoutes);

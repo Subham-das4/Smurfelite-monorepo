@@ -13,6 +13,7 @@ export type GetCartQueryReturn = ({
             isAvailable: boolean;
             specifications: PrismaNamespace.Prisma.JsonValue;
             sellerId: string;
+            imageUrl: string | null;
         };
     } & {
         productId: string;
@@ -30,8 +31,24 @@ export type GetCartQueryReturn = ({
     updatedAt: Date;
 })
 
+/** Line item shape aligned with client `CartItemResponse` / `CartResponse`. */
+export type CartLineItemDTO = {
+    cartId: string;
+    productId: string;
+    quantity: number;
+    product: {
+        id: string;
+        title: string;
+        gameType: string;
+        price: number;
+        specifications: Record<string, unknown>;
+        imageUrl: string | null;
+    };
+};
+
+/** Full cart payload for GET/POST/DELETE cart responses. */
 export type CreateCartDTO = {
-    items: GetCartQueryReturn['items'][number]['product'][];
-    totalItems: GetCartQueryReturn['_count']['items'];
+    items: CartLineItemDTO[];
+    count: number;
     totalPrice: number;
-}
+};

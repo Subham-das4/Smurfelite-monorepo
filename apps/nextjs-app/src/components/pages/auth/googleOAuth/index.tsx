@@ -9,11 +9,9 @@ export const GoogleOAuth: React.FC<{ setIsProcessing: (val: boolean) => void }> 
     const [googleOAuth] = useGoogleOAuthMutation();
 
     const onSuccess = async (credentialResponse: CredentialResponse) => {
-        console.log(credentialResponse, "credentialResponse")
         const response = await googleOAuth({
             credential: credentialResponse.credential
         });
-        console.log(response)
         if (!response.error) {
             dispatch(setIsLoginModalOpen(false))
         }

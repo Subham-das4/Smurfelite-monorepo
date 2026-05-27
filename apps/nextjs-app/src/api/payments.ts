@@ -3,6 +3,8 @@ import {
     CreatePayPalOrderResponse,
     CapturePayPalOrderRequest,
     CapturePayPalOrderResponse,
+    CreateNowPaymentsInvoiceRequest,
+    CreateNowPaymentsInvoiceResponse,
 } from '@smurfelite/types';
 import { baseApi } from './baseApi';
 
@@ -38,10 +40,25 @@ export const paymentsApi = baseApi.injectEndpoints({
                 { type: 'Orders', id: 'LIST' },
             ],
         }),
+
+        createNowPaymentsInvoice: build.mutation<
+            CreateNowPaymentsInvoiceResponse,
+            CreateNowPaymentsInvoiceRequest
+        >({
+            query: (body) => ({
+                url: '/payments/nowpayments/create-invoice',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: (_result, _err, { internalOrderId }) => [
+                { type: 'Order', id: internalOrderId },
+            ],
+        }),
     }),
 });
 
 export const {
     useCreatePayPalOrderMutation,
     useCapturePayPalOrderMutation,
+    useCreateNowPaymentsInvoiceMutation,
 } = paymentsApi;

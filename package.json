@@ -13,7 +13,9 @@
   "scripts": {
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
-    "start:dev": "concurrently \"pnpm --filter=@smurfelite/express-server dev\" \"pnpm --filter=nextjs-app dev\""
+    "start:dev": "concurrently \"pnpm --filter=@smurfelite/express-server dev\" \"pnpm --filter=nextjs-app dev\"",
+    "dev:express": "pnpm --filter=@smurfelite/express-server dev",
+    "dev:nextjs": "pnpm --filter=nextjs-app dev"
   },
   "keywords": [],
   "author": "",

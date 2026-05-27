@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MdArrowForward, MdVerifiedUser } from "react-icons/md";
-
-const SERVICE_FEE = 5;
+import { ORDER_SERVICE_FEE_USD } from "@smurfelite/types";
 
 const PAYMENT_BRANDS = ["VISA", "MC", "PP"] as const;
 
@@ -27,7 +26,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
     setDiscount(0);
   };
 
-  const total = subtotal + SERVICE_FEE - discount;
+  const total = subtotal + ORDER_SERVICE_FEE_USD - discount;
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 p-6 flex flex-col gap-6">
@@ -49,7 +48,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         <div className="flex justify-between items-center text-gray-600 dark:text-gray-400">
           <span>Service Fee</span>
           <span className="font-medium text-gray-900 dark:text-white">
-            ${SERVICE_FEE.toFixed(2)}
+            ${ORDER_SERVICE_FEE_USD.toFixed(2)}
           </span>
         </div>
 

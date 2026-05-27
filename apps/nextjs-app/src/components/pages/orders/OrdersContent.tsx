@@ -3,57 +3,66 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { createColumnHelper } from "@tanstack/react-table";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { MdShoppingBag } from "react-icons/md";
 import { TanstackTable } from "@/components/shared/TanstackTable";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { OrderActionMenu } from "./OrderActionMenu";
 import { OrdersFilters } from "./OrdersFilters";
 import { OrdersHelpSection } from "./OrdersHelpSection";
-import type { Order, OrderStatus, OrderStatusFilter, OrderSortOption } from "./types";
+import type { OrderStatus, OrderStatusFilter, OrderSortOption } from "./types";
+import { OrderItemResponse } from "@smurfelite/types";
 
 const PAGE_SIZE = 5;
 
-const columnHelper = createColumnHelper<Order>();
+const columnHelper = createColumnHelper<OrderItemResponse>();
 
-const columns = [
-  columnHelper.accessor("id", {
+const columns: ColumnDef<OrderItemResponse>[] = [
+  {
+    accessorKey: "orderId",
     header: "Order ID",
-    cell: (info) => (
+    cell: ({ row }) => (
       <span className="text-[#141118] dark:text-white font-bold text-sm bg-[#f2f0f4] dark:bg-white/10 px-2 py-1 rounded-md">
-        #{info.getValue()}
+        #{row.original.orderId}
       </span>
     ),
-  }),
-  columnHelper.accessor("gameAccount", {
+  },
+  {
+    accessorKey: "product.title",
     header: "Game Account",
-    cell: (info) => {
-      const { name, image } = info.getValue();
+    cell: ({ row }) => {
+      const { title, imageUrl } = row.original.product!;
       return (
         <div className="flex items-center gap-3">
           <div className="size-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0 relative">
-            <Image src={image} alt={name} fill className="object-cover" />
+            <Image
+              src={imageUrl ?? ""}
+              alt={title}
+              fill
+              className="object-cover"
+            />
           </div>
           <span className="text-[#141118] dark:text-white text-sm font-medium">
-            {name}
+            {title}
           </span>
         </div>
       );
     },
-  }),
-  columnHelper.accessor("datePlaced", {
-    header: "Date Placed",
-    cell: (info) => (
-      <span className="text-[#756189] dark:text-gray-400 text-sm">
-        {new Date(info.getValue()).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })}
-      </span>
-    ),
-  }),
-  columnHelper.accessor("total", {
+  },
+  // {
+  //   accessorKey: "createdAt",
+  //   header: "Date Placed",
+  //   cell: ({row}) => (
+  //     <span className="text-[#756189] dark:text-gray-400 text-sm">
+  //       {new Date(row.original.).toLocaleDateString("en-US", {
+  //         month: "short",
+  //         day: "numeric",
+  //         year: "numeric",
+  //       })}
+  //     </span>
+  //   ),
+  // }),
+  columnHelper.accessor("priceAtPurchase", {
     header: "Total",
     cell: (info) => (
       <span className="text-[#141118] dark:text-white font-bold text-sm">
@@ -61,39 +70,31 @@ const columns = [
       </span>
     ),
   }),
-  columnHelper.accessor("status", {
-    header: "Status",
-    cell: (info) => <OrderStatusBadge status={info.getValue()} />,
-  }),
+  // columnHelper.accessor("status", {
+  //   header: "Status",
+  //   cell: (info) => <OrderStatusBadge status={info.getValue()} />,
+  // }),
   columnHelper.display({
     id: "action",
     header: "Action",
     cell: (info) => (
       <OrderActionMenu
-        orderId={info.row.original.id}
-        status={info.row.original.status}
+        orderId={info.row.original.orderId}
+        status={"completed"}
       />
     ),
   }),
 ];
 
-function sortOrders(orders: Order[], sort: OrderSortOption): Order[] {
-  return [...orders].sort((a, b) => {
-    switch (sort) {
-      case "newest":
-        return new Date(b.datePlaced).getTime() - new Date(a.datePlaced).getTime();
-      case "oldest":
-        return new Date(a.datePlaced).getTime() - new Date(b.datePlaced).getTime();
-      case "price-high":
-        return b.total - a.total;
-      case "price-low":
-        return a.total - b.total;
-    }
-  });
+function sortOrders(
+  orders: OrderItemResponse[],
+  sort: OrderSortOption,
+): OrderItemResponse[] {
+  return [...orders];
 }
 
 interface OrdersContentProps {
-  initialOrders: Order[];
+  initialOrders: OrderItemResponse[];
 }
 
 export const OrdersContent: React.FC<OrdersContentProps> = ({
@@ -104,13 +105,7 @@ export const OrdersContent: React.FC<OrdersContentProps> = ({
   const [pageIndex, setPageIndex] = useState(0);
 
   const filteredAndSorted = useMemo(() => {
-    const filtered =
-      statusFilter === "all"
-        ? initialOrders
-        : initialOrders.filter(
-            (o) => o.status === (statusFilter as OrderStatus),
-          );
-    return sortOrders(filtered, sort);
+    return sortOrders(initialOrders, sort);
   }, [initialOrders, statusFilter, sort]);
 
   const paginatedData = useMemo(
@@ -136,7 +131,10 @@ export const OrdersContent: React.FC<OrdersContentProps> = ({
     <main className="flex-1 flex flex-col items-center w-full px-4 py-8 md:px-10 lg:px-40">
       <div className="flex flex-col w-full max-w-[1200px] gap-6">
         {/* Breadcrumbs */}
-        <nav className="flex flex-wrap gap-2 items-center text-sm" aria-label="Breadcrumb">
+        <nav
+          className="flex flex-wrap gap-2 items-center text-sm"
+          aria-label="Breadcrumb"
+        >
           <Link
             href="/"
             className="text-[#756189] dark:text-gray-400 hover:text-primary font-medium transition-colors"

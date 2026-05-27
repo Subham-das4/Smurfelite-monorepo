@@ -17,6 +17,8 @@ interface PaymentOptionProps {
   badge?: string;
   selected: boolean;
   onSelect: (id: PaymentMethod) => void;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 const PaymentOption: React.FC<PaymentOptionProps> = ({
@@ -27,14 +29,20 @@ const PaymentOption: React.FC<PaymentOptionProps> = ({
   badge,
   selected,
   onSelect,
+  disabled,
+  disabledReason,
 }) => (
   <div
-    className={`relative rounded-xl border-2 p-5 transition-all cursor-pointer ${
-      selected
-        ? "border-primary bg-primary/5 dark:bg-primary/10 shadow-sm"
-        : "border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary/50"
+    className={`relative rounded-xl border-2 p-5 transition-all ${
+      disabled
+        ? "opacity-50 cursor-not-allowed border-border-light dark:border-border-dark bg-gray-50 dark:bg-white/5"
+        : `cursor-pointer ${
+            selected
+              ? "border-primary bg-primary/5 dark:bg-primary/10 shadow-sm"
+              : "border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary/50"
+          }`
     }`}
-    onClick={() => onSelect(id)}
+    onClick={() => !disabled && onSelect(id)}
   >
     <div className="flex items-start gap-4">
       <input
@@ -42,8 +50,9 @@ const PaymentOption: React.FC<PaymentOptionProps> = ({
         id={id}
         name="payment_method"
         checked={selected}
-        onChange={() => onSelect(id)}
-        className="mt-1 w-5 h-5 text-primary border-gray-300 focus:ring-primary cursor-pointer"
+        disabled={disabled}
+        onChange={() => !disabled && onSelect(id)}
+        className="mt-1 w-5 h-5 text-primary border-gray-300 focus:ring-primary cursor-pointer disabled:cursor-not-allowed"
       />
       <div className="flex-1">
         <label
@@ -59,9 +68,9 @@ const PaymentOption: React.FC<PaymentOptionProps> = ({
           </span>
           <div className="flex items-center gap-2 text-[#756189]">{icon}</div>
         </label>
-        {badge && (
+        {(badge || disabledReason) && (
           <p className="text-xs font-bold tracking-wider text-[#756189] mt-1 hidden sm:block">
-            {badge}
+            {disabled ? disabledReason ?? badge : badge}
           </p>
         )}
         {description && selected && (
@@ -121,10 +130,16 @@ const ShippingSummary: React.FC<ShippingSummaryProps> = ({ data, onEdit }) => (
 interface PaymentFormProps {
   shippingData: ShippingFormData;
   onBack: () => void;
-  onSubmit: (method: PaymentMethod) => void;
+  onSubmit: (method: PaymentMethod) => void | Promise<void>;
+  isSubmitting?: boolean;
+  /** When true, Complete Order is disabled (e.g. cart still loading from API). */
+  submitDisabled?: boolean;
 }
 
-const PAYMENT_OPTIONS: Omit<PaymentOptionProps, "selected" | "onSelect">[] = [
+const PAYMENT_OPTIONS: Omit<
+  PaymentOptionProps,
+  "selected" | "onSelect"
+>[] = [
   {
     id: "paypal",
     label: "PayPal",
@@ -136,16 +151,22 @@ const PAYMENT_OPTIONS: Omit<PaymentOptionProps, "selected" | "onSelect">[] = [
         <span className="text-[#009cde]">Pal</span>
       </span>
     ),
+    disabled: true,
+    disabledReason: "Coming soon",
   },
   {
     id: "card",
     label: "Credit or Debit Card",
     icon: <MdCreditCard className="text-2xl" />,
     badge: "VISA · MC · AMEX",
+    disabled: true,
+    disabledReason: "Coming soon",
   },
   {
     id: "crypto",
     label: "Cryptocurrency",
+    description:
+      "You will be redirected to complete payment in cryptocurrency (sandbox). Confirmation is sent to our servers automatically.",
     icon: <MdCurrencyBitcoin className="text-2xl" />,
     badge: "BTC · ETH · USDT",
   },
@@ -153,6 +174,8 @@ const PAYMENT_OPTIONS: Omit<PaymentOptionProps, "selected" | "onSelect">[] = [
     id: "skrill",
     label: "Skrill / Neteller",
     icon: <MdAccountBalanceWallet className="text-2xl" />,
+    disabled: true,
+    disabledReason: "Coming soon",
   },
 ];
 
@@ -160,12 +183,15 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
   shippingData,
   onBack,
   onSubmit,
+  isSubmitting,
+  submitDisabled = false,
 }) => {
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>("paypal");
+  const [selectedMethod, setSelectedMethod] =
+    useState<PaymentMethod>("crypto");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(selectedMethod);
+    await onSubmit(selectedMethod);
   };
 
   return (
@@ -218,9 +244,16 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
         </button>
         <button
           type="submit"
-          className="w-full sm:w-auto bg-primary hover:bg-primary/90 active:scale-95 text-white rounded-xl h-14 px-8 text-base font-bold tracking-wide shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
+          disabled={isSubmitting || submitDisabled}
+          className="w-full sm:w-auto bg-primary hover:bg-primary/90 active:scale-95 text-white rounded-xl h-14 px-8 text-base font-bold tracking-wide shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:pointer-events-none"
         >
-          <span>Complete Order</span>
+          <span>
+            {isSubmitting
+              ? "Processing…"
+              : submitDisabled
+                ? "Loading cart…"
+                : "Complete Order"}
+          </span>
           <MdArrowForward className="text-lg" />
         </button>
       </div>

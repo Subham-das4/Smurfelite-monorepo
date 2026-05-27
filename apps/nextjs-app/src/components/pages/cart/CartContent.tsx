@@ -7,11 +7,13 @@ import { useAppSelector } from "@/hooks";
 import { CartItem } from "./CartItem";
 import { OrderSummary } from "./OrderSummary";
 import { EmptyCart } from "./EmptyCart";
+import { useGetCartQuery } from "@/api";
 
 export const CartContent: React.FC = () => {
   const { items, totalAmount, totalQuantity } = useAppSelector(
     (state) => state.cart,
   );
+  useGetCartQuery();
 
   const cartItems = Object.values(items);
 
@@ -43,7 +45,7 @@ export const CartContent: React.FC = () => {
           </div>
 
           {cartItems.map((item) => (
-            <CartItem key={item.id} item={item} />
+            <CartItem key={item.productId} item={item} />
           ))}
 
           {/* Continue shopping */}

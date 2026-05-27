@@ -1,6 +1,7 @@
 import prisma from "../../lib/prisma.js";
 import { CreateCartDTO, GetCartQueryReturn } from "../../types/cart.types.js";
 import { createCartDTO } from "./cart.utils.js";
+import ApiError from "../../utils/errors.js";
 
 export const createCart = async (userId: string) => {
     const cart = await prisma.cart.create({
@@ -46,17 +47,24 @@ export const addToCart = async (userId: string, productId: string) => {
     // Auto-create the cart if it doesn't exist yet
     const cart = await getOrCreateCart(userId);
 
-    const cartItem = await prisma.cartItem.create({
+    const existing = await prisma.cartItem.findUnique({
+        where: { cartId_productId: { cartId: cart.id, productId } },
+    });
+    if (existing) {
+        throw new ApiError("Product is already in your cart", 409);
+    }
+
+    await prisma.cartItem.create({
         data: { cartId: cart.id, productId, quantity: 1 },
     });
-    return cartItem;
+    return getCart(userId);
 }
 
 export const removeFromCart = async (userId: string, productId: string) => {
     const cart = await getOrCreateCart(userId);
 
-    const cartItem = await prisma.cartItem.delete({
+    await prisma.cartItem.delete({
         where: { cartId_productId: { cartId: cart.id, productId } },
     });
-    return cartItem;
+    return getCart(userId);
 }

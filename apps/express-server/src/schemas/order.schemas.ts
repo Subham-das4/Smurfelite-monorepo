@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { OrderStatus } from "@smurfelite/types";
+import { OrderStatus } from "../types/prisma.js";
 
 export const createOrderSchema = z.object({
   productIds: z
