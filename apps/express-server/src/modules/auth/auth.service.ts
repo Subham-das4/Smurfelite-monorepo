@@ -24,9 +24,13 @@ export function generateTokens(userId: string, userRole: string) {
     expiresIn: TOKEN_EXPIRATION,
   } as jwt.SignOptions);
 
-  const refreshToken = jwt.sign({ id: userId }, JWT_SECRET, {
-    expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || "7d",
-  } as jwt.SignOptions);
+  const refreshToken = jwt.sign(
+    { id: userId, jti: crypto.randomUUID() },
+    JWT_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || "7d",
+    } as jwt.SignOptions
+  );
 
   return { accessToken, refreshToken };
 }
@@ -140,10 +144,14 @@ export async function saveRefreshToken(userId: string, token: string) {
     expirationDate.setDate(expirationDate.getDate() + 7);
   }
 
-  await prisma.refreshToken.create({
-    data: {
+  await prisma.refreshToken.upsert({
+    where: { token },
+    create: {
       userId,
       token,
+      expiresAt: expirationDate,
+    },
+    update: {
       expiresAt: expirationDate,
     },
   });
