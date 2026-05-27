@@ -38,8 +38,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 const corsOrigins = (
-  process.env.FRONTEND_URLS ||
-  process.env.FRONTEND_URL ||
+  process.env.ALLOWED_CORS_ORIGINS ||
   "http://localhost:3000,http://localhost:5173,http://localhost:5174"
 )
   .split(",")
@@ -56,7 +55,7 @@ app.use(
       }
     },
     credentials: true,
-  })
+  }),
 );
 
 // ----------------------------------------
@@ -66,11 +65,11 @@ app.use(
   morgan("combined", {
     stream: {
       write: (message) => {
-        logger.http(message.trim());   // console via Winston
-        httpLogStream.write(message);  // logs/http.log file
+        logger.http(message.trim()); // console via Winston
+        httpLogStream.write(message); // logs/http.log file
       },
     },
-  })
+  }),
 );
 
 // ----------------------------------------
