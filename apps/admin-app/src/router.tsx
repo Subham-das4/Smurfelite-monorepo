@@ -16,7 +16,8 @@ import { OrdersPage } from "@/pages/OrdersPage";
 import { OrderDetailPage } from "@/pages/OrderDetailPage";
 import { EnquiriesPage } from "@/pages/EnquiriesPage";
 import { DisputesPage } from "@/pages/DisputesPage";
-import { CategoriesPage } from "@/pages/CategoriesPage";
+import { GamesPage } from "@/pages/GamesPage";
+import { PlatformsPage } from "@/pages/PlatformsPage";
 import { WalletsPage } from "@/pages/WalletsPage";
 
 export type RouterContext = { store: typeof store };
@@ -107,10 +108,16 @@ const disputesRoute = createRoute({
   component: DisputesPage,
 });
 
-const categoriesRoute = createRoute({
+const gamesRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
-  path: "/categories",
-  component: CategoriesPage,
+  path: "/games",
+  component: GamesPage,
+});
+
+const platformsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: "/platforms",
+  component: PlatformsPage,
 });
 
 const walletsRoute = createRoute({
@@ -131,7 +138,8 @@ const routeTree = rootRoute.addChildren([
     orderDetailRoute,
     enquiriesRoute,
     disputesRoute,
-    categoriesRoute,
+    gamesRoute,
+    platformsRoute,
     walletsRoute,
   ]),
 ]);

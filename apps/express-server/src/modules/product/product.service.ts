@@ -11,8 +11,11 @@ import { ProductErrors } from "./product.messages.js";
 import { ProductStatus } from "../../types/prisma.js";
 import { PUBLIC_LISTABLE_PRODUCT_WHERE } from "./product.constants.js";
 import {
-  assertCategoryAllowsNewListing,
-} from "../game-category/game-category.service.js";
+  assertGameAllowsNewListing,
+} from "../game/game.service.js";
+import {
+  assertPlatformAllowsNewListing,
+} from "../platform/platform.service.js";
 
 function maskSensitiveFields<T extends Record<string, unknown>>(product: T) {
   return {
@@ -85,31 +88,39 @@ export async function createProduct(
     accountEmail,
     accountEmailPassword,
     sellerId: _sellerId,
-    gameCategoryId,
+    gameId,
+    platformId,
+    gameType: _gameType,
     ...safeData
   } = data;
 
   await assertSellerCanList(sellerId);
-  const category = await assertCategoryAllowsNewListing({
-    gameCategoryId,
-    gameType: safeData.gameType,
+  const game = await assertGameAllowsNewListing({
+    gameId,
+    gameType: _gameType,
+  });
+  const platformRecord = await assertPlatformAllowsNewListing({
+    platformId,
   });
 
   const publish = options?.publish === true;
   const status = publish ? ProductStatus.ACTIVE : ProductStatus.DRAFT;
-  const resolvedGameType = category?.name ?? safeData.gameType;
+  const resolvedGameType = game?.name ?? _gameType ?? "";
+  const resolvedPlatform = platformRecord?.name ?? "";
 
   const product = await prisma.product.create({
     data: {
       ...safeData,
       gameType: resolvedGameType,
+      platform: resolvedPlatform,
       ...encryptedData,
       status,
       isAvailable: publish,
       sellerDelisted: false,
       seller: { connect: { id: sellerId } },
-      ...(gameCategoryId
-        ? { gameCategory: { connect: { id: gameCategoryId } } }
+      ...(gameId ? { game: { connect: { id: gameId } } } : {}),
+      ...(platformId
+        ? { accountPlatform: { connect: { id: platformId } } }
         : {}),
     },
   });
@@ -120,9 +131,13 @@ export async function createProduct(
 export async function publishProduct(productId: string) {
   const product = await getProductOrThrow(productId);
   await assertSellerCanList(product.sellerId);
-  await assertCategoryAllowsNewListing({
-    gameCategoryId: product.gameCategoryId,
+  await assertGameAllowsNewListing({
+    gameId: product.gameId,
     gameType: product.gameType,
+  });
+  await assertPlatformAllowsNewListing({
+    platformId: product.platformId,
+    platform: product.platform ?? undefined,
   });
 
   if (product.status === ProductStatus.BANNED_BY_ADMIN) {
@@ -296,22 +311,60 @@ export async function updateProduct(
 
   const dataToUpdate: PrismaNamespace.Prisma.ProductUpdateInput = {};
 
-  const keysToSkip: Array<keyof ProductUpdateData> = [
+  const credentialKeys: Array<keyof ProductUpdateData> = [
     "accountUsername",
     "accountPassword",
     "accountEmail",
     "accountEmailPassword",
-    "sellerId",
-    "status",
-    "sellerDelisted",
-    "isAvailable",
   ];
-  keysToSkip.forEach((key) => {
+  credentialKeys.forEach((key) => {
     if (!updateData[key]) return;
     (dataToUpdate as Record<string, unknown>)[key] = encrypt(
       updateData[key] as string
     );
   });
+
+  const keysToSkip: Array<keyof ProductUpdateData> = [
+    ...credentialKeys,
+    "sellerId",
+    "status",
+    "sellerDelisted",
+    "isAvailable",
+    "gameId",
+    "platformId",
+    "gameType",
+    "platform",
+  ];
+
+  if (updateData.gameId !== undefined) {
+    const game = await assertGameAllowsNewListing({
+      gameId: updateData.gameId,
+      gameType: updateData.gameType,
+    });
+    dataToUpdate.game = updateData.gameId
+      ? { connect: { id: updateData.gameId } }
+      : { disconnect: true };
+    if (game?.name) {
+      dataToUpdate.gameType = game.name;
+    }
+  } else if (updateData.gameType !== undefined) {
+    dataToUpdate.gameType = updateData.gameType;
+  }
+
+  if (updateData.platformId !== undefined) {
+    const platformRecord = await assertPlatformAllowsNewListing({
+      platformId: updateData.platformId,
+      platform: updateData.platform ?? undefined,
+    });
+    dataToUpdate.accountPlatform = updateData.platformId
+      ? { connect: { id: updateData.platformId } }
+      : { disconnect: true };
+    if (platformRecord?.name) {
+      dataToUpdate.platform = platformRecord.name;
+    }
+  } else if (updateData.platform !== undefined) {
+    dataToUpdate.platform = updateData.platform;
+  }
 
   for (const key in updateData) {
     if (
@@ -415,7 +468,9 @@ export async function getAllProducts(filters: ProductFilters) {
         specifications: true,
         imageUrl: true,
         sellerId: true,
-        gameCategoryId: true,
+        gameId: true,
+        platformId: true,
+        platform: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -451,7 +506,9 @@ const productListSelect = {
   specifications: true,
   imageUrl: true,
   sellerId: true,
-  gameCategoryId: true,
+  gameId: true,
+  platformId: true,
+  platform: true,
   createdAt: true,
   updatedAt: true,
 } as const;

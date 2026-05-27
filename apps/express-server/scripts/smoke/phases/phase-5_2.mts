@@ -5,7 +5,14 @@ import { apiRequest, loginAdmin, loginSeller } from "../lib/http.mts";
 
 const SMOKE_SLUG_PREFIX = "smoke-5-2-";
 
-interface GameCategory {
+interface Game {
+  id: string;
+  name: string;
+  slug: string;
+  isRestricted: boolean;
+}
+
+interface Platform {
   id: string;
   name: string;
   slug: string;
@@ -13,40 +20,53 @@ interface GameCategory {
 }
 
 export async function runPhase5_2(ctx: SmokeContext): Promise<boolean> {
-  const runner = new SmokeRunner("Phase 5.2 — Game categories (admin API)");
+  const runner = new SmokeRunner("Phase 5.2 — Games & platforms (admin API)");
   console.log(`\n${"=".repeat(60)}\n${runner.phaseLabel}\n${"=".repeat(60)}`);
 
   const admin = await loginAdmin(ctx.apiBase);
   const seller = await loginSeller(ctx.apiBase);
 
   const slug = `${SMOKE_SLUG_PREFIX}${Date.now()}`;
-  let categoryId: string | undefined;
+  let gameId: string | undefined;
+  let platformId: string | undefined;
 
   runner.section("Public read");
 
-  await runner.test("GET /game-categories returns 200 (no longer 501)", async () => {
-    const { status, data } = await apiRequest<{ categories: GameCategory[] }>(
+  await runner.test("GET /games returns 200", async () => {
+    const { status, data } = await apiRequest<{ games: Game[] }>(
       ctx,
-      "/game-categories",
+      "/games",
       { expectStatus: 200 }
     );
     runner.assert(status === 200, "expected 200");
-    runner.assert(Array.isArray(data.categories), "categories array expected");
+    runner.assert(Array.isArray(data.games), "games array expected");
   });
 
-  runner.section("Admin CRUD");
+  await runner.test("GET /platforms returns 200", async () => {
+    const { status, data } = await apiRequest<{ platforms: Platform[] }>(
+      ctx,
+      "/platforms",
+      { expectStatus: 200 }
+    );
+    runner.assert(status === 200, "expected 200");
+    runner.assert(Array.isArray(data.platforms), "platforms array expected");
+    runner.assert(data.platforms.length > 0, "expected seeded platforms");
+    platformId = data.platforms[0].id;
+  });
 
-  await runner.test("POST /game-categories requires admin", async () => {
-    await apiRequest(ctx, "/game-categories", {
+  runner.section("Admin CRUD — games");
+
+  await runner.test("POST /games requires admin", async () => {
+    await apiRequest(ctx, "/games", {
       method: "POST",
       token: seller.accessToken,
-      body: { name: "Blocked Category" },
+      body: { name: "Blocked Game" },
       expectStatus: 403,
     });
   });
 
-  await runner.test("POST /game-categories creates category", async () => {
-    const { data } = await apiRequest<GameCategory>(ctx, "/game-categories", {
+  await runner.test("POST /games creates game", async () => {
+    const { data } = await apiRequest<Game>(ctx, "/games", {
       method: "POST",
       token: admin.accessToken,
       body: { name: "Smoke Test Game", slug },
@@ -54,44 +74,39 @@ export async function runPhase5_2(ctx: SmokeContext): Promise<boolean> {
     });
     runner.assert(data.slug === slug, "slug mismatch");
     runner.assert(data.isRestricted === false, "default not restricted");
-    categoryId = data.id;
+    gameId = data.id;
   });
 
-  await runner.test("GET /game-categories/:id returns category", async () => {
-    runner.assert(categoryId, "missing category id");
-    const { data } = await apiRequest<GameCategory>(
-      ctx,
-      `/game-categories/${categoryId}`,
-      { expectStatus: 200 }
-    );
-    runner.assert(data.id === categoryId, "id mismatch");
+  await runner.test("GET /games/:id returns game", async () => {
+    runner.assert(gameId, "missing game id");
+    const { data } = await apiRequest<Game>(ctx, `/games/${gameId}`, {
+      expectStatus: 200,
+    });
+    runner.assert(data.id === gameId, "id mismatch");
   });
 
-  await runner.test("PATCH /game-categories/:id/restrict toggles restriction", async () => {
-    runner.assert(categoryId, "missing category id");
-    const { data } = await apiRequest<GameCategory>(
-      ctx,
-      `/game-categories/${categoryId}/restrict`,
-      {
-        method: "PATCH",
-        token: admin.accessToken,
-        body: {},
-        expectStatus: 200,
-      }
-    );
+  await runner.test("PATCH /games/:id/restrict toggles restriction", async () => {
+    runner.assert(gameId, "missing game id");
+    const { data } = await apiRequest<Game>(ctx, `/games/${gameId}/restrict`, {
+      method: "PATCH",
+      token: admin.accessToken,
+      body: {},
+      expectStatus: 200,
+    });
     runner.assert(data.isRestricted === true, "expected restricted after toggle");
   });
 
-  runner.section("Block listings in restricted categories");
+  runner.section("Block listings in restricted games");
 
-  await runner.test("POST /products in restricted gameCategoryId is rejected", async () => {
-    runner.assert(categoryId, "missing category id");
+  await runner.test("POST /products in restricted gameId is rejected", async () => {
+    runner.assert(gameId, "missing game id");
+    runner.assert(platformId, "missing platform id");
     await apiRequest(ctx, "/products", {
       method: "POST",
       token: seller.accessToken,
       body: {
-        gameType: "Smoke Test Game",
-        gameCategoryId: categoryId,
+        gameId,
+        platformId,
         title: `restricted-${Date.now()}`,
         price: 5,
         specifications: {},
@@ -104,29 +119,26 @@ export async function runPhase5_2(ctx: SmokeContext): Promise<boolean> {
     });
   });
 
-  await runner.test("PATCH /game-categories/:id/restrict un-restricts category", async () => {
-    runner.assert(categoryId, "missing category id");
-    const { data } = await apiRequest<GameCategory>(
-      ctx,
-      `/game-categories/${categoryId}/restrict`,
-      {
-        method: "PATCH",
-        token: admin.accessToken,
-        body: { isRestricted: false },
-        expectStatus: 200,
-      }
-    );
+  await runner.test("PATCH /games/:id/restrict un-restricts game", async () => {
+    runner.assert(gameId, "missing game id");
+    const { data } = await apiRequest<Game>(ctx, `/games/${gameId}/restrict`, {
+      method: "PATCH",
+      token: admin.accessToken,
+      body: { isRestricted: false },
+      expectStatus: 200,
+    });
     runner.assert(data.isRestricted === false, "expected unrestricted");
   });
 
-  await runner.test("POST /products allowed after category unrestricted", async () => {
-    runner.assert(categoryId, "missing category id");
+  await runner.test("POST /products allowed after game unrestricted", async () => {
+    runner.assert(gameId, "missing game id");
+    runner.assert(platformId, "missing platform id");
     const { data } = await apiRequest<{ id: string; status: string }>(ctx, "/products", {
       method: "POST",
       token: seller.accessToken,
       body: {
-        gameType: "Smoke Test Game",
-        gameCategoryId: categoryId,
+        gameId,
+        platformId,
         title: `allowed-${Date.now()}`,
         price: 5,
         specifications: {},
@@ -142,9 +154,9 @@ export async function runPhase5_2(ctx: SmokeContext): Promise<boolean> {
 
   runner.section("Cleanup");
 
-  await runner.test("DELETE /game-categories/:id removes smoke category", async () => {
-    runner.assert(categoryId, "missing category id");
-    await apiRequest(ctx, `/game-categories/${categoryId}`, {
+  await runner.test("DELETE /games/:id removes smoke game", async () => {
+    runner.assert(gameId, "missing game id");
+    await apiRequest(ctx, `/games/${gameId}`, {
       method: "DELETE",
       token: admin.accessToken,
       expectStatus: 204,

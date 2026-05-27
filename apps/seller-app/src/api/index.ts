@@ -1,6 +1,7 @@
 import "./auth";
 import "./products";
-import "./categories";
+import "./games";
+import "./platforms";
 import "./sales";
 import "./wallet";
 import "./disputes";

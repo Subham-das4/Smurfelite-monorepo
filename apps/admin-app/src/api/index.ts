@@ -4,6 +4,7 @@ import "./products";
 import "./orders";
 import "./enquiries";
 import "./disputes";
-import "./categories";
+import "./games";
+import "./platforms";
 import "./wallets";
 export { baseApi } from "./baseApi";

@@ -1,12 +1,13 @@
 import { z } from "zod";
 
 export const createProductSchema = z.object({
-  gameType: z.string().min(1, "gameType is required."),
+  gameType: z.string().min(1).optional(),
+  gameId: z.string().uuid("gameId must be a valid UUID."),
+  platformId: z.string().uuid("platformId must be a valid UUID."),
   title: z.string().min(1, "Title is required."),
   description: z.string().optional(),
   price: z.number().positive("Price must be a positive number."),
   specifications: z.record(z.string(), z.unknown()).default({}),
-  gameCategoryId: z.string().uuid().optional(),
   /** Admin only: list on behalf of another seller. */
   sellerId: z.string().uuid("sellerId must be a valid UUID.").optional(),
   /** When true, create as ACTIVE (listed immediately). Default is DRAFT. */
@@ -20,6 +21,8 @@ export const createProductSchema = z.object({
 
 export const updateProductSchema = z.object({
   gameType: z.string().min(1).optional(),
+  gameId: z.string().uuid().optional(),
+  platformId: z.string().uuid().optional(),
   title: z.string().min(1).optional(),
   description: z.string().optional(),
   price: z.number().positive().optional(),

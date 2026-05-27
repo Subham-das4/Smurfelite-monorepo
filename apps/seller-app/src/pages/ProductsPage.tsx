@@ -44,6 +44,10 @@ export function ProductsPage() {
   const columns = [
     col.accessor("title", { header: "Title" }),
     col.accessor("gameType", { header: "Game" }),
+    col.accessor("platform", {
+      header: "Platform",
+      cell: (info) => info.getValue() ?? "—",
+    }),
     col.accessor("status", {
       header: "Status",
       cell: (info) => <StatusBadge status={info.getValue()} />,

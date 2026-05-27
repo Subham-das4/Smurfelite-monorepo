@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createGameCategorySchema = z.object({
+export const createPlatformSchema = z.object({
   name: z.string().min(1, "name is required."),
   slug: z
     .string()
@@ -9,7 +9,7 @@ export const createGameCategorySchema = z.object({
     .optional(),
 });
 
-export const updateGameCategorySchema = z.object({
+export const updatePlatformSchema = z.object({
   name: z.string().min(1).optional(),
   slug: z
     .string()
@@ -18,6 +18,6 @@ export const updateGameCategorySchema = z.object({
     .optional(),
 });
 
-export const restrictGameCategorySchema = z.object({
+export const restrictPlatformSchema = z.object({
   isRestricted: z.boolean().optional(),
 });

@@ -8,7 +8,8 @@ import {
   useGetProductQuery,
   useUpdateProductMutation,
 } from "@/api/products";
-import { useGetCategoriesQuery } from "@/api/categories";
+import { useGetGamesQuery } from "@/api/games";
+import { useGetPlatformsQuery } from "@/api/platforms";
 import type { RootState } from "@/store/store";
 
 export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
@@ -17,12 +18,16 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
   const productId = params.productId as string | undefined;
   const profile = useSelector((s: RootState) => s.user.profile);
 
-  const { data: product } = useGetProductQuery(productId!, { skip: mode === "create" || !productId });
-  const { data: categories } = useGetCategoriesQuery();
+  const { data: product } = useGetProductQuery(productId!, {
+    skip: mode === "create" || !productId,
+  });
+  const { data: games } = useGetGamesQuery();
+  const { data: platforms } = useGetPlatformsQuery();
   const [createProduct, { isLoading: creating }] = useCreateProductMutation();
   const [updateProduct, { isLoading: updating }] = useUpdateProductMutation();
 
-  const [gameCategoryId, setGameCategoryId] = useState("");
+  const [gameId, setGameId] = useState("");
+  const [platformId, setPlatformId] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -44,7 +49,8 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
       setDescription(product.description ?? "");
       setPrice(String(product.price));
       setImageUrl(product.imageUrl ?? "");
-      setGameCategoryId(product.gameCategoryId ?? "");
+      setGameId(product.gameId ?? "");
+      setPlatformId(product.platformId ?? "");
       if (product.specifications && typeof product.specifications === "object") {
         const s: Record<string, string> = {};
         for (const [k, v] of Object.entries(product.specifications)) {
@@ -55,9 +61,6 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
     }
   }, [product, mode]);
 
-  const selectedCategory = categories?.find((c) => c.id === gameCategoryId);
-  const gameType = selectedCategory?.name ?? product?.gameType ?? "";
-
   const addSpec = () => {
     if (!specKey.trim()) return;
     setSpecs((prev) => ({ ...prev, [specKey]: specValue }));
@@ -67,8 +70,12 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!gameCategoryId) {
-      toast.error("Select a game category");
+    if (!gameId) {
+      toast.error("Select a game");
+      return;
+    }
+    if (!platformId) {
+      toast.error("Select a platform");
       return;
     }
     const priceNum = parseFloat(price);
@@ -80,8 +87,8 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
     try {
       if (mode === "create") {
         await createProduct({
-          gameType,
-          gameCategoryId,
+          gameId,
+          platformId,
           title,
           description,
           price: priceNum,
@@ -94,8 +101,8 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
         toast.success(publishNow ? "Listing published" : "Draft created");
       } else if (productId) {
         const body: Record<string, unknown> = {
-          gameType,
-          gameCategoryId,
+          gameId,
+          platformId,
           title,
           description,
           price: priceNum,
@@ -118,6 +125,9 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
     mode === "edit" &&
     (product?.status === "SOLD" || product?.status === "BANNED_BY_ADMIN");
 
+  const availableGames = games?.filter((g) => !g.isRestricted) ?? [];
+  const availablePlatforms = platforms?.filter((p) => !p.isRestricted) ?? [];
+
   return (
     <>
       <PageHeader
@@ -138,45 +148,94 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
         className="max-w-2xl space-y-4 rounded-2xl border border-[var(--color-border)] bg-white p-6"
       >
         <div>
-          <Label>Game category</Label>
+          <Label>Game</Label>
           <select
             className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm"
-            value={gameCategoryId}
-            onChange={(e) => setGameCategoryId(e.target.value)}
+            value={gameId}
+            onChange={(e) => setGameId(e.target.value)}
             required
             disabled={readonly}
           >
             <option value="">Select…</option>
-            {categories
-              ?.filter((c) => !c.isRestricted)
-              .map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
+            {availableGames.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <Label>Platform</Label>
+          <select
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm"
+            value={platformId}
+            onChange={(e) => setPlatformId(e.target.value)}
+            required
+            disabled={readonly}
+          >
+            <option value="">Select…</option>
+            {availablePlatforms.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
           </select>
         </div>
         <div>
           <Label htmlFor="title">Title</Label>
-          <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required disabled={readonly} />
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            disabled={readonly}
+          />
         </div>
         <div>
           <Label htmlFor="desc">Description</Label>
-          <Textarea id="desc" value={description} onChange={(e) => setDescription(e.target.value)} disabled={readonly} />
+          <Textarea
+            id="desc"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            disabled={readonly}
+          />
         </div>
         <div>
           <Label htmlFor="price">Price (USD)</Label>
-          <Input id="price" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} required disabled={readonly} />
+          <Input
+            id="price"
+            type="number"
+            step="0.01"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            required
+            disabled={readonly}
+          />
         </div>
         <div>
           <Label htmlFor="img">Image URL</Label>
-          <Input id="img" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} disabled={readonly} />
+          <Input
+            id="img"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            disabled={readonly}
+          />
         </div>
         <div>
           <Label>Specifications</Label>
           <div className="flex gap-2">
-            <Input placeholder="Key" value={specKey} onChange={(e) => setSpecKey(e.target.value)} disabled={readonly} />
-            <Input placeholder="Value" value={specValue} onChange={(e) => setSpecValue(e.target.value)} disabled={readonly} />
+            <Input
+              placeholder="Key"
+              value={specKey}
+              onChange={(e) => setSpecKey(e.target.value)}
+              disabled={readonly}
+            />
+            <Input
+              placeholder="Value"
+              value={specValue}
+              onChange={(e) => setSpecValue(e.target.value)}
+              disabled={readonly}
+            />
             <Button type="button" variant="secondary" onClick={addSpec} disabled={readonly}>
               Add
             </Button>

@@ -119,7 +119,16 @@ model RefreshToken {
   createdAt DateTime @default(now())
 }
 
-model GameCategory {
+model Game {
+  id           String    @id @default(uuid())
+  name         String
+  slug         String    @unique
+  isRestricted Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  products     Product[]
+}
+
+model Platform {
   id           String    @id @default(uuid())
   name         String
   slug         String    @unique
@@ -130,9 +139,12 @@ model GameCategory {
 
 model Product {
   id               String        @id @default(uuid())
-  gameType         String // Denormalized display name; synced from GameCategory.name when linked
-  gameCategoryId   String?
-  gameCategory     GameCategory? @relation(fields: [gameCategoryId], references: [id])
+  gameType         String // Denormalized display name; synced from Game.name when linked
+  gameId           String?
+  game             Game?         @relation(fields: [gameId], references: [id])
+  platform         String? // Denormalized display name; synced from Platform.name when linked
+  platformId       String?
+  accountPlatform  Platform?     @relation(fields: [platformId], references: [id])
   title            String
   description      String?
   price            Float

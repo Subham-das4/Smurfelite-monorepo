@@ -153,7 +153,9 @@ export interface ProductListItem {
   specifications: Record<string, unknown>;
   imageUrl: string | null;
   sellerId: string;
-  gameCategoryId?: string | null;
+  gameId?: string | null;
+  platformId?: string | null;
+  platform?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -164,8 +166,9 @@ export interface ProductListResponse {
 }
 
 export interface CreateProductRequest {
-  gameType: string;
-  gameCategoryId?: string;
+  gameType?: string;
+  gameId: string;
+  platformId: string;
   title: string;
   description?: string;
   price: number;
@@ -180,7 +183,9 @@ export interface CreateProductRequest {
 
 export interface UpdateProductRequest {
   gameType?: string;
-  gameCategoryId?: string | null;
+  gameId?: string | null;
+  platformId?: string | null;
+  platform?: string | null;
   title?: string;
   description?: string;
   price?: number;
@@ -347,10 +352,10 @@ export interface EmailModuleStatusResponse {
 }
 
 // ─────────────────────────────────────────
-// Game categories (Phase 5 API)
+// Games & platforms
 // ─────────────────────────────────────────
 
-export interface GameCategoryResponse {
+export interface GameResponse {
   id: string;
   name: string;
   slug: string;
@@ -358,13 +363,31 @@ export interface GameCategoryResponse {
   createdAt: string;
 }
 
-export interface GameCategoryListResponse {
-  categories: GameCategoryResponse[];
+export interface GameListResponse {
+  games: GameResponse[];
 }
 
-export interface CreateGameCategoryRequest {
+export interface CreateGameRequest {
+  name: string;
+  slug?: string;
+  isRestricted?: boolean;
+}
+
+export interface PlatformResponse {
+  id: string;
   name: string;
   slug: string;
+  isRestricted: boolean;
+  createdAt: string;
+}
+
+export interface PlatformListResponse {
+  platforms: PlatformResponse[];
+}
+
+export interface CreatePlatformRequest {
+  name: string;
+  slug?: string;
   isRestricted?: boolean;
 }
 

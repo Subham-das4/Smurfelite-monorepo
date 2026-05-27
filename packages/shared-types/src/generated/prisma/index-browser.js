@@ -159,7 +159,15 @@ exports.Prisma.RefreshTokenScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.GameCategoryScalarFieldEnum = {
+exports.Prisma.GameScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  isRestricted: 'isRestricted',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PlatformScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
@@ -170,7 +178,9 @@ exports.Prisma.GameCategoryScalarFieldEnum = {
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   gameType: 'gameType',
-  gameCategoryId: 'gameCategoryId',
+  gameId: 'gameId',
+  platform: 'platform',
+  platformId: 'platformId',
   title: 'title',
   description: 'description',
   price: 'price',
@@ -346,7 +356,8 @@ exports.Prisma.ModelName = {
   VerificationToken: 'VerificationToken',
   PasswordResetToken: 'PasswordResetToken',
   RefreshToken: 'RefreshToken',
-  GameCategory: 'GameCategory',
+  Game: 'Game',
+  Platform: 'Platform',
   Product: 'Product',
   Cart: 'Cart',
   CartItem: 'CartItem',

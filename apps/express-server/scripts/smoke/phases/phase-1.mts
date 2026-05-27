@@ -39,8 +39,12 @@ export async function runPhase1(ctx: SmokeContext): Promise<boolean> {
     );
   });
 
-  await runner.test("GameCategory model is queryable", async () => {
-    await prisma.gameCategory.findMany({ take: 1 });
+  await runner.test("Game model is queryable", async () => {
+    await prisma.game.findMany({ take: 1 });
+  });
+
+  await runner.test("Platform model is queryable", async () => {
+    await prisma.platform.findMany({ take: 1 });
   });
 
   await runner.test("Dispute model is queryable", async () => {
@@ -89,14 +93,24 @@ export async function runPhase1(ctx: SmokeContext): Promise<boolean> {
 
   runner.section("Placeholder API routes (501)");
 
-  await runner.test("GET /game-categories returns public list", async () => {
-    const { status, data } = await apiRequest<{ categories: unknown[] }>(
+  await runner.test("GET /games returns public list", async () => {
+    const { status, data } = await apiRequest<{ games: unknown[] }>(
       ctx,
-      "/game-categories",
+      "/games",
       { expectStatus: 200 }
     );
     runner.assert(status === 200, "Expected 200");
-    runner.assert(Array.isArray(data.categories), "Expected categories array");
+    runner.assert(Array.isArray(data.games), "Expected games array");
+  });
+
+  await runner.test("GET /platforms returns public list", async () => {
+    const { status, data } = await apiRequest<{ platforms: unknown[] }>(
+      ctx,
+      "/platforms",
+      { expectStatus: 200 }
+    );
+    runner.assert(status === 200, "Expected 200");
+    runner.assert(Array.isArray(data.platforms), "Expected platforms array");
   });
 
   await runner.test("GET /disputes forbidden for buyer (admin only)", async () => {
