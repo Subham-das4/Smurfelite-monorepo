@@ -25,9 +25,15 @@
     "smoke:through-3.2": "pnpm --filter=@smurfelite/express-server smoke:through-3.2",
     "smoke:through-3.3": "pnpm --filter=@smurfelite/express-server smoke:through-3.3",
     "smoke:through-4.2": "pnpm --filter=@smurfelite/express-server smoke:through-4.2",
+    "smoke:through-4.3": "pnpm --filter=@smurfelite/express-server smoke:through-4.3",
+    "smoke:through-4.4": "pnpm --filter=@smurfelite/express-server smoke:through-4.4",
     "smoke:phase-2.5": "pnpm --filter=@smurfelite/express-server smoke:phase-2.5",
     "smoke:phase-3.1": "pnpm --filter=@smurfelite/express-server smoke:phase-3.1",
-    "smoke:phase-3.2": "pnpm --filter=@smurfelite/express-server smoke:phase-3.2"
+    "smoke:phase-3.2": "pnpm --filter=@smurfelite/express-server smoke:phase-3.2",
+    "smoke:phase-3.3": "pnpm --filter=@smurfelite/express-server smoke:phase-3.3",
+    "smoke:phase-4.2": "pnpm --filter=@smurfelite/express-server smoke:phase-4.2",
+    "smoke:phase-4.3": "pnpm --filter=@smurfelite/express-server smoke:phase-4.3",
+    "smoke:phase-4.4": "pnpm --filter=@smurfelite/express-server smoke:phase-4.4"
   },
   "keywords": [],
   "author": "",

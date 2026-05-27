@@ -12,10 +12,35 @@ import { runPhase3_1 } from "./phases/phase-3_1.mts";
 import { runPhase3_2 } from "./phases/phase-3_2.mts";
 import { runPhase3_3 } from "./phases/phase-3_3.mts";
 import { runPhase4_2 } from "./phases/phase-4_2.mts";
+import { runPhase4_3 } from "./phases/phase-4_3.mts";
+import { runPhase4_4 } from "./phases/phase-4_4.mts";
 
-export type SmokePhase = "1" | "2.1" | "2.2" | "2.3" | "2.5" | "3.1" | "3.2" | "3.3" | "4.2";
+export type SmokePhase =
+  | "1"
+  | "2.1"
+  | "2.2"
+  | "2.3"
+  | "2.5"
+  | "3.1"
+  | "3.2"
+  | "3.3"
+  | "4.2"
+  | "4.3"
+  | "4.4";
 
-const PHASE_ORDER: SmokePhase[] = ["1", "2.1", "2.2", "2.3", "2.5", "3.1", "3.2", "3.3", "4.2"];
+const PHASE_ORDER: SmokePhase[] = [
+  "1",
+  "2.1",
+  "2.2",
+  "2.3",
+  "2.5",
+  "3.1",
+  "3.2",
+  "3.3",
+  "4.2",
+  "4.3",
+  "4.4",
+];
 
 const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
   "1": runPhase1,
@@ -27,6 +52,8 @@ const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
   "3.2": runPhase3_2,
   "3.3": runPhase3_3,
   "4.2": runPhase4_2,
+  "4.3": runPhase4_3,
+  "4.4": runPhase4_4,
 };
 
 function printUsage(): void {
@@ -47,6 +74,8 @@ Phases:
   3.2  Transactional emails (verify, reset, purchase)
   3.3  Enquiry fix (guest contact form + help@ notification)
   4.2  Buyer disputes (POST /disputes + /disputes/mine)
+  4.3  Product detail API contract (no mock reviews)
+  4.4  Checkout UX — unavailable products + bypass status
 
 Examples:
   pnpm smoke:through-1      # Phase 1 only
@@ -57,11 +86,14 @@ Examples:
   pnpm smoke:through-3.2    # Phase 1 through 3.2
   pnpm smoke:through-3.3    # Phase 1 through 3.3
   pnpm smoke:through-4.2    # Phase 1 through 4.2
+  pnpm smoke:through-4.4    # Phase 1 through 4.4 (full buyer polish API)
   pnpm smoke:phase-2.5      # Phase 2.5 only (no prior phases)
   pnpm smoke:phase-3.1      # Phase 3.1 only
   pnpm smoke:phase-3.2      # Phase 3.2 only
   pnpm smoke:phase-3.3      # Phase 3.3 only
   pnpm smoke:phase-4.2      # Phase 4.2 only
+  pnpm smoke:phase-4.3      # Phase 4.3 only
+  pnpm smoke:phase-4.4      # Phase 4.4 only
 
 Environment:
   SMOKE_API_BASE     API base URL (default: http://localhost:\${PORT}/api)
