@@ -1,7 +1,12 @@
-export type CheckoutStep = 1 | 2;
+/** @deprecated Shipping removed for digital-only checkout (Phase 4.4). Kept for reference. */
+export type CheckoutStep = 1;
 
 export type PaymentMethod = "paypal" | "card" | "crypto" | "skrill";
 
+/**
+ * @deprecated Client-only fixture — shipping step removed (Phase 4.4, ISS-012).
+ * Digital accounts do not require a shipping address.
+ */
 export interface ShippingFormData {
   email: string;
   newsletter: boolean;

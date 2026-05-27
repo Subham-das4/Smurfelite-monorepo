@@ -154,12 +154,12 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 4.4 Checkout UX
 
-- [ ] Decide fate of shipping step (remove or persist) — see ISS-012
-- [ ] Payment method UI: show "Test mode" when bypass enabled
-- [ ] Error handling for unavailable products mid-checkout
+- [x] Decide fate of shipping step — **removed** for digital-only (ISS-012)
+- [x] Payment method UI: show "Test mode" when bypass enabled
+- [x] Error handling for unavailable products mid-checkout
 
 **Depends on:** Phase 2, Phase 3 (partial), Phase 5 (dispute API)  
-**Fixes issues:** ISS-013
+**Fixes issues:** ISS-012
 
 ---
 

@@ -4,10 +4,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CheckoutStepper } from "./CheckoutStepper";
-import { ShippingForm } from "./ShippingForm";
 import { PaymentForm } from "./PaymentForm";
 import { CheckoutOrderSummary } from "./CheckoutOrderSummary";
-import type { CheckoutStep, PaymentMethod, ShippingFormData } from "./types";
+import { CheckoutUnavailableAlert } from "./CheckoutUnavailableAlert";
+import type { PaymentMethod } from "./types";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { productsApi } from "@/api/products";
 import { useGetCartQuery } from "@/api/cart";
@@ -24,6 +24,10 @@ import {
   buildScopedCheckoutLines,
   expandProductIdsForOrder,
 } from "@/lib/checkoutSyntheticLines";
+import {
+  findCheckoutAvailabilityIssues,
+  isOrderUnavailableError,
+} from "@/lib/checkoutAvailability";
 
 export type CheckoutContentProps = {
   /** When provided, checkout uses only these products for summary + payment (not Redux cart lines). */
@@ -81,27 +85,35 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
   });
   const isCartReady = !isAuthenticated || cartQuery.isSuccess;
 
-  const [scopedLoadStatus, setScopedLoadStatus] = useState<
+  const cartUniqueProductIds = useMemo(() => {
+    if (isScoped) return [];
+    return [...new Set(Object.values(items).map((item) => item.productId))];
+  }, [isScoped, items]);
+
+  const idsToValidate = isScoped ? uniqueProductIds : cartUniqueProductIds;
+
+  const [catalogLoadStatus, setCatalogLoadStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [productById, setProductById] = useState<
     Map<string, ProductListItem>
   >(() => new Map());
 
-  const scopedIdsKey = uniqueProductIds.join("|");
+  const catalogIdsKey = idsToValidate.join("|");
 
   useEffect(() => {
-    const ids = scopedIdsKey
-      ? [...new Set(scopedIdsKey.split("|").filter(Boolean))]
+    const ids = catalogIdsKey
+      ? [...new Set(catalogIdsKey.split("|").filter(Boolean))]
       : [];
-    if (!isScoped || ids.length === 0) {
-      setScopedLoadStatus("idle");
+
+    if (ids.length === 0) {
+      setCatalogLoadStatus("idle");
       setProductById(new Map());
       return;
     }
 
     let cancelled = false;
-    setScopedLoadStatus("loading");
+    setCatalogLoadStatus("loading");
 
     void Promise.all(
       ids.map((id) =>
@@ -113,39 +125,52 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
         const m = new Map<string, ProductListItem>();
         for (const p of rows) m.set(p.id, p);
         setProductById(m);
-        setScopedLoadStatus("success");
+        setCatalogLoadStatus("success");
       })
       .catch(() => {
         if (!cancelled) {
           setProductById(new Map());
-          setScopedLoadStatus("error");
+          setCatalogLoadStatus("error");
         }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [dispatch, isScoped, scopedIdsKey]);
+  }, [dispatch, catalogIdsKey]);
 
-  const scopedProductsReady =
-    !isScoped ||
-    (scopedLoadStatus === "success" && productById.size === uniqueProductIds.length);
+  const catalogReady =
+    idsToValidate.length === 0 ||
+    (catalogLoadStatus === "success" &&
+      productById.size === idsToValidate.length);
 
-  const scopedProductError = isScoped && scopedLoadStatus === "error";
+  const scopedProductError = isScoped && catalogLoadStatus === "error";
+  const cartCatalogError =
+    !isScoped && isAuthenticated && catalogLoadStatus === "error";
 
   const scopedLineItems = useMemo(() => {
-    if (!isScoped || !scopedProductsReady) return null;
+    if (!isScoped || !catalogReady) return null;
     return buildScopedCheckoutLines(scopedProductIds, productById);
-  }, [isScoped, scopedProductsReady, scopedProductIds, productById]);
+  }, [isScoped, catalogReady, scopedProductIds, productById]);
+
+  const availabilityIssues = useMemo(() => {
+    if (!catalogReady || idsToValidate.length === 0) return [];
+    return findCheckoutAvailabilityIssues(idsToValidate, productById);
+  }, [catalogReady, idsToValidate, productById]);
+
+  const unavailableProductIds = useMemo(
+    () => new Set(availabilityIssues.map((issue) => issue.productId)),
+    [availabilityIssues],
+  );
+
+  const hasUnavailableItems = availabilityIssues.length > 0;
 
   const paymentReady = isScoped
-    ? scopedProductsReady && (scopedLineItems?.length ?? 0) > 0
-    : isCartReady;
+    ? catalogReady &&
+      (scopedLineItems?.length ?? 0) > 0 &&
+      !hasUnavailableItems
+    : isCartReady && catalogReady && !hasUnavailableItems;
 
-  const [step, setStep] = useState<CheckoutStep>(1);
-  const [shippingData, setShippingData] = useState<ShippingFormData | null>(
-    null,
-  );
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
 
@@ -154,11 +179,6 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
   const [completeBypassPayment] = useCompleteBypassPaymentMutation();
   const { data: bypassStatus } = useGetPaymentBypassStatusQuery();
   const paymentBypassEnabled = bypassStatus?.enabled === true;
-
-  const handleShippingSubmit = (data: ShippingFormData) => {
-    setShippingData(data);
-    setStep(2);
-  };
 
   const handlePaymentSubmit = async (method: PaymentMethod) => {
     setSubmitError(null);
@@ -172,8 +192,15 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
       return;
     }
 
+    if (hasUnavailableItems) {
+      setSubmitError(
+        "Remove unavailable items before completing your order.",
+      );
+      return;
+    }
+
     if (isScoped) {
-      if (!scopedProductsReady || !scopedLineItems?.length) {
+      if (!catalogReady || !scopedLineItems?.length) {
         setSubmitError(
           "Product details are still loading or unavailable. Please wait or return to the store.",
         );
@@ -183,6 +210,12 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
       if (!cartQuery.isSuccess) {
         setSubmitError(
           "Your cart is still loading. Please wait a moment and try again.",
+        );
+        return;
+      }
+      if (!catalogReady) {
+        setSubmitError(
+          "Checking product availability. Please wait a moment and try again.",
         );
         return;
       }
@@ -214,13 +247,24 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
 
       window.location.href = invoice.invoiceUrl;
     } catch (err) {
-      setSubmitError(errorMessageFromUnknown(err));
+      const message = errorMessageFromUnknown(err);
+      setSubmitError(
+        isOrderUnavailableError(message)
+          ? `${message} Refresh the page or return to the cart and remove unavailable items.`
+          : message,
+      );
     } finally {
       setIsPaying(false);
     }
   };
 
   const showCartLoadError = isAuthenticated && !isScoped && cartQuery.isError;
+
+  const submitDisabledReason = hasUnavailableItems
+    ? "Remove unavailable items"
+    : !paymentReady
+      ? "Loading…"
+      : undefined;
 
   if (isScoped && scopedProductError) {
     return (
@@ -249,40 +293,35 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
     <main className="flex-1 w-full max-w-[1280px] mx-auto px-4 md:px-10 py-8 md:py-12">
       <div className="flex flex-col lg:flex-row gap-8 xl:gap-16">
         <div className="flex-1 flex flex-col gap-8">
-          <CheckoutStepper currentStep={step} />
+          <CheckoutStepper paymentBypassEnabled={paymentBypassEnabled} />
 
-          {(submitError || showCartLoadError) && (
+          <CheckoutUnavailableAlert issues={availabilityIssues} />
+
+          {(submitError || showCartLoadError || cartCatalogError) && (
             <div
               className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200"
               role="alert"
             >
               {submitError ??
-                "We could not load your cart. Refresh the page or return to the cart and try again."}
+                (cartCatalogError
+                  ? "We could not verify product availability. Refresh the page or try again."
+                  : "We could not load your cart. Refresh the page or return to the cart and try again.")}
             </div>
           )}
 
-          {step === 1 && (
-            <ShippingForm
-              defaultValues={shippingData ?? undefined}
-              onSubmit={handleShippingSubmit}
-            />
-          )}
-
-          {step === 2 && shippingData && (
-            <PaymentForm
-              shippingData={shippingData}
-              onBack={() => setStep(1)}
-              onSubmit={handlePaymentSubmit}
-              isSubmitting={isPaying}
-              submitDisabled={isAuthenticated && !paymentReady}
-              paymentBypassEnabled={paymentBypassEnabled}
-            />
-          )}
+          <PaymentForm
+            onSubmit={handlePaymentSubmit}
+            isSubmitting={isPaying}
+            submitDisabled={isAuthenticated && !paymentReady}
+            submitDisabledReason={submitDisabledReason}
+            paymentBypassEnabled={paymentBypassEnabled}
+          />
         </div>
 
         <div className="w-full lg:w-[420px] shrink-0">
           <CheckoutOrderSummary
             lineItems={isScoped ? (scopedLineItems ?? []) : undefined}
+            unavailableProductIds={unavailableProductIds}
           />
         </div>
       </div>

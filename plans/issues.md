@@ -185,24 +185,6 @@ Prioritized list of known bugs, gaps, and technical debt. Update this file as is
 
 ---
 
-### 🟠 ISS-012 — Shipping data not persisted
-
-| Field | Value |
-| ----- | ----- |
-| **Severity** | High |
-| **Area** | Checkout |
-| **Phase fix** | Phase 2 (or drop step) |
-
-**Problem:** `ShippingFormData` is client-only state; never sent to backend. Digital goods may not need it — decision required.
-
-**Files:**
-- `apps/nextjs-app/src/components/pages/checkout/ShippingForm.tsx`
-- `apps/nextjs-app/src/components/pages/checkout/index.tsx`
-
-**Suggested fix:** Persist on Order model or remove shipping step for digital-only flow.
-
----
-
 ### 🟡 ISS-014 — Similar products use gameType filter only
 
 | Field | Value |
@@ -352,5 +334,9 @@ Guest contact form aligned with backend: `Enquiry` model stores `name`, `email`,
 ### ✅ ISS-013 — Product detail mock reviews (2026-05-27, Phase 4.3)
 
 Mock reviews removed from `detail/data.ts`; `ReviewsPanel` gated by `PRODUCT_REVIEWS_ENABLED = false`; live product page uses API data only.
+
+### ✅ ISS-012 — Shipping data not persisted (2026-05-27, Phase 4.4)
+
+Shipping step removed from checkout for digital-only delivery; single payment step with availability checks before order creation.
 
 When fixing an issue, move it here with date and PR reference.

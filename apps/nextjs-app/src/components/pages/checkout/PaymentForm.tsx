@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import {
   MdArrowBack,
   MdArrowForward,
@@ -7,7 +8,7 @@ import {
   MdInfo,
   MdCurrencyBitcoin,
 } from "react-icons/md";
-import type { PaymentMethod, ShippingFormData } from "./types";
+import type { PaymentMethod } from "./types";
 
 interface PaymentOptionProps {
   id: PaymentMethod;
@@ -83,58 +84,11 @@ const PaymentOption: React.FC<PaymentOptionProps> = ({
   </div>
 );
 
-interface ShippingSummaryProps {
-  data: ShippingFormData;
-  onEdit: () => void;
-}
-
-const ShippingSummary: React.FC<ShippingSummaryProps> = ({ data, onEdit }) => (
-  <div className="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden text-sm">
-    <div className="p-4 flex items-center justify-between border-b border-border-light dark:border-border-dark">
-      <div className="flex flex-col gap-1">
-        <span className="text-[#756189] dark:text-gray-400 text-xs">
-          Contact
-        </span>
-        <span className="font-medium truncate">{data.email}</span>
-      </div>
-      <button
-        type="button"
-        onClick={onEdit}
-        className="text-primary hover:text-primary/80 font-medium text-xs transition-colors"
-      >
-        Change
-      </button>
-    </div>
-    <div className="p-4 flex items-center justify-between">
-      <div className="flex flex-col gap-1">
-        <span className="text-[#756189] dark:text-gray-400 text-xs">
-          Ship to
-        </span>
-        <span className="font-medium truncate">
-          {data.address}
-          {data.apartment ? `, ${data.apartment}` : ""}, {data.city},{" "}
-          {data.postalCode}
-        </span>
-      </div>
-      <button
-        type="button"
-        onClick={onEdit}
-        className="text-primary hover:text-primary/80 font-medium text-xs transition-colors"
-      >
-        Change
-      </button>
-    </div>
-  </div>
-);
-
 interface PaymentFormProps {
-  shippingData: ShippingFormData;
-  onBack: () => void;
   onSubmit: (method: PaymentMethod) => void | Promise<void>;
   isSubmitting?: boolean;
-  /** When true, Complete Order is disabled (e.g. cart still loading from API). */
   submitDisabled?: boolean;
-  /** Dev/E2E: server has PAYMENT_BYPASS enabled — no crypto redirect. */
+  submitDisabledReason?: string;
   paymentBypassEnabled?: boolean;
 }
 
@@ -146,7 +100,7 @@ const PAYMENT_OPTIONS: Omit<
     id: "paypal",
     label: "PayPal",
     description:
-      "Pay simply and securely with PayPal. You will be redirected to complete your purchase. Billing address is handled by PayPal.",
+      "Pay simply and securely with PayPal. You will be redirected to complete your purchase.",
     icon: (
       <span className="font-bold italic text-lg select-none">
         <span className="text-[#003087]">Pay</span>
@@ -168,7 +122,7 @@ const PAYMENT_OPTIONS: Omit<
     id: "crypto",
     label: "Cryptocurrency",
     description:
-      "You will be redirected to complete payment in cryptocurrency (sandbox). Confirmation is sent to our servers automatically.",
+      "You will be redirected to complete payment in cryptocurrency. Confirmation is sent to our servers automatically.",
     icon: <MdCurrencyBitcoin className="text-2xl" />,
     badge: "BTC · ETH · USDT",
   },
@@ -182,11 +136,10 @@ const PAYMENT_OPTIONS: Omit<
 ];
 
 export const PaymentForm: React.FC<PaymentFormProps> = ({
-  shippingData,
-  onBack,
   onSubmit,
   isSubmitting,
   submitDisabled = false,
+  submitDisabledReason,
   paymentBypassEnabled = false,
 }) => {
   const [selectedMethod, setSelectedMethod] =
@@ -197,19 +150,35 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
     await onSubmit(selectedMethod);
   };
 
+  const submitLabel = isSubmitting
+    ? "Processing…"
+    : submitDisabled
+      ? (submitDisabledReason ?? "Cannot complete order")
+      : paymentBypassEnabled
+        ? "Complete Order (test)"
+        : "Complete Order";
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-      {/* Shipping summary */}
-      <ShippingSummary data={shippingData} onEdit={onBack} />
-
-      {/* Payment method selection */}
       <div>
-        <h2 className="text-2xl font-bold mb-2">Payment Method</h2>
+        <h2 className="text-2xl font-bold mb-2">Payment</h2>
+        <p className="text-sm text-[#756189] dark:text-gray-400 mb-4">
+          Digital delivery — account credentials are sent to your email after
+          payment. No shipping required.
+        </p>
         {paymentBypassEnabled && (
-          <p className="text-sm font-medium text-amber-700 dark:text-amber-300 mb-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 px-3 py-2">
-            Test mode: payment bypass is enabled. Your order will complete
-            immediately without crypto checkout.
-          </p>
+          <div
+            className="text-sm font-medium text-amber-800 dark:text-amber-200 mb-4 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/50 px-4 py-3"
+            role="status"
+          >
+            <p className="font-bold uppercase tracking-wide text-xs mb-1">
+              Test mode active
+            </p>
+            <p>
+              Payment bypass is enabled on the server. Your order will complete
+              immediately without crypto checkout.
+            </p>
+          </div>
         )}
         <p className="text-sm text-[#756189] dark:text-gray-400 mb-6">
           All transactions are secure and encrypted.
@@ -227,44 +196,33 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
         </div>
       </div>
 
-      {/* Billing address note */}
       <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-border-light dark:border-border-dark flex items-start gap-3">
         <MdInfo className="text-[#756189] shrink-0 text-xl mt-0.5" />
         <div>
           <h4 className="text-sm font-bold text-[#141118] dark:text-white mb-1">
-            Billing Address
+            Instant delivery
           </h4>
           <p className="text-sm text-[#756189] dark:text-gray-400 leading-relaxed">
-            Your billing address will be collected and verified securely by the
-            selected payment provider on the next step.
+            Credentials are delivered by email and in your order history once
+            payment is confirmed.
           </p>
         </div>
       </div>
 
-      {/* Navigation */}
       <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border-light dark:border-border-dark">
-        <button
-          type="button"
-          onClick={onBack}
+        <Link
+          href="/cart"
           className="flex items-center gap-2 text-primary font-medium hover:text-primary/80 transition-colors py-2"
         >
           <MdArrowBack className="text-lg" />
-          Return to shipping
-        </button>
+          Back to cart
+        </Link>
         <button
           type="submit"
           disabled={isSubmitting || submitDisabled}
           className="w-full sm:w-auto bg-primary hover:bg-primary/90 active:scale-95 text-white rounded-xl h-14 px-8 text-base font-bold tracking-wide shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:pointer-events-none"
         >
-          <span>
-            {isSubmitting
-              ? "Processing…"
-              : submitDisabled
-                ? "Loading cart…"
-                : paymentBypassEnabled
-                  ? "Complete Order (test)"
-                  : "Complete Order"}
-          </span>
+          <span>{submitLabel}</span>
           <MdArrowForward className="text-lg" />
         </button>
       </div>

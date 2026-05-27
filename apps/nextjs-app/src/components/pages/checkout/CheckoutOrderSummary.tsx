@@ -17,10 +17,13 @@ function subtotalFromLineItems(items: CartItemResponse[]): number {
 export type CheckoutOrderSummaryProps = {
   /** When set, summary uses these lines instead of Redux cart. */
   lineItems?: CartItemResponse[];
+  /** Product ids that failed availability checks (Phase 4.4). */
+  unavailableProductIds?: Set<string>;
 };
 
 export const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
   lineItems: lineItemsProp,
+  unavailableProductIds,
 }) => {
   const { items, totalAmount } = useAppSelector((state) => state.cart);
   const [promoCode, setPromoCode] = useState("");
@@ -51,8 +54,17 @@ export const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
             </p>
           ) : (
             <div className="flex flex-col gap-4">
-              {cartItems.map((item) => (
-                <div key={item.productId} className="flex gap-4">
+              {cartItems.map((item) => {
+                const unavailable = unavailableProductIds?.has(item.productId);
+                return (
+                <div
+                  key={item.productId}
+                  className={`flex gap-4 rounded-lg p-2 -mx-2 ${
+                    unavailable
+                      ? "bg-amber-50 dark:bg-amber-950/30 ring-1 ring-amber-200 dark:ring-amber-800"
+                      : ""
+                  }`}
+                >
                   <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-border-light dark:border-border-dark">
                     <Image
                       src={item.product.imageUrl ?? ""}
@@ -70,17 +82,24 @@ export const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
                     <h4 className="font-bold text-base leading-tight truncate">
                       {item.product.title}
                     </h4>
-                    <div className="flex gap-2 mt-2">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
-                        Instant Delivery
-                      </span>
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      {unavailable ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">
+                          Unavailable
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                          Instant Delivery
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="font-bold text-lg shrink-0">
                     ${(item.product.price * item.quantity).toFixed(2)}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
