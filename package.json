@@ -18,6 +18,7 @@
     "dev:nextjs": "pnpm --filter=nextjs-app dev",
     "dev:seller": "pnpm --filter=seller-app dev",
     "dev:admin": "pnpm --filter=admin-app dev",
+    "dev:cron": "pnpm --filter=@smurfelite/cron-server dev",
     "smoke:through-1": "pnpm --filter=@smurfelite/express-server smoke:through-1",
     "smoke:through-2.1": "pnpm --filter=@smurfelite/express-server smoke:through-2.1",
     "smoke:through-2.2": "pnpm --filter=@smurfelite/express-server smoke:through-2.2",

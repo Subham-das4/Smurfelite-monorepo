@@ -1,8 +1,8 @@
 # cron-server (planned)
 
-Background job runner for scheduled maintenance and balance operations. **Not created yet.**
+Background job runner for scheduled maintenance and balance operations.
 
-**Planned path:** `apps/cron-server`  
+**Path:** `apps/cron-server` (Phase 8.1 scaffold ✅; job logic Phase 8.2)  
 **Roadmap phase:** 8  
 **Architecture:** Separate Node process (not embedded in express-server)
 
@@ -192,9 +192,9 @@ Add to root turbo.json pipeline.
 
 ## Implementation checklist (Phase 8)
 
-- [ ] Scaffold `apps/cron-server` package
-- [ ] Wire Prisma + DATABASE_URL
-- [ ] Implement advisory lock utility
+- [x] Scaffold `apps/cron-server` package (Phase 8.1)
+- [x] Wire Prisma + DATABASE_URL
+- [x] Implement advisory lock utility
 - [ ] Job: order expiry (highest priority — unblocks inventory)
 - [ ] Job: wallet hold release (after Phase 5 wallet writes exist)
 - [ ] Job: embedding backfill (optional)

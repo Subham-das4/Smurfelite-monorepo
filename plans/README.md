@@ -30,7 +30,7 @@ Smurfelite-monorepo/
 │   ├── nextjs-app/         ✅ Buyer website
 │   ├── admin-app/          🚧 Vite SPA (port 5173)
 │   ├── seller-app/         🚧 Vite SPA (port 5174)
-│   └── cron-server/        ❌ Not created
+│   └── cron-server/        🚧 Phase 8.1 scaffold (scheduler + stubs)
 ├── packages/
 │   ├── shared-types/       ✅ @smurfelite/types
 │   └── ui/                 🚧 @smurfelite/ui (shared components)
@@ -46,6 +46,7 @@ Smurfelite-monorepo/
 | `pnpm dev:nextjs` | Buyer site only |
 | `pnpm dev:seller` | Seller portal (port 5174) |
 | `pnpm dev:admin` | Admin panel (port 5173) |
+| `pnpm dev:cron` | Cron server (background jobs) |
 | `pnpm build` | Turbo build all workspaces |
 
 ---

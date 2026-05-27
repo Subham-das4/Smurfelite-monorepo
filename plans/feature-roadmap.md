@@ -339,9 +339,9 @@ Prerequisite endpoints before Vite portal UIs. See [seller-app.md](./seller-app.
 
 ### 8.1 Scaffold
 
-- [ ] Create `apps/cron-server` Node package
-- [ ] Share Prisma via `@smurfelite/types`
-- [ ] Env: `DATABASE_URL`, job intervals, hold period days
+- [x] Create `apps/cron-server` Node package
+- [x] Share Prisma via `@smurfelite/types`
+- [x] Env: `DATABASE_URL`, job intervals, hold period days
 
 ### 8.2 Jobs
 

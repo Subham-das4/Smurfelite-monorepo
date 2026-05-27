@@ -1,0 +1,27 @@
+{
+  "name": "@smurfelite/cron-server",
+  "version": "1.0.0",
+  "description": "Background cron jobs for SmurfElite (wallet hold release, order expiry).",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "build": "tsc",
+    "start": "node --env-file=.env dist/index.js",
+    "start:once": "tsx --env-file=.env src/run-once.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "^7.1.0",
+    "@smurfelite/types": "workspace:^1.0.0",
+    "node-cron": "^3.0.3",
+    "pg": "^8.16.3",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/node-cron": "^3.0.11",
+    "tsx": "^4.19.4",
+    "typescript": "^5.3.3"
+  }
+}
