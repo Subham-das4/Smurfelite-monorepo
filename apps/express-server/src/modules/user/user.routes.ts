@@ -12,6 +12,8 @@ import {
   updateMeController,
   changePasswordController,
   getAllUsersController,
+  getUserByIdController,
+  getUserProductsController,
   updateUserRoleController,
   deleteUserController,
   delistSellerController,
@@ -33,8 +35,18 @@ router.put("/me/password", validate(changePasswordSchema), changePasswordControl
 
 // ---- Admin routes ----
 
-// GET /api/users — list all users (admin only)
+// GET /api/users — list/search users (admin only)
 router.get("/", authorize([Role.ADMIN]), getAllUsersController);
+
+// GET /api/users/:userId/products — seller listings (admin only)
+router.get(
+  "/:userId/products",
+  authorize([Role.ADMIN]),
+  getUserProductsController
+);
+
+// GET /api/users/:userId — user detail (admin only)
+router.get("/:userId", authorize([Role.ADMIN]), getUserByIdController);
 
 // PATCH /api/users/:userId/delist — admin delist seller + cascade products
 router.patch(

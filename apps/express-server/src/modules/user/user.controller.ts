@@ -5,7 +5,9 @@ import {
   getMe,
   updateMe,
   changePassword,
-  getAllUsers,
+  searchUsers,
+  getUserByIdAdmin,
+  getUserProductsAdmin,
   updateUserRole,
   deleteUser,
   delistSellerByAdmin,
@@ -68,7 +70,41 @@ export const getAllUsersController = async (
   try {
     const page = parseInt(req.query.page as string) || 1;
     const pageSize = parseInt(req.query.pageSize as string) || 20;
-    const result = await getAllUsers(page, pageSize);
+    const search =
+      typeof req.query.search === "string" ? req.query.search : undefined;
+    const result = await searchUsers(page, pageSize, search);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserByIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await getUserByIdAdmin(req.params.userId);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserProductsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = parseInt(req.query.pageSize as string) || 20;
+    const result = await getUserProductsAdmin(
+      req.params.userId,
+      page,
+      pageSize
+    );
     res.status(200).json(result);
   } catch (error) {
     next(error);

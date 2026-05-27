@@ -17,6 +17,8 @@ import { runPhase4_4 } from "./phases/phase-4_4.mts";
 import { runPhase5_1 } from "./phases/phase-5_1.mts";
 import { runPhase5_2 } from "./phases/phase-5_2.mts";
 import { runPhase5_3 } from "./phases/phase-5_3.mts";
+import { runPhase5_4 } from "./phases/phase-5_4.mts";
+import { runPhase5_5 } from "./phases/phase-5_5.mts";
 
 export type SmokePhase =
   | "1"
@@ -32,7 +34,9 @@ export type SmokePhase =
   | "4.4"
   | "5.1"
   | "5.2"
-  | "5.3";
+  | "5.3"
+  | "5.4"
+  | "5.5";
 
 const PHASE_ORDER: SmokePhase[] = [
   "1",
@@ -49,6 +53,8 @@ const PHASE_ORDER: SmokePhase[] = [
   "5.1",
   "5.2",
   "5.3",
+  "5.4",
+  "5.5",
 ];
 
 const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
@@ -66,6 +72,8 @@ const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
   "5.1": runPhase5_1,
   "5.2": runPhase5_2,
   "5.3": runPhase5_3,
+  "5.4": runPhase5_4,
+  "5.5": runPhase5_5,
 };
 
 function printUsage(): void {
@@ -91,6 +99,8 @@ Phases:
   5.1  Product lifecycle — draft, publish, delist, ban, soft delete
   5.2  Game categories — admin CRUD + restrict listings
   5.3  Admin seller delist / reactivate cascade
+  5.4  Users — admin search, detail, seller products
+  5.5  Disputes — admin list, resolve, wallet freeze
 
 Examples:
   pnpm smoke:through-1      # Phase 1 only
@@ -104,6 +114,7 @@ Examples:
   pnpm smoke:through-4.4    # Phase 1 through 4.4 (full buyer polish API)
   pnpm smoke:through-5.1    # Phase 1 through 5.1 (product lifecycle API)
   pnpm smoke:through-5.3    # Phase 1 through 5.3 (categories + seller admin)
+  pnpm smoke:through-5.5    # Phase 1 through 5.5 (full Phase 5 API)
   pnpm smoke:phase-2.5      # Phase 2.5 only (no prior phases)
   pnpm smoke:phase-3.1      # Phase 3.1 only
   pnpm smoke:phase-3.2      # Phase 3.2 only
@@ -114,6 +125,8 @@ Examples:
   pnpm smoke:phase-5.1      # Phase 5.1 only
   pnpm smoke:phase-5.2      # Phase 5.2 only
   pnpm smoke:phase-5.3      # Phase 5.3 only
+  pnpm smoke:phase-5.4      # Phase 5.4 only
+  pnpm smoke:phase-5.5      # Phase 5.5 only
 
 Environment:
   SMOKE_API_BASE     API base URL (default: http://localhost:\${PORT}/api)

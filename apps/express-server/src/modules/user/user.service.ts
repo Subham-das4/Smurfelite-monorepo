@@ -80,10 +80,25 @@ export const changePassword = async (
 
 // ---- Admin: user management ----
 
-export const getAllUsers = async (page: number = 1, pageSize: number = 20) => {
+export const searchUsers = async (
+  page: number = 1,
+  pageSize: number = 20,
+  search?: string
+) => {
   const skip = (page - 1) * pageSize;
+  const where =
+    search?.trim()
+      ? {
+          OR: [
+            { email: { contains: search.trim(), mode: "insensitive" as const } },
+            { name: { contains: search.trim(), mode: "insensitive" as const } },
+          ],
+        }
+      : {};
+
   const [users, totalCount] = await prisma.$transaction([
     prisma.user.findMany({
+      where,
       skip,
       take: pageSize,
       select: {
@@ -92,15 +107,139 @@ export const getAllUsers = async (page: number = 1, pageSize: number = 20) => {
         name: true,
         role: true,
         isVerified: true,
+        sellerDelisted: true,
+        lastLoginAt: true,
         createdAt: true,
       },
       orderBy: { createdAt: "desc" },
     }),
-    prisma.user.count(),
+    prisma.user.count({ where }),
   ]);
 
   return {
     users,
+    meta: {
+      totalCount,
+      totalPages: Math.ceil(totalCount / pageSize),
+      currentPage: page,
+      pageSize,
+    },
+  };
+};
+
+export const getUserByIdAdmin = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      isVerified: true,
+      sellerDelisted: true,
+      googleProfilePicture: true,
+      lastLoginAt: true,
+      createdAt: true,
+      updatedAt: true,
+      cart: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          items: {
+            select: {
+              productId: true,
+              quantity: true,
+              product: {
+                select: { id: true, title: true, price: true, status: true },
+              },
+            },
+          },
+        },
+      },
+      orders: {
+        take: 10,
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          status: true,
+          paymentStatus: true,
+          totalAmount: true,
+          createdAt: true,
+        },
+      },
+      products: {
+        take: 10,
+        orderBy: { createdAt: "desc" },
+        where: { deletedAt: null },
+        select: {
+          id: true,
+          title: true,
+          status: true,
+          price: true,
+          sellerDelisted: true,
+          createdAt: true,
+        },
+      },
+      sellerWallet: {
+        select: {
+          pendingBalance: true,
+          availableBalance: true,
+          frozenBalance: true,
+          updatedAt: true,
+        },
+      },
+      _count: {
+        select: {
+          orders: true,
+          products: true,
+        },
+      },
+    },
+  });
+
+  if (!user) throw new ApiError("User not found.", 404);
+  return user;
+};
+
+export const getUserProductsAdmin = async (
+  userId: string,
+  page: number = 1,
+  pageSize: number = 20
+) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, role: true, email: true, name: true },
+  });
+  if (!user) throw new ApiError("User not found.", 404);
+
+  const skip = (page - 1) * pageSize;
+  const where = { sellerId: userId, deletedAt: null };
+
+  const [products, totalCount] = await prisma.$transaction([
+    prisma.product.findMany({
+      where,
+      skip,
+      take: pageSize,
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        gameType: true,
+        price: true,
+        status: true,
+        sellerDelisted: true,
+        isAvailable: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
+    prisma.product.count({ where }),
+  ]);
+
+  return {
+    user: { id: user.id, email: user.email, name: user.name, role: user.role },
+    products,
     meta: {
       totalCount,
       totalPages: Math.ceil(totalCount / pageSize),

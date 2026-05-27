@@ -8,3 +8,12 @@ export const createDisputeSchema = z.object({
     .max(500),
   details: z.record(z.string(), z.unknown()).optional(),
 });
+
+export const updateDisputeStatusSchema = z.object({
+  status: z.enum([
+    "UNDER_REVIEW",
+    "RESOLVED_BUYER",
+    "RESOLVED_SELLER",
+    "CLOSED",
+  ]),
+});

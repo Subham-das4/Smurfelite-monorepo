@@ -1,12 +1,17 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import { authenticate, authorize } from "../auth/auth.middleware.js";
 import { Role } from "../../types/prisma.js";
 import { validate } from "../../utils/validate.js";
-import { createDisputeSchema } from "../../schemas/dispute.schemas.js";
+import {
+  createDisputeSchema,
+  updateDisputeStatusSchema,
+} from "../../schemas/dispute.schemas.js";
 import {
   createDisputeController,
   getMyDisputesController,
+  getAdminDisputesController,
+  updateDisputeStatusController,
 } from "./dispute.controller.js";
 
 const router = Router();
@@ -21,7 +26,6 @@ const disputeLimiter = rateLimit({
 
 router.use(authenticate);
 
-// POST /api/disputes — buyer opens a dispute on a COMPLETED order
 router.post(
   "/",
   disputeLimiter,
@@ -29,15 +33,15 @@ router.post(
   createDisputeController
 );
 
-// GET /api/disputes/mine — buyer/seller views their disputes
 router.get("/mine", getMyDisputesController);
 
-// GET /api/disputes — admin list (Phase 5)
-router.get("/", authorize([Role.ADMIN]), (_req: Request, res: Response) => {
-  res.status(501).json({
-    message: "Admin disputes list not implemented yet.",
-    phase: 5,
-  });
-});
+router.get("/", authorize([Role.ADMIN]), getAdminDisputesController);
+
+router.patch(
+  "/:disputeId/status",
+  authorize([Role.ADMIN]),
+  validate(updateDisputeStatusSchema),
+  updateDisputeStatusController
+);
 
 export default router;

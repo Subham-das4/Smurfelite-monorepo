@@ -189,17 +189,17 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 5.4 Users (admin API)
 
-- [ ] `GET /users?search=&page=` — email/name search
-- [ ] `GET /users/:id` — detail with cart, orders, products, lastLoginAt
-- [ ] `GET /users/:id/products` — seller listings
+- [x] `GET /users?search=&page=` — email/name search
+- [x] `GET /users/:id` — detail with cart, orders, products, lastLoginAt
+- [x] `GET /users/:id/products` — seller listings
 
 ### 5.5 Disputes (full API)
 
 - [x] `POST /disputes` — buyer creates from order (Phase 4.2)
 - [x] `GET /disputes/mine` — buyer/seller view (Phase 4.2)
-- [ ] `GET /disputes` — admin list with filters
-- [ ] `PATCH /disputes/:id/status` — admin resolve
-- [ ] On dispute open: freeze wallet amount linked to order
+- [x] `GET /disputes` — admin list with filters
+- [x] `PATCH /disputes/:id/status` — admin resolve
+- [x] On dispute open: freeze wallet amount linked to order
 
 ### 5.6 Wallet
 

@@ -142,7 +142,7 @@ export async function runPhase4_2(ctx: SmokeContext): Promise<boolean> {
     );
   });
 
-  await runner.test("Admin disputes list remains Phase 5 placeholder", async () => {
+  await runner.test("GET /disputes admin list forbidden for buyer", async () => {
     await apiRequest(ctx, "/disputes", {
       token: ctx.buyerToken,
       expectStatus: 403,
