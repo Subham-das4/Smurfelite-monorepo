@@ -229,74 +229,109 @@ Priority: get full buyer journey working without NOWPayments.
 - [x] IPN handlers update payment status (NOWPayments IPN + bypass fulfillment)
 
 **Depends on:** Phase 1  
-**Unblocks:** Phase 6, 7, 8
+**Unblocks:** Phase 5.10, 6, 7, 8
+
+---
+
+## Phase 5.10 — Portal API (admin + seller apps)
+
+Prerequisite endpoints before Vite portal UIs. See [seller-app.md](./seller-app.md) and [admin-app.md](./admin-app.md).
+
+- [x] `GET /products/mine` — seller-owned products (all statuses, paginated)
+- [x] `GET /products/admin` — all products for admin (no public-list filter)
+- [x] `GET /orders/seller` — read-only sales lines for current seller
+- [x] `GET /wallets/me/ledger` — seller ledger history
+- [x] `GET /wallets` — admin paginated seller wallets
+- [x] `GET /wallets/:sellerId` — admin single wallet
+- [x] `GET /wallets/:sellerId/ledger` — admin ledger audit
+- [x] Extend `GET /orders/:orderId/credentials` for `Role.ADMIN` (COMPLETED orders)
+- [x] Shared types: `SellerProductListResponse`, `AdminProductListResponse`, `SellerSaleLine`, wallet list types
+- [x] Smoke phase `5.10` + `smoke:through-5.10`
+- [x] CORS: allow portal dev origins (`localhost:5173`, `5174`)
+
+**Depends on:** Phase 5  
+**Unblocks:** Phase 6, 7
 
 ---
 
 ## Phase 6 — Seller app (`apps/seller-app`)
 
-### 6.1 Scaffold
+**Stack:** Vite + React 19 + TypeScript + Tailwind + TanStack Router + TanStack Table + Redux Toolkit + RTK Query + redux-persist + `@smurfelite/ui` + `@smurfelite/types`.
 
-- [ ] Create `apps/seller-app` Next.js workspace
-- [ ] Add to root `package.json` workspaces + turbo pipeline
-- [ ] Copy auth/RTK patterns from nextjs-app
-- [ ] Env: `NEXT_PUBLIC_EXPRESS_SERVER_API`, seller-only branding
+**Decisions:** Self-publish only (no verification queue). No dashboard — post-login redirect to `/products`. Wallet read-only (no withdraw). Email + Google OAuth. Dev port `5174`.
 
-### 6.2 Auth & layout
+### 6.1 Shared UI package
 
-- [ ] Login page (SELLER role required; redirect if BUYER)
-- [ ] Protected layout + sidebar nav
-- [ ] Logout, session refresh
+- [x] Create `packages/ui` — DataTable, AppShell, Button, Input, Badge, StatusBadge, ConfirmDialog, PageHeader, Tailwind preset
+- [ ] (Optional defer) Migrate nextjs-app to `@smurfelite/ui`
 
-### 6.3 Product management
+### 6.2 Scaffold
 
-- [ ] List my products with status filters
-- [ ] Create product form (credentials encrypted server-side)
-- [ ] Edit product (own listings only)
-- [ ] Delist / republish actions
-- [ ] Draft → submit for verification flow
+- [x] Create `apps/seller-app` Vite workspace + turbo pipeline
+- [x] RTK store + encrypted redux-persist (auth slice)
+- [x] TanStack Router + role guard (`SELLER` only)
+- [x] Env: `VITE_EXPRESS_SERVER_API`, `VITE_GOOGLE_CLIENT_ID`, `VITE_APP_NAME`
 
-### 6.4 Orders & wallet (read-only)
+### 6.3 Auth & layout
 
-- [ ] View sales linked to my products (needs API: seller order items)
-- [ ] Wallet dashboard: pending, available, frozen
-- [ ] Disputes list (read-only)
+- [x] `/login` — email/password + Google; reject non-SELLER roles
+- [x] AppShell sidebar: Products, Sales, Wallet, Disputes (no dashboard)
+- [x] `/` redirects to `/products`
+- [x] Logout + token refresh (RTK baseApi)
 
-**Depends on:** Phase 1, Phase 5 (product + wallet APIs)
+### 6.4 Products
+
+- [x] `/products` — list (`GET /products/mine`), status/search filters, publish/delist/reactivate/delete
+- [x] `/products/new` — create form + optional publish immediately
+- [x] `/products/:id/edit` — edit metadata; optional credential replace
+
+### 6.5 Sales, wallet, disputes (read-only)
+
+- [x] `/sales` — `GET /orders/seller`
+- [x] `/wallet` — balances + `GET /wallets/me/ledger`
+- [x] `/disputes` — `GET /disputes/mine` (read-only detail drawer)
+
+**Depends on:** Phase 5.10, Phase 6.1  
+**Out of scope:** Dashboard KPIs, seller withdraw, `PENDING_VERIFICATION` UI
 
 ---
 
 ## Phase 7 — Admin app (`apps/admin-app`)
 
+**Stack:** Same as seller app. **Decisions:** ADMIN role only. No dashboard — redirect to `/users`. Order-only credential decrypt (not product-level). Dev port `5173`.
+
 ### 7.1 Scaffold
 
-- [ ] Create `apps/admin-app` Next.js workspace
-- [ ] Turbo + shared types setup
-- [ ] ADMIN role gate on all routes
+- [x] Create `apps/admin-app` Vite workspace (reuse ui + auth patterns from seller-app)
+- [x] TanStack Router + `ADMIN` role gate
+- [x] Root scripts: `pnpm dev:seller`, `pnpm dev:admin`
 
-### 7.2 Dashboard & users
+### 7.2 Auth & layout
 
-- [ ] User list with search + pagination
-- [ ] User detail: cart, orders, products, last login
-- [ ] Change user role
-- [ ] Delist / reactivate seller
+- [x] `/login` — email/password + Google; reject non-ADMIN
+- [x] AppShell: Users, Products, Orders, Enquiries, Disputes, Categories, Wallets
+- [x] `/` redirects to `/users`
 
-### 7.3 Catalog
+### 7.3 Users
 
-- [ ] All products list with status filters
-- [ ] Approve pending verification products
-- [ ] Ban / delist products
-- [ ] Game category CRUD + restrict toggle
+- [x] `/users` — search + pagination (`GET /users`)
+- [x] `/users/:userId` — detail, cart/orders; role change, promote-seller, delist/reactivate, delete
 
-### 7.4 Operations
+### 7.4 Catalog
 
-- [ ] All orders list
-- [ ] Manual order status override
-- [ ] Enquiries list + close
-- [ ] Dispute management UI
-- [ ] Manual seller payout recording
+- [x] `/products` — `GET /products/admin`, ban/lift-ban
+- [x] `/products/:productId` — read-only metadata + ban actions
+- [x] `/categories` — game category CRUD + restrict toggle
 
-**Depends on:** Phase 5 APIs
+### 7.5 Operations
+
+- [x] `/orders` + `/orders/:orderId` — list, status override, view credentials (COMPLETED)
+- [x] `/enquiries` — list, close, delete
+- [x] `/disputes` — list, resolve status
+- [x] `/wallets` — seller balances, ledger, record payout
+
+**Depends on:** Phase 5.10, Phase 6.1 (packages/ui)  
+**Out of scope:** Dashboard KPIs, product approval queue, product credential decrypt, seller withdraw UI
 
 ---
 
@@ -363,7 +398,8 @@ Map prompt.md requirements to phases:
 | 4 | Enquiry | 3, 5, 7 |
 | 5 | Users | 1, 5, 7 |
 | 6 | Authentication | 3, 5, 6, 7 |
-| 7 | Admin | 5, 7 |
+| 7 | Admin | 5, 5.10, 7 |
+| 7b | Seller portal | 5, 5.10, 6 |
 | 8 | Email | 3 |
 | 9 | Payment | 2 (bypass), 9 (gateway) |
 | 10 | Disputes | 1, 4, 5, 7 |

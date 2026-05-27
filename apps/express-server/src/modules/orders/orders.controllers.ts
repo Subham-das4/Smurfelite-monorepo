@@ -6,6 +6,7 @@ import {
   getOrderById,
   getBuyerOrders,
   getAllOrders,
+  getSellerSales,
   updateOrderStatus,
   cancelOrder,
   getOrderCredentials,
@@ -54,6 +55,22 @@ export const getBuyerOrdersController = async (
     const { user } = req as unknown as AuthenticatedRequest;
     const orders = await getBuyerOrders(user.id);
     res.status(200).json(orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSellerSalesController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { user } = req as unknown as AuthenticatedRequest;
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = parseInt(req.query.pageSize as string) || 20;
+    const result = await getSellerSales(user.id, page, pageSize);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
@@ -115,9 +132,11 @@ export const getOrderCredentialsController = async (
 ) => {
   try {
     const { user } = req as unknown as AuthenticatedRequest;
+    const isAdmin = user.role === Role.ADMIN;
     const credentials = await getOrderCredentials(
       req.params.orderId,
-      user.id
+      user.id,
+      isAdmin
     );
     res.status(200).json(credentials);
   } catch (error) {

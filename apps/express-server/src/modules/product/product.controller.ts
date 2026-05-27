@@ -5,6 +5,8 @@ import {
   softDeleteProduct,
   getProductDetails,
   getAllProducts,
+  getMyProducts,
+  getAdminProducts,
   publishProduct,
   delistProductBySeller,
   reactivateProductBySeller,
@@ -173,6 +175,43 @@ export async function getProductDetailsController(
     }
 
     res.status(200).json(product);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getMyProductsController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { user } = req as AuthenticatedRequest;
+    const filters: ProductFilters = {
+      ...req.query,
+      page: req.query.page ? Number(req.query.page) : 1,
+      pageSize: req.query.pageSize ? Number(req.query.pageSize) : 20,
+    } as ProductFilters;
+    const result = await getMyProducts(user.id, filters);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAdminProductsController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const filters: ProductFilters = {
+      ...req.query,
+      page: req.query.page ? Number(req.query.page) : 1,
+      pageSize: req.query.pageSize ? Number(req.query.pageSize) : 20,
+    } as ProductFilters;
+    const result = await getAdminProducts(filters);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }

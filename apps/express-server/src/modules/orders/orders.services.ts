@@ -187,7 +187,72 @@ export const cancelOrder = async (orderId: string, userId: string) => {
   });
 };
 
-export const getOrderCredentials = async (orderId: string, userId: string) => {
+export const getSellerSales = async (
+  sellerId: string,
+  page: number = 1,
+  pageSize: number = 20
+) => {
+  const skip = (page - 1) * pageSize;
+  const where = {
+    product: { sellerId },
+    order: { status: { not: OrderStatus.CANCELLED } },
+  };
+
+  const [items, totalCount] = await prisma.$transaction([
+    prisma.orderItem.findMany({
+      where,
+      skip,
+      take: pageSize,
+      include: {
+        order: {
+          select: {
+            id: true,
+            status: true,
+            paymentStatus: true,
+            createdAt: true,
+            updatedAt: true,
+            buyer: { select: { email: true, name: true } },
+          },
+        },
+        product: { select: { id: true, title: true, gameType: true } },
+      },
+      orderBy: { order: { createdAt: "desc" } },
+    }),
+    prisma.orderItem.count({ where }),
+  ]);
+
+  const sales = items.map((item) => ({
+    orderId: item.order.id,
+    productId: item.product.id,
+    productTitle: item.product.title,
+    gameType: item.product.gameType,
+    buyerEmail: item.order.buyer.email,
+    buyerName: item.order.buyer.name,
+    orderStatus: item.order.status,
+    paymentStatus: item.order.paymentStatus,
+    priceAtPurchase: item.priceAtPurchase,
+    quantity: item.quantity,
+    lineTotal: item.priceAtPurchase * item.quantity,
+    soldAt: item.order.updatedAt,
+    orderCreatedAt: item.order.createdAt,
+  }));
+
+  return {
+    sales,
+    meta: {
+      totalCount,
+      totalPages: Math.ceil(totalCount / pageSize),
+      currentPage: page,
+      pageSize,
+    },
+  };
+};
+
+export const getOrderCredentials = async (
+  orderId: string,
+  userId: string,
+  isAdmin: boolean = false
+) => {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: {
@@ -198,7 +263,7 @@ export const getOrderCredentials = async (orderId: string, userId: string) => {
   });
 
   if (!order) throw new ApiError("Order not found.", 404);
-  if (order.buyerId !== userId)
+  if (!isAdmin && order.buyerId !== userId)
     throw new ApiError("Forbidden: You do not own this order.", 403);
   if (order.status !== OrderStatus.COMPLETED) {
     throw new ApiError(

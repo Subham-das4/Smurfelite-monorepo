@@ -11,6 +11,7 @@ import {
   getOrderByIdController,
   getBuyerOrdersController,
   getAllOrdersController,
+  getSellerSalesController,
   updateOrderStatusController,
   cancelOrderController,
   getOrderCredentialsController,
@@ -30,13 +31,16 @@ router.get("/", authorize([Role.BUYER]), getBuyerOrdersController);
 // GET /api/orders/all — Admin gets all orders
 router.get("/all", authorize([Role.ADMIN]), getAllOrdersController);
 
+// GET /api/orders/seller — Seller sales lines (read-only)
+router.get("/seller", authorize([Role.SELLER]), getSellerSalesController);
+
 // GET /api/orders/:orderId — Get single order (buyer owns it or admin)
 router.get("/:orderId", getOrderByIdController);
 
-// GET /api/orders/:orderId/credentials — Buyer retrieves decrypted account credentials (COMPLETED orders only)
+// GET /api/orders/:orderId/credentials — Buyer or admin (COMPLETED orders only)
 router.get(
   "/:orderId/credentials",
-  authorize([Role.BUYER]),
+  authorize([Role.BUYER, Role.ADMIN]),
   getOrderCredentialsController
 );
 

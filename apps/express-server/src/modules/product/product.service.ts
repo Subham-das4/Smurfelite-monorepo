@@ -438,3 +438,119 @@ export async function getAllProducts(filters: ProductFilters) {
     },
   };
 }
+
+const productListSelect = {
+  id: true,
+  gameType: true,
+  title: true,
+  description: true,
+  price: true,
+  status: true,
+  sellerDelisted: true,
+  isAvailable: true,
+  specifications: true,
+  imageUrl: true,
+  sellerId: true,
+  gameCategoryId: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
+
+function buildPortalProductWhere(
+  filters: ProductFilters,
+  base: PrismaNamespace.Prisma.ProductWhereInput
+): PrismaNamespace.Prisma.ProductWhereInput {
+  const where: PrismaNamespace.Prisma.ProductWhereInput = { ...base };
+
+  if (filters.status) {
+    const statuses = filters.status
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean) as ProductStatus[];
+    if (statuses.length === 1) {
+      where.status = statuses[0];
+    } else if (statuses.length > 1) {
+      where.status = { in: statuses };
+    }
+  }
+
+  if (filters.sellerId) {
+    where.sellerId = filters.sellerId;
+  }
+
+  if (filters.search?.trim()) {
+    where.OR = [
+      { title: { contains: filters.search.trim(), mode: "insensitive" } },
+      { description: { contains: filters.search.trim(), mode: "insensitive" } },
+    ];
+  }
+
+  return where;
+}
+
+export async function getMyProducts(sellerId: string, filters: ProductFilters) {
+  const { page, pageSize } = filters;
+  const skip = (page - 1) * pageSize;
+  const where = buildPortalProductWhere(filters, {
+    sellerId,
+    deletedAt: null,
+  });
+
+  const [products, totalCount] = await prisma.$transaction([
+    prisma.product.findMany({
+      where,
+      skip,
+      take: pageSize,
+      select: productListSelect,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.product.count({ where }),
+  ]);
+
+  return {
+    products,
+    meta: {
+      totalCount,
+      totalPages: Math.ceil(totalCount / pageSize),
+      currentPage: page,
+      pageSize,
+    },
+  };
+}
+
+export async function getAdminProducts(filters: ProductFilters) {
+  const { page, pageSize } = filters;
+  const skip = (page - 1) * pageSize;
+  const where = buildPortalProductWhere(filters, {});
+
+  const [rows, totalCount] = await prisma.$transaction([
+    prisma.product.findMany({
+      where,
+      skip,
+      take: pageSize,
+      select: {
+        ...productListSelect,
+        deletedAt: true,
+        seller: { select: { email: true, name: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.product.count({ where }),
+  ]);
+
+  const products = rows.map(({ seller, ...p }) => ({
+    ...p,
+    sellerEmail: seller.email,
+    sellerName: seller.name,
+  }));
+
+  return {
+    products,
+    meta: {
+      totalCount,
+      totalPages: Math.ceil(totalCount / pageSize),
+      currentPage: page,
+      pageSize,
+    },
+  };
+}

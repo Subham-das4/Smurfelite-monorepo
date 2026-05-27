@@ -28,11 +28,12 @@ Smurfelite-monorepo/
 ├── apps/
 │   ├── express-server/     ✅ REST API + Prisma
 │   ├── nextjs-app/         ✅ Buyer website
-│   ├── admin-app/          ❌ Not created
-│   ├── seller-app/         ❌ Not created
+│   ├── admin-app/          🚧 Vite SPA (port 5173)
+│   ├── seller-app/         🚧 Vite SPA (port 5174)
 │   └── cron-server/        ❌ Not created
 ├── packages/
-│   └── shared-types/       ✅ @smurfelite/types
+│   ├── shared-types/       ✅ @smurfelite/types
+│   └── ui/                 🚧 @smurfelite/ui (shared components)
 └── plans/                  📋 This folder
 ```
 
@@ -43,6 +44,8 @@ Smurfelite-monorepo/
 | `pnpm start:dev` | Express + Next.js in parallel |
 | `pnpm dev:express` | API only |
 | `pnpm dev:nextjs` | Buyer site only |
+| `pnpm dev:seller` | Seller portal (port 5174) |
+| `pnpm dev:admin` | Admin panel (port 5173) |
 | `pnpm build` | Turbo build all workspaces |
 
 ---
@@ -94,7 +97,11 @@ Work proceeds in **phases** defined in [feature-roadmap.md](./feature-roadmap.md
 
 | Topic | Decision |
 | ----- | -------- |
-| Admin / seller portals | Separate apps in monorepo (`apps/admin-app`, `apps/seller-app`) |
+| Admin / seller portals | Vite + React SPAs (`apps/admin-app`, `apps/seller-app`), TanStack Router/Table, RTK Query |
+| Shared UI | `packages/ui` (`@smurfelite/ui`) |
+| Product publish | Self-publish (DRAFT → publish → ACTIVE); no admin verification queue |
+| Portal dashboards | None in v1 — seller → `/products`, admin → `/users` |
+| Admin credentials | Order-level decrypt only (COMPLETED orders) |
 | Similar products | pgvector embeddings (future phase) |
 | Payment during E2E | Payment bypass mode first; NOWPayments after full flow works |
 | Livechat | Tawk.to embed widget |

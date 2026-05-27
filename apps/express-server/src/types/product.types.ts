@@ -28,6 +28,8 @@ export interface ProductFilters {
   minPrice?: string;
   maxPrice?: string;
   search?: string;
+  status?: string;
+  sellerId?: string;
   page: number;
   pageSize: number;
   sortBy?: keyof PrismaNamespace.Product;

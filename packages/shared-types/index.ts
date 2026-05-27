@@ -408,3 +408,87 @@ export interface WalletLedgerEntry {
   note: string | null;
   createdAt: string;
 }
+
+export interface PaginationMeta {
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+}
+
+export interface AdminProductListItem extends ProductListItem {
+  deletedAt?: string | null;
+  sellerEmail: string;
+  sellerName: string;
+}
+
+export interface AdminProductListResponse {
+  products: AdminProductListItem[];
+  meta: PaginationMeta;
+}
+
+export interface SellerSaleLine {
+  orderId: string;
+  productId: string;
+  productTitle: string;
+  gameType: string;
+  buyerEmail: string;
+  buyerName: string;
+  orderStatus: OrderStatus;
+  paymentStatus: PaymentStatus;
+  priceAtPurchase: number;
+  quantity: number;
+  lineTotal: number;
+  soldAt: string;
+  orderCreatedAt: string;
+}
+
+export interface SellerSalesResponse {
+  sales: SellerSaleLine[];
+  meta: PaginationMeta;
+}
+
+export interface WalletLedgerListResponse {
+  entries: WalletLedgerEntry[];
+  meta: PaginationMeta;
+}
+
+export interface AdminWalletListItem {
+  sellerId: string;
+  sellerEmail: string;
+  sellerName: string;
+  pendingBalance: number;
+  availableBalance: number;
+  frozenBalance: number;
+  updatedAt: string | null;
+}
+
+export interface AdminWalletListResponse {
+  wallets: AdminWalletListItem[];
+  meta: PaginationMeta;
+}
+
+export interface AdminWalletDetailResponse extends WalletResponse {
+  sellerEmail: string;
+  sellerName: string;
+}
+
+export interface RecordPayoutRequest {
+  amount: number;
+  note?: string;
+}
+
+export interface OrderCredentialsLine {
+  productId: string;
+  title: string;
+  gameType: string;
+  accountUsername: string;
+  accountPassword: string;
+  accountEmail: string;
+  accountEmailPassword: string;
+}
+
+export interface OrderCredentialsResponse {
+  orderId: string;
+  credentials: OrderCredentialsLine[];
+}

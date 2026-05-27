@@ -149,12 +149,20 @@ Regenerate client after schema changes: `pnpm --filter=@smurfelite/express-serve
 - [ ] `BypassPaymentRequest` `{ internalOrderId: string }`
 - [ ] `BypassPaymentResponse` `{ order: OrderResponse }`
 
-### Phase 5 — Extended API
+### Phase 5.10 — Portal API (admin + seller apps)
 
-- [ ] `UserDetailResponse` (cart, orders, products, lastLoginAt)
-- [ ] `SellerSalesResponse`
-- [ ] `SimilarProductsResponse`
-- [ ] Admin payout request types
+- [x] `PaginationMeta` + list response shapes
+- [x] `AdminProductListItem` / `AdminProductListResponse` — `GET /products/admin`
+- [x] `SellerSaleLine` / `SellerSalesResponse` — `GET /orders/seller`
+- [x] `WalletLedgerListResponse` — ledger pagination
+- [x] `AdminWalletListItem` / `AdminWalletListResponse` — `GET /wallets`
+- [x] `RecordPayoutRequest` — `POST /wallets/:sellerId/payout`
+- [x] `OrderCredentialsResponse` — admin `GET /orders/:id/credentials`
+
+### Phase 5 — Extended API (other)
+
+- [x] `UserDetailResponse` (cart, orders, products, lastLoginAt) — via admin user detail
+- [ ] `SimilarProductsResponse` (pgvector)
 
 ### Phase 3 — Enquiry fix
 

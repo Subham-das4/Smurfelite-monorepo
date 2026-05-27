@@ -5,6 +5,8 @@ import {
   deleteProductController,
   getProductDetailsController,
   getAllProductsController,
+  getMyProductsController,
+  getAdminProductsController,
   publishProductController,
   delistProductController,
   reactivateProductController,
@@ -23,6 +25,18 @@ import {
 const router = Router();
 
 router.get("/", getAllProductsController);
+router.get(
+  "/mine",
+  authenticate,
+  authorize([Role.SELLER]),
+  getMyProductsController
+);
+router.get(
+  "/admin",
+  authenticate,
+  authorize([Role.ADMIN]),
+  getAdminProductsController
+);
 router.get("/:productId", getProductDetailsController);
 
 router.use(authenticate, authorize([Role.ADMIN, Role.SELLER]));

@@ -28,6 +28,7 @@
     "smoke:through-5.3": "tsx --env-file=.env scripts/smoke/run.mts through 5.3",
     "smoke:through-5.5": "tsx --env-file=.env scripts/smoke/run.mts through 5.5",
     "smoke:through-5.9": "tsx --env-file=.env scripts/smoke/run.mts through 5.9",
+    "smoke:through-5.10": "tsx --env-file=.env scripts/smoke/run.mts through 5.10",
     "smoke:phase-1": "tsx --env-file=.env scripts/smoke/run.mts phase 1",
     "smoke:phase-2.1": "tsx --env-file=.env scripts/smoke/run.mts phase 2.1",
     "smoke:phase-2.2": "tsx --env-file=.env scripts/smoke/run.mts phase 2.2",
@@ -46,7 +47,8 @@
     "smoke:phase-5.5": "tsx --env-file=.env scripts/smoke/run.mts phase 5.5",
     "smoke:phase-5.6": "tsx --env-file=.env scripts/smoke/run.mts phase 5.6",
     "smoke:phase-5.8": "tsx --env-file=.env scripts/smoke/run.mts phase 5.8",
-    "smoke:phase-5.9": "tsx --env-file=.env scripts/smoke/run.mts phase 5.9"
+    "smoke:phase-5.9": "tsx --env-file=.env scripts/smoke/run.mts phase 5.9",
+    "smoke:phase-5.10": "tsx --env-file=.env scripts/smoke/run.mts phase 5.10"
   },
   "dependencies": {
     "@paypal/paypal-server-sdk": "^2.2.0",
