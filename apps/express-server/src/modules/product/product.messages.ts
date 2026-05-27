@@ -13,4 +13,6 @@ export const ProductErrors = {
   PRODUCT_NOT_BANNABLE: "This product cannot be banned.",
   PRODUCT_NOT_BANNED: "Product is not banned.",
   PRODUCT_ALREADY_DELETED: "Product is already deleted.",
+  SELLER_ACCOUNT_DELISTED:
+    "Your seller account has been delisted by an administrator.",
 };

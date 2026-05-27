@@ -1,4 +1,4 @@
-import { Role } from "../../types/prisma.js";
+import { Role, ProductStatus } from "../../types/prisma.js";
 import { prisma } from "../../lib/prisma.js";
 import ApiError from "../../utils/errors.js";
 import bcrypt from "bcrypt";
@@ -121,6 +121,83 @@ export const updateUserRole = async (userId: string, role: Role) => {
     where: { id: userId },
     data: { role },
     select: { id: true, email: true, name: true, role: true },
+  });
+};
+
+export const delistSellerByAdmin = async (userId: string) => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new ApiError("User not found.", 404);
+  if (user.role !== Role.SELLER) {
+    throw new ApiError("Only seller accounts can be delisted.", 400);
+  }
+  if (user.sellerDelisted) {
+    return user;
+  }
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: { sellerDelisted: true },
+    }),
+    prisma.product.updateMany({
+      where: {
+        sellerId: userId,
+        deletedAt: null,
+        status: {
+          notIn: [ProductStatus.SOLD, ProductStatus.BANNED_BY_ADMIN],
+        },
+      },
+      data: { sellerDelisted: true, isAvailable: false },
+    }),
+  ]);
+
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      sellerDelisted: true,
+    },
+  });
+};
+
+export const reactivateSellerByAdmin = async (userId: string) => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new ApiError("User not found.", 404);
+  if (user.role !== Role.SELLER) {
+    throw new ApiError("Only seller accounts can be reactivated.", 400);
+  }
+  if (!user.sellerDelisted) {
+    return user;
+  }
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: { sellerDelisted: false },
+    }),
+    prisma.product.updateMany({
+      where: {
+        sellerId: userId,
+        deletedAt: null,
+        sellerDelisted: true,
+        status: { not: ProductStatus.DELISTED_BY_SELLER },
+      },
+      data: { sellerDelisted: false, isAvailable: true },
+    }),
+  ]);
+
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      sellerDelisted: true,
+    },
   });
 };
 

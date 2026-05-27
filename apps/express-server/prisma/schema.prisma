@@ -71,6 +71,8 @@ model User {
   googleId             String?   @unique
   googleProfilePicture String?   @default("")
   lastLoginAt          DateTime?
+  /** Admin delisted seller account; cascades to product visibility. */
+  sellerDelisted       Boolean   @default(false)
 
   // Relations
   products           Product[]

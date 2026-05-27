@@ -24,6 +24,7 @@ export type UserRegistrationInput = Omit<
   | "sellerWallet"
   | "disputesAsBuyer"
   | "disputesAsSeller"
+  | "sellerDelisted"
 >;
 
 // Extend the Request interface to include user data

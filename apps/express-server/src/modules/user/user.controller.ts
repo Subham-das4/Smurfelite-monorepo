@@ -8,6 +8,8 @@ import {
   getAllUsers,
   updateUserRole,
   deleteUser,
+  delistSellerByAdmin,
+  reactivateSellerByAdmin,
 } from "./user.service.js";
 import ApiError from "../../utils/errors.js";
 
@@ -81,6 +83,32 @@ export const updateUserRoleController = async (
   try {
     const { role } = req.body;
     const result = await updateUserRole(req.params.userId, role as Role);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const delistSellerController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await delistSellerByAdmin(req.params.userId);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const reactivateSellerController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await reactivateSellerByAdmin(req.params.userId);
     res.status(200).json(result);
   } catch (error) {
     next(error);

@@ -131,7 +131,8 @@ exports.Prisma.UserScalarFieldEnum = {
   isVerified: 'isVerified',
   googleId: 'googleId',
   googleProfilePicture: 'googleProfilePicture',
-  lastLoginAt: 'lastLoginAt'
+  lastLoginAt: 'lastLoginAt',
+  sellerDelisted: 'sellerDelisted'
 };
 
 exports.Prisma.VerificationTokenScalarFieldEnum = {

@@ -177,15 +177,15 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 5.2 Game categories (admin API)
 
-- [ ] CRUD `GET/POST/PATCH/DELETE /game-categories`
-- [ ] `PATCH /game-categories/:id/restrict` toggle
-- [ ] Block new listings in restricted categories
+- [x] CRUD `GET/POST/PATCH/DELETE /game-categories`
+- [x] `PATCH /game-categories/:id/restrict` toggle
+- [x] Block new listings in restricted categories
 
 ### 5.3 Seller delist / reactivate (admin API)
 
-- [ ] `PATCH /users/:id/delist` — set seller flag, cascade `sellerDelisted` on products
-- [ ] `PATCH /users/:id/reactivate` — clear flag, restore product visibility
-- [ ] Hide delisted seller products from public listing
+- [x] `PATCH /users/:id/delist` — set seller flag, cascade `sellerDelisted` on products
+- [x] `PATCH /users/:id/reactivate` — clear flag, restore product visibility
+- [x] Hide delisted seller products from public listing
 
 ### 5.4 Users (admin API)
 

@@ -10,6 +10,9 @@ import ApiError from "../../utils/errors.js";
 import { ProductErrors } from "./product.messages.js";
 import { ProductStatus } from "../../types/prisma.js";
 import { PUBLIC_LISTABLE_PRODUCT_WHERE } from "./product.constants.js";
+import {
+  assertCategoryAllowsNewListing,
+} from "../game-category/game-category.service.js";
 
 function maskSensitiveFields<T extends Record<string, unknown>>(product: T) {
   return {
@@ -19,6 +22,19 @@ function maskSensitiveFields<T extends Record<string, unknown>>(product: T) {
     accountEmail: "***ENCRYPTED***",
     accountEmailPassword: "***ENCRYPTED***",
   };
+}
+
+async function assertSellerCanList(sellerId: string) {
+  const seller = await prisma.user.findUnique({
+    where: { id: sellerId },
+    select: { sellerDelisted: true, role: true },
+  });
+  if (!seller) {
+    throw new ApiError(ProductErrors.PRODUCT_FORBIDDEN, 403);
+  }
+  if (seller.sellerDelisted) {
+    throw new ApiError(ProductErrors.SELLER_ACCOUNT_DELISTED, 403);
+  }
 }
 
 async function getProductOrThrow(productId: string) {
@@ -73,12 +89,20 @@ export async function createProduct(
     ...safeData
   } = data;
 
+  await assertSellerCanList(sellerId);
+  const category = await assertCategoryAllowsNewListing({
+    gameCategoryId,
+    gameType: safeData.gameType,
+  });
+
   const publish = options?.publish === true;
   const status = publish ? ProductStatus.ACTIVE : ProductStatus.DRAFT;
+  const resolvedGameType = category?.name ?? safeData.gameType;
 
   const product = await prisma.product.create({
     data: {
       ...safeData,
+      gameType: resolvedGameType,
       ...encryptedData,
       status,
       isAvailable: publish,
@@ -95,6 +119,11 @@ export async function createProduct(
 
 export async function publishProduct(productId: string) {
   const product = await getProductOrThrow(productId);
+  await assertSellerCanList(product.sellerId);
+  await assertCategoryAllowsNewListing({
+    gameCategoryId: product.gameCategoryId,
+    gameType: product.gameType,
+  });
 
   if (product.status === ProductStatus.BANNED_BY_ADMIN) {
     throw new ApiError(ProductErrors.INVALID_STATUS_TRANSITION, 400);

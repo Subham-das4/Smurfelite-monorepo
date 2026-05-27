@@ -2449,6 +2449,7 @@ export namespace Prisma {
     googleId: string | null
     googleProfilePicture: string | null
     lastLoginAt: Date | null
+    sellerDelisted: boolean | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2463,6 +2464,7 @@ export namespace Prisma {
     googleId: string | null
     googleProfilePicture: string | null
     lastLoginAt: Date | null
+    sellerDelisted: boolean | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2477,6 +2479,7 @@ export namespace Prisma {
     googleId: number
     googleProfilePicture: number
     lastLoginAt: number
+    sellerDelisted: number
     _all: number
   }
 
@@ -2493,6 +2496,7 @@ export namespace Prisma {
     googleId?: true
     googleProfilePicture?: true
     lastLoginAt?: true
+    sellerDelisted?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2507,6 +2511,7 @@ export namespace Prisma {
     googleId?: true
     googleProfilePicture?: true
     lastLoginAt?: true
+    sellerDelisted?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2521,6 +2526,7 @@ export namespace Prisma {
     googleId?: true
     googleProfilePicture?: true
     lastLoginAt?: true
+    sellerDelisted?: true
     _all?: true
   }
 
@@ -2608,6 +2614,7 @@ export namespace Prisma {
     googleId: string | null
     googleProfilePicture: string | null
     lastLoginAt: Date | null
+    sellerDelisted: boolean
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2639,6 +2646,7 @@ export namespace Prisma {
     googleId?: boolean
     googleProfilePicture?: boolean
     lastLoginAt?: boolean
+    sellerDelisted?: boolean
     products?: boolean | User$productsArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
     cart?: boolean | User$cartArgs<ExtArgs>
@@ -2664,6 +2672,7 @@ export namespace Prisma {
     googleId?: boolean
     googleProfilePicture?: boolean
     lastLoginAt?: boolean
+    sellerDelisted?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2678,6 +2687,7 @@ export namespace Prisma {
     googleId?: boolean
     googleProfilePicture?: boolean
     lastLoginAt?: boolean
+    sellerDelisted?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -2692,9 +2702,10 @@ export namespace Prisma {
     googleId?: boolean
     googleProfilePicture?: boolean
     lastLoginAt?: boolean
+    sellerDelisted?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "updatedAt" | "name" | "isVerified" | "googleId" | "googleProfilePicture" | "lastLoginAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "updatedAt" | "name" | "isVerified" | "googleId" | "googleProfilePicture" | "lastLoginAt" | "sellerDelisted", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | User$productsArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
@@ -2737,6 +2748,10 @@ export namespace Prisma {
       googleId: string | null
       googleProfilePicture: string | null
       lastLoginAt: Date | null
+      /**
+       * * Admin delisted seller account; cascades to product visibility.
+       */
+      sellerDelisted: boolean
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3181,6 +3196,7 @@ export namespace Prisma {
     readonly googleId: FieldRef<"User", 'String'>
     readonly googleProfilePicture: FieldRef<"User", 'String'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
+    readonly sellerDelisted: FieldRef<"User", 'Boolean'>
   }
     
 
@@ -18510,7 +18526,8 @@ export namespace Prisma {
     isVerified: 'isVerified',
     googleId: 'googleId',
     googleProfilePicture: 'googleProfilePicture',
-    lastLoginAt: 'lastLoginAt'
+    lastLoginAt: 'lastLoginAt',
+    sellerDelisted: 'sellerDelisted'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -18931,6 +18948,7 @@ export namespace Prisma {
     googleId?: StringNullableFilter<"User"> | string | null
     googleProfilePicture?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    sellerDelisted?: BoolFilter<"User"> | boolean
     products?: ProductListRelationFilter
     orders?: OrderListRelationFilter
     cart?: XOR<CartNullableScalarRelationFilter, CartWhereInput> | null
@@ -18955,6 +18973,7 @@ export namespace Prisma {
     googleId?: SortOrderInput | SortOrder
     googleProfilePicture?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
+    sellerDelisted?: SortOrder
     products?: ProductOrderByRelationAggregateInput
     orders?: OrderOrderByRelationAggregateInput
     cart?: CartOrderByWithRelationInput
@@ -18982,6 +19001,7 @@ export namespace Prisma {
     isVerified?: BoolFilter<"User"> | boolean
     googleProfilePicture?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    sellerDelisted?: BoolFilter<"User"> | boolean
     products?: ProductListRelationFilter
     orders?: OrderListRelationFilter
     cart?: XOR<CartNullableScalarRelationFilter, CartWhereInput> | null
@@ -19006,6 +19026,7 @@ export namespace Prisma {
     googleId?: SortOrderInput | SortOrder
     googleProfilePicture?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
+    sellerDelisted?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -19026,6 +19047,7 @@ export namespace Prisma {
     googleId?: StringNullableWithAggregatesFilter<"User"> | string | null
     googleProfilePicture?: StringNullableWithAggregatesFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    sellerDelisted?: BoolWithAggregatesFilter<"User"> | boolean
   }
 
   export type VerificationTokenWhereInput = {
@@ -19944,6 +19966,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -19968,6 +19991,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -19992,6 +20016,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -20016,6 +20041,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -20040,6 +20066,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
   }
 
   export type UserUpdateManyMutationInput = {
@@ -20054,6 +20081,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -20068,6 +20096,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type VerificationTokenCreateInput = {
@@ -21148,6 +21177,7 @@ export namespace Prisma {
     googleId?: SortOrder
     googleProfilePicture?: SortOrder
     lastLoginAt?: SortOrder
+    sellerDelisted?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -21162,6 +21192,7 @@ export namespace Prisma {
     googleId?: SortOrder
     googleProfilePicture?: SortOrder
     lastLoginAt?: SortOrder
+    sellerDelisted?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -21176,6 +21207,7 @@ export namespace Prisma {
     googleId?: SortOrder
     googleProfilePicture?: SortOrder
     lastLoginAt?: SortOrder
+    sellerDelisted?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -24080,6 +24112,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -24103,6 +24136,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -24142,6 +24176,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -24165,6 +24200,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -24188,6 +24224,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -24211,6 +24248,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -24250,6 +24288,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -24273,6 +24312,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -24296,6 +24336,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -24319,6 +24360,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -24358,6 +24400,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -24381,6 +24424,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -24499,6 +24543,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
@@ -24522,6 +24567,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
@@ -24630,6 +24676,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
@@ -24653,6 +24700,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
@@ -24727,6 +24775,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
@@ -24750,6 +24799,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
@@ -24809,6 +24859,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
@@ -24832,6 +24883,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
@@ -25027,6 +25079,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     cart?: CartCreateNestedOneWithoutUserInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
@@ -25050,6 +25103,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
@@ -25175,6 +25229,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
@@ -25198,6 +25253,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
@@ -25467,6 +25523,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -25490,6 +25547,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -25529,6 +25587,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -25552,6 +25611,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -25608,6 +25668,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -25631,6 +25692,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -25659,6 +25721,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -25682,6 +25745,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -25790,6 +25854,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -25813,6 +25878,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -25847,6 +25913,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -25870,6 +25937,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -25909,6 +25977,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -25932,6 +26001,7 @@ export namespace Prisma {
     googleId?: string | null
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -26001,6 +26071,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -26024,6 +26095,7 @@ export namespace Prisma {
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput

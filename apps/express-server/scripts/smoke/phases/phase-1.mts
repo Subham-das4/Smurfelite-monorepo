@@ -89,12 +89,14 @@ export async function runPhase1(ctx: SmokeContext): Promise<boolean> {
 
   runner.section("Placeholder API routes (501)");
 
-  await runner.test("GET /game-categories returns 501 placeholder", async () => {
-    const { status, data } = await apiRequest<{ phase?: number }>(ctx, "/game-categories", {
-      expectStatus: 501,
-    });
-    runner.assert(status === 501, "Expected 501");
-    runner.assert(data.phase === 5, "Expected phase 5 in placeholder response");
+  await runner.test("GET /game-categories returns public list", async () => {
+    const { status, data } = await apiRequest<{ categories: unknown[] }>(
+      ctx,
+      "/game-categories",
+      { expectStatus: 200 }
+    );
+    runner.assert(status === 200, "Expected 200");
+    runner.assert(Array.isArray(data.categories), "Expected categories array");
   });
 
   await runner.test("GET /disputes forbidden for buyer (admin only)", async () => {

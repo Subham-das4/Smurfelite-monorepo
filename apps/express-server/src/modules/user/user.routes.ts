@@ -14,6 +14,8 @@ import {
   getAllUsersController,
   updateUserRoleController,
   deleteUserController,
+  delistSellerController,
+  reactivateSellerController,
 } from "./user.controller.js";
 
 const router = Router();
@@ -33,6 +35,20 @@ router.put("/me/password", validate(changePasswordSchema), changePasswordControl
 
 // GET /api/users — list all users (admin only)
 router.get("/", authorize([Role.ADMIN]), getAllUsersController);
+
+// PATCH /api/users/:userId/delist — admin delist seller + cascade products
+router.patch(
+  "/:userId/delist",
+  authorize([Role.ADMIN]),
+  delistSellerController
+);
+
+// PATCH /api/users/:userId/reactivate — admin restore seller listings
+router.patch(
+  "/:userId/reactivate",
+  authorize([Role.ADMIN]),
+  reactivateSellerController
+);
 
 // PATCH /api/users/:userId/role — change a user's role
 router.patch(
