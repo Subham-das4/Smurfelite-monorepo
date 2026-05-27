@@ -24,30 +24,30 @@ Prerequisite for wallet, disputes, product lifecycle, and vector search.
 - [x] Add `ProductStatus` enum: `DRAFT`, `ACTIVE`, `PENDING_VERIFICATION`, `SOLD`, `DELISTED_BY_SELLER`, `BANNED_BY_ADMIN`
 - [x] Add `status ProductStatus @default(DRAFT)` on `Product`
 - [x] Add `sellerDelisted Boolean @default(false)` on `Product` (admin delist cascade)
-- [ ] Add `deletedAt DateTime?` for soft delete (optional, vs status-only)
+- [x] Add `deletedAt DateTime?` for soft delete (optional, vs status-only)
 - [x] Replace or supplement `isAvailable` with status-driven availability logic
-- [ ] Add `lastLoginAt DateTime?` on `User`
-- [ ] Add `GameCategory` model: `id`, `name`, `slug`, `isRestricted`, `createdAt`
-- [ ] Link `Product.gameType` to `GameCategory` (FK or validated slug) — migration strategy
-- [ ] Add `Dispute` model: order ref, buyer, seller, status, reason, details JSON, createdAt
-- [ ] Add `DisputeStatus` enum: `OPEN`, `UNDER_REVIEW`, `RESOLVED_BUYER`, `RESOLVED_SELLER`, `CLOSED`
-- [ ] Add `SellerWallet` model: `userId`, `pendingBalance`, `availableBalance`, `frozenBalance`
-- [ ] Add `WalletLedger` model: type, amount, orderId?, disputeId?, note, createdAt
-- [ ] Add `PaymentStatus` enum on Order or separate fields: `PENDING`, `PAID`, `FAILED`, `REFUNDED`
-- [ ] Enable PostgreSQL `pgvector` extension in migration
-- [ ] Add `embedding vector(1536)?` on `Product` (or separate `ProductEmbedding` table)
+- [x] Add `lastLoginAt DateTime?` on `User`
+- [x] Add `GameCategory` model: `id`, `name`, `slug`, `isRestricted`, `createdAt`
+- [x] Link `Product.gameType` to `GameCategory` (FK or validated slug) — migration strategy
+- [x] Add `Dispute` model: order ref, buyer, seller, status, reason, details JSON, createdAt
+- [x] Add `DisputeStatus` enum: `OPEN`, `UNDER_REVIEW`, `RESOLVED_BUYER`, `RESOLVED_SELLER`, `CLOSED`
+- [x] Add `SellerWallet` model: `userId`, `pendingBalance`, `availableBalance`, `frozenBalance`
+- [x] Add `WalletLedger` model: type, amount, orderId?, disputeId?, note, createdAt
+- [x] Add `PaymentStatus` enum on Order or separate fields: `PENDING`, `PAID`, `FAILED`, `REFUNDED`
+- [ ] Enable PostgreSQL `pgvector` extension in migration *(optional SQL: `migrations/optional_pgvector_embedding.sql` — requires pgvector on PostgreSQL host)*
+- [ ] Add `embedding vector(1536)?` on `Product` *(deferred until pgvector extension installed)*
 - [x] Run `prisma migrate dev` and regenerate client
 
 ### 1.2 Shared types
 
 - [x] Export new enums from `@smurfelite/types`
-- [ ] Add DTOs: `GameCategoryResponse`, `DisputeResponse`, `WalletResponse`, `WalletLedgerEntry`
+- [x] Add DTOs: `GameCategoryResponse`, `DisputeResponse`, `WalletResponse`, `WalletLedgerEntry`
 - [x] Add `ProductStatus` to `ProductListItem` / create/update requests
-- [ ] Document breaking changes in `plans/shared-types.md`
+- [x] Document breaking changes in `plans/shared-types.md`
 
 ### 1.3 Express scaffolding (no full UI yet)
 
-- [ ] Create placeholder modules: `game-category/`, `dispute/`, `wallet/` (empty routes OK)
+- [x] Create placeholder modules: `game-category/`, `dispute/`, `wallet/` (empty routes OK)
 - [x] Update product listing filter to respect `ProductStatus.ACTIVE` + `!sellerDelisted`
 
 **Depends on:** Nothing  

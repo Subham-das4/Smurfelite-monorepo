@@ -5,6 +5,7 @@ export const PUBLIC_LISTABLE_PRODUCT_WHERE = {
   status: ProductStatus.ACTIVE,
   sellerDelisted: false,
   isAvailable: true,
+  deletedAt: null,
 } as const;
 
 /** Whether a product can be added to cart or checked out. */

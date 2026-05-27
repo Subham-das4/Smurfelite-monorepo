@@ -86,7 +86,8 @@ export async function getProductDetails(
   if (
     product.status !== ProductStatus.ACTIVE ||
     product.sellerDelisted ||
-    !product.isAvailable
+    !product.isAvailable ||
+    product.deletedAt
   ) {
     throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
   }
@@ -263,6 +264,7 @@ export async function getAllProducts(filters: ProductFilters) {
         specifications: true,
         imageUrl: true,
         sellerId: true,
+        gameCategoryId: true,
         createdAt: true,
         updatedAt: true,
       },

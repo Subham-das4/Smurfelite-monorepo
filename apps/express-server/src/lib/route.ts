@@ -9,6 +9,9 @@ import userRoutes from "../modules/user/user.routes.js";
 import enquiryRoutes from "../modules/enquiry/enquiry.routes.js";
 import logRoutes from "../modules/logs/logs.routes.js";
 import nowpaymentsRoutes from "../modules/payments/nowpayments/nowpayments.routes.js";
+import gameCategoryRoutes from "../modules/game-category/game-category.routes.js";
+import disputeRoutes from "../modules/dispute/dispute.routes.js";
+import walletRoutes from "../modules/wallet/wallet.routes.js";
 
 const apiRouter = Router();
 
@@ -26,6 +29,9 @@ apiRouter.use("/orders", orderRoutes);
 apiRouter.use("/payments/nowpayments", nowpaymentsRoutes);
 apiRouter.use("/users", userRoutes);
 apiRouter.use("/enquiries", enquiryRoutes);
+apiRouter.use("/game-categories", gameCategoryRoutes);
+apiRouter.use("/disputes", disputeRoutes);
+apiRouter.use("/wallets", walletRoutes);
 apiRouter.use("/logs", logRoutes);
 
 // Catch any routes that fall through

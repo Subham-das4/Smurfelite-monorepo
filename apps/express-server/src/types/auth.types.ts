@@ -9,7 +9,21 @@ export interface JwtPayload {
 
 export type UserRegistrationInput = Omit<
   PrismaNamespace.User,
-  "id" | "createdAt" | "updatedAt" | "googleId"
+  | "id"
+  | "createdAt"
+  | "updatedAt"
+  | "googleId"
+  | "lastLoginAt"
+  | "products"
+  | "orders"
+  | "cart"
+  | "enquiries"
+  | "verificationToken"
+  | "refreshToken"
+  | "passwordResetToken"
+  | "sellerWallet"
+  | "disputesAsBuyer"
+  | "disputesAsSeller"
 >;
 
 // Extend the Request interface to include user data

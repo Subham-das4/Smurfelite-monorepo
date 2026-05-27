@@ -1,4 +1,12 @@
-import { Role, OrderStatus, User, ProductStatus } from "./src/generated/prisma/index";
+import {
+  Role,
+  OrderStatus,
+  User,
+  ProductStatus,
+  PaymentStatus,
+  DisputeStatus,
+  WalletLedgerType,
+} from "./src/generated/prisma/index";
 
 export * from "./src/generated/prisma/index";
 
@@ -92,6 +100,7 @@ export interface UserProfileResponse {
   role: Role;
   isVerified: boolean;
   googleProfilePicture: string | null;
+  lastLoginAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -143,6 +152,7 @@ export interface ProductListItem {
   specifications: Record<string, unknown>;
   imageUrl: string | null;
   sellerId: string;
+  gameCategoryId?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -154,6 +164,7 @@ export interface ProductListResponse {
 
 export interface CreateProductRequest {
   gameType: string;
+  gameCategoryId?: string;
   title: string;
   description?: string;
   price: number;
@@ -168,6 +179,7 @@ export interface CreateProductRequest {
 
 export interface UpdateProductRequest {
   gameType?: string;
+  gameCategoryId?: string | null;
   title?: string;
   description?: string;
   price?: number;
@@ -237,6 +249,7 @@ export interface OrderItemResponse {
 export interface OrderResponse {
   id: string;
   status: OrderStatus;
+  paymentStatus: PaymentStatus;
   totalAmount: number;
   paymentIntent: string | null;
   paymentProvider: string | null;
@@ -295,4 +308,67 @@ export interface CreateNowPaymentsInvoiceRequest {
 export interface CreateNowPaymentsInvoiceResponse {
   invoiceUrl: string;
   invoiceId: string;
+}
+
+// ─────────────────────────────────────────
+// Game categories (Phase 5 API)
+// ─────────────────────────────────────────
+
+export interface GameCategoryResponse {
+  id: string;
+  name: string;
+  slug: string;
+  isRestricted: boolean;
+  createdAt: string;
+}
+
+export interface CreateGameCategoryRequest {
+  name: string;
+  slug: string;
+  isRestricted?: boolean;
+}
+
+// ─────────────────────────────────────────
+// Disputes (Phase 5 API)
+// ─────────────────────────────────────────
+
+export interface DisputeResponse {
+  id: string;
+  orderId: string;
+  buyerId: string;
+  sellerId: string;
+  status: DisputeStatus;
+  reason: string;
+  details: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateDisputeRequest {
+  orderId: string;
+  reason: string;
+  details?: Record<string, unknown>;
+}
+
+// ─────────────────────────────────────────
+// Wallet (Phase 5 API)
+// ─────────────────────────────────────────
+
+export interface WalletResponse {
+  userId: string;
+  pendingBalance: number;
+  availableBalance: number;
+  frozenBalance: number;
+  updatedAt: string;
+}
+
+export interface WalletLedgerEntry {
+  id: string;
+  walletUserId: string;
+  type: WalletLedgerType;
+  amount: number;
+  orderId: string | null;
+  disputeId: string | null;
+  note: string | null;
+  createdAt: string;
 }

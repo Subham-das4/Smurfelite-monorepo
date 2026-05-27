@@ -34,6 +34,11 @@ export type PasswordResetToken = $Result.DefaultSelection<Prisma.$PasswordResetT
  */
 export type RefreshToken = $Result.DefaultSelection<Prisma.$RefreshTokenPayload>
 /**
+ * Model GameCategory
+ * 
+ */
+export type GameCategory = $Result.DefaultSelection<Prisma.$GameCategoryPayload>
+/**
  * Model Product
  * 
  */
@@ -63,6 +68,21 @@ export type OrderItem = $Result.DefaultSelection<Prisma.$OrderItemPayload>
  * 
  */
 export type Enquiry = $Result.DefaultSelection<Prisma.$EnquiryPayload>
+/**
+ * Model Dispute
+ * 
+ */
+export type Dispute = $Result.DefaultSelection<Prisma.$DisputePayload>
+/**
+ * Model SellerWallet
+ * 
+ */
+export type SellerWallet = $Result.DefaultSelection<Prisma.$SellerWalletPayload>
+/**
+ * Model WalletLedger
+ * 
+ */
+export type WalletLedger = $Result.DefaultSelection<Prisma.$WalletLedgerPayload>
 
 /**
  * Enums
@@ -88,6 +108,16 @@ export const OrderStatus: {
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 
+export const PaymentStatus: {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED'
+};
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
 export const ProductStatus: {
   DRAFT: 'DRAFT',
   ACTIVE: 'ACTIVE',
@@ -99,6 +129,29 @@ export const ProductStatus: {
 
 export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus]
 
+
+export const DisputeStatus: {
+  OPEN: 'OPEN',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  RESOLVED_BUYER: 'RESOLVED_BUYER',
+  RESOLVED_SELLER: 'RESOLVED_SELLER',
+  CLOSED: 'CLOSED'
+};
+
+export type DisputeStatus = (typeof DisputeStatus)[keyof typeof DisputeStatus]
+
+
+export const WalletLedgerType: {
+  SALE_CREDIT: 'SALE_CREDIT',
+  HOLD_RELEASED: 'HOLD_RELEASED',
+  PAYOUT: 'PAYOUT',
+  DISPUTE_FREEZE: 'DISPUTE_FREEZE',
+  DISPUTE_RELEASE: 'DISPUTE_RELEASE',
+  ADJUSTMENT: 'ADJUSTMENT'
+};
+
+export type WalletLedgerType = (typeof WalletLedgerType)[keyof typeof WalletLedgerType]
+
 }
 
 export type Role = $Enums.Role
@@ -109,9 +162,21 @@ export type OrderStatus = $Enums.OrderStatus
 
 export const OrderStatus: typeof $Enums.OrderStatus
 
+export type PaymentStatus = $Enums.PaymentStatus
+
+export const PaymentStatus: typeof $Enums.PaymentStatus
+
 export type ProductStatus = $Enums.ProductStatus
 
 export const ProductStatus: typeof $Enums.ProductStatus
+
+export type DisputeStatus = $Enums.DisputeStatus
+
+export const DisputeStatus: typeof $Enums.DisputeStatus
+
+export type WalletLedgerType = $Enums.WalletLedgerType
+
+export const WalletLedgerType: typeof $Enums.WalletLedgerType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -271,6 +336,16 @@ export class PrismaClient<
   get refreshToken(): Prisma.RefreshTokenDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.gameCategory`: Exposes CRUD operations for the **GameCategory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GameCategories
+    * const gameCategories = await prisma.gameCategory.findMany()
+    * ```
+    */
+  get gameCategory(): Prisma.GameCategoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.product`: Exposes CRUD operations for the **Product** model.
     * Example usage:
     * ```ts
@@ -329,6 +404,36 @@ export class PrismaClient<
     * ```
     */
   get enquiry(): Prisma.EnquiryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.dispute`: Exposes CRUD operations for the **Dispute** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Disputes
+    * const disputes = await prisma.dispute.findMany()
+    * ```
+    */
+  get dispute(): Prisma.DisputeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sellerWallet`: Exposes CRUD operations for the **SellerWallet** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SellerWallets
+    * const sellerWallets = await prisma.sellerWallet.findMany()
+    * ```
+    */
+  get sellerWallet(): Prisma.SellerWalletDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.walletLedger`: Exposes CRUD operations for the **WalletLedger** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WalletLedgers
+    * const walletLedgers = await prisma.walletLedger.findMany()
+    * ```
+    */
+  get walletLedger(): Prisma.WalletLedgerDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -767,12 +872,16 @@ export namespace Prisma {
     VerificationToken: 'VerificationToken',
     PasswordResetToken: 'PasswordResetToken',
     RefreshToken: 'RefreshToken',
+    GameCategory: 'GameCategory',
     Product: 'Product',
     Cart: 'Cart',
     CartItem: 'CartItem',
     Order: 'Order',
     OrderItem: 'OrderItem',
-    Enquiry: 'Enquiry'
+    Enquiry: 'Enquiry',
+    Dispute: 'Dispute',
+    SellerWallet: 'SellerWallet',
+    WalletLedger: 'WalletLedger'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -788,7 +897,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "verificationToken" | "passwordResetToken" | "refreshToken" | "product" | "cart" | "cartItem" | "order" | "orderItem" | "enquiry"
+      modelProps: "user" | "verificationToken" | "passwordResetToken" | "refreshToken" | "gameCategory" | "product" | "cart" | "cartItem" | "order" | "orderItem" | "enquiry" | "dispute" | "sellerWallet" | "walletLedger"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1085,6 +1194,80 @@ export namespace Prisma {
           count: {
             args: Prisma.RefreshTokenCountArgs<ExtArgs>
             result: $Utils.Optional<RefreshTokenCountAggregateOutputType> | number
+          }
+        }
+      }
+      GameCategory: {
+        payload: Prisma.$GameCategoryPayload<ExtArgs>
+        fields: Prisma.GameCategoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GameCategoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GameCategoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload>
+          }
+          findFirst: {
+            args: Prisma.GameCategoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GameCategoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload>
+          }
+          findMany: {
+            args: Prisma.GameCategoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload>[]
+          }
+          create: {
+            args: Prisma.GameCategoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload>
+          }
+          createMany: {
+            args: Prisma.GameCategoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GameCategoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload>[]
+          }
+          delete: {
+            args: Prisma.GameCategoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload>
+          }
+          update: {
+            args: Prisma.GameCategoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.GameCategoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GameCategoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GameCategoryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload>[]
+          }
+          upsert: {
+            args: Prisma.GameCategoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameCategoryPayload>
+          }
+          aggregate: {
+            args: Prisma.GameCategoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGameCategory>
+          }
+          groupBy: {
+            args: Prisma.GameCategoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GameCategoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GameCategoryCountArgs<ExtArgs>
+            result: $Utils.Optional<GameCategoryCountAggregateOutputType> | number
           }
         }
       }
@@ -1532,6 +1715,228 @@ export namespace Prisma {
           }
         }
       }
+      Dispute: {
+        payload: Prisma.$DisputePayload<ExtArgs>
+        fields: Prisma.DisputeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DisputeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DisputeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload>
+          }
+          findFirst: {
+            args: Prisma.DisputeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DisputeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload>
+          }
+          findMany: {
+            args: Prisma.DisputeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload>[]
+          }
+          create: {
+            args: Prisma.DisputeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload>
+          }
+          createMany: {
+            args: Prisma.DisputeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DisputeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload>[]
+          }
+          delete: {
+            args: Prisma.DisputeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload>
+          }
+          update: {
+            args: Prisma.DisputeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload>
+          }
+          deleteMany: {
+            args: Prisma.DisputeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DisputeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DisputeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload>[]
+          }
+          upsert: {
+            args: Prisma.DisputeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DisputePayload>
+          }
+          aggregate: {
+            args: Prisma.DisputeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDispute>
+          }
+          groupBy: {
+            args: Prisma.DisputeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DisputeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DisputeCountArgs<ExtArgs>
+            result: $Utils.Optional<DisputeCountAggregateOutputType> | number
+          }
+        }
+      }
+      SellerWallet: {
+        payload: Prisma.$SellerWalletPayload<ExtArgs>
+        fields: Prisma.SellerWalletFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SellerWalletFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SellerWalletFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload>
+          }
+          findFirst: {
+            args: Prisma.SellerWalletFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SellerWalletFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload>
+          }
+          findMany: {
+            args: Prisma.SellerWalletFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload>[]
+          }
+          create: {
+            args: Prisma.SellerWalletCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload>
+          }
+          createMany: {
+            args: Prisma.SellerWalletCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SellerWalletCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload>[]
+          }
+          delete: {
+            args: Prisma.SellerWalletDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload>
+          }
+          update: {
+            args: Prisma.SellerWalletUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload>
+          }
+          deleteMany: {
+            args: Prisma.SellerWalletDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SellerWalletUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SellerWalletUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload>[]
+          }
+          upsert: {
+            args: Prisma.SellerWalletUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SellerWalletPayload>
+          }
+          aggregate: {
+            args: Prisma.SellerWalletAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSellerWallet>
+          }
+          groupBy: {
+            args: Prisma.SellerWalletGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SellerWalletGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SellerWalletCountArgs<ExtArgs>
+            result: $Utils.Optional<SellerWalletCountAggregateOutputType> | number
+          }
+        }
+      }
+      WalletLedger: {
+        payload: Prisma.$WalletLedgerPayload<ExtArgs>
+        fields: Prisma.WalletLedgerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WalletLedgerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WalletLedgerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload>
+          }
+          findFirst: {
+            args: Prisma.WalletLedgerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WalletLedgerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload>
+          }
+          findMany: {
+            args: Prisma.WalletLedgerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload>[]
+          }
+          create: {
+            args: Prisma.WalletLedgerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload>
+          }
+          createMany: {
+            args: Prisma.WalletLedgerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WalletLedgerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload>[]
+          }
+          delete: {
+            args: Prisma.WalletLedgerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload>
+          }
+          update: {
+            args: Prisma.WalletLedgerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload>
+          }
+          deleteMany: {
+            args: Prisma.WalletLedgerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WalletLedgerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WalletLedgerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload>[]
+          }
+          upsert: {
+            args: Prisma.WalletLedgerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletLedgerPayload>
+          }
+          aggregate: {
+            args: Prisma.WalletLedgerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWalletLedger>
+          }
+          groupBy: {
+            args: Prisma.WalletLedgerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WalletLedgerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WalletLedgerCountArgs<ExtArgs>
+            result: $Utils.Optional<WalletLedgerCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1644,12 +2049,16 @@ export namespace Prisma {
     verificationToken?: VerificationTokenOmit
     passwordResetToken?: PasswordResetTokenOmit
     refreshToken?: RefreshTokenOmit
+    gameCategory?: GameCategoryOmit
     product?: ProductOmit
     cart?: CartOmit
     cartItem?: CartItemOmit
     order?: OrderOmit
     orderItem?: OrderItemOmit
     enquiry?: EnquiryOmit
+    dispute?: DisputeOmit
+    sellerWallet?: SellerWalletOmit
+    walletLedger?: WalletLedgerOmit
   }
 
   /* Types for Logging */
@@ -1734,6 +2143,8 @@ export namespace Prisma {
     orders: number
     enquiries: number
     refreshToken: number
+    disputesAsBuyer: number
+    disputesAsSeller: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1741,6 +2152,8 @@ export namespace Prisma {
     orders?: boolean | UserCountOutputTypeCountOrdersArgs
     enquiries?: boolean | UserCountOutputTypeCountEnquiriesArgs
     refreshToken?: boolean | UserCountOutputTypeCountRefreshTokenArgs
+    disputesAsBuyer?: boolean | UserCountOutputTypeCountDisputesAsBuyerArgs
+    disputesAsSeller?: boolean | UserCountOutputTypeCountDisputesAsSellerArgs
   }
 
   // Custom InputTypes
@@ -1780,6 +2193,51 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountRefreshTokenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RefreshTokenWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDisputesAsBuyerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DisputeWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDisputesAsSellerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DisputeWhereInput
+  }
+
+
+  /**
+   * Count Type GameCategoryCountOutputType
+   */
+
+  export type GameCategoryCountOutputType = {
+    products: number
+  }
+
+  export type GameCategoryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    products?: boolean | GameCategoryCountOutputTypeCountProductsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * GameCategoryCountOutputType without action
+   */
+  export type GameCategoryCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategoryCountOutputType
+     */
+    select?: GameCategoryCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GameCategoryCountOutputType without action
+   */
+  export type GameCategoryCountOutputTypeCountProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductWhereInput
   }
 
 
@@ -1860,10 +2318,14 @@ export namespace Prisma {
 
   export type OrderCountOutputType = {
     items: number
+    disputes: number
+    walletEntries: number
   }
 
   export type OrderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | OrderCountOutputTypeCountItemsArgs
+    disputes?: boolean | OrderCountOutputTypeCountDisputesArgs
+    walletEntries?: boolean | OrderCountOutputTypeCountWalletEntriesArgs
   }
 
   // Custom InputTypes
@@ -1882,6 +2344,82 @@ export namespace Prisma {
    */
   export type OrderCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OrderItemWhereInput
+  }
+
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeCountDisputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DisputeWhereInput
+  }
+
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeCountWalletEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WalletLedgerWhereInput
+  }
+
+
+  /**
+   * Count Type DisputeCountOutputType
+   */
+
+  export type DisputeCountOutputType = {
+    walletEntries: number
+  }
+
+  export type DisputeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    walletEntries?: boolean | DisputeCountOutputTypeCountWalletEntriesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DisputeCountOutputType without action
+   */
+  export type DisputeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DisputeCountOutputType
+     */
+    select?: DisputeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DisputeCountOutputType without action
+   */
+  export type DisputeCountOutputTypeCountWalletEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WalletLedgerWhereInput
+  }
+
+
+  /**
+   * Count Type SellerWalletCountOutputType
+   */
+
+  export type SellerWalletCountOutputType = {
+    ledgerEntries: number
+  }
+
+  export type SellerWalletCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ledgerEntries?: boolean | SellerWalletCountOutputTypeCountLedgerEntriesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SellerWalletCountOutputType without action
+   */
+  export type SellerWalletCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWalletCountOutputType
+     */
+    select?: SellerWalletCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SellerWalletCountOutputType without action
+   */
+  export type SellerWalletCountOutputTypeCountLedgerEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WalletLedgerWhereInput
   }
 
 
@@ -1910,6 +2448,7 @@ export namespace Prisma {
     isVerified: boolean | null
     googleId: string | null
     googleProfilePicture: string | null
+    lastLoginAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1923,6 +2462,7 @@ export namespace Prisma {
     isVerified: boolean | null
     googleId: string | null
     googleProfilePicture: string | null
+    lastLoginAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1936,6 +2476,7 @@ export namespace Prisma {
     isVerified: number
     googleId: number
     googleProfilePicture: number
+    lastLoginAt: number
     _all: number
   }
 
@@ -1951,6 +2492,7 @@ export namespace Prisma {
     isVerified?: true
     googleId?: true
     googleProfilePicture?: true
+    lastLoginAt?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1964,6 +2506,7 @@ export namespace Prisma {
     isVerified?: true
     googleId?: true
     googleProfilePicture?: true
+    lastLoginAt?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1977,6 +2520,7 @@ export namespace Prisma {
     isVerified?: true
     googleId?: true
     googleProfilePicture?: true
+    lastLoginAt?: true
     _all?: true
   }
 
@@ -2063,6 +2607,7 @@ export namespace Prisma {
     isVerified: boolean
     googleId: string | null
     googleProfilePicture: string | null
+    lastLoginAt: Date | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2093,6 +2638,7 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: boolean
     googleProfilePicture?: boolean
+    lastLoginAt?: boolean
     products?: boolean | User$productsArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
     cart?: boolean | User$cartArgs<ExtArgs>
@@ -2100,6 +2646,9 @@ export namespace Prisma {
     verificationToken?: boolean | User$verificationTokenArgs<ExtArgs>
     refreshToken?: boolean | User$refreshTokenArgs<ExtArgs>
     passwordResetToken?: boolean | User$passwordResetTokenArgs<ExtArgs>
+    sellerWallet?: boolean | User$sellerWalletArgs<ExtArgs>
+    disputesAsBuyer?: boolean | User$disputesAsBuyerArgs<ExtArgs>
+    disputesAsSeller?: boolean | User$disputesAsSellerArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2114,6 +2663,7 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: boolean
     googleProfilePicture?: boolean
+    lastLoginAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2127,6 +2677,7 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: boolean
     googleProfilePicture?: boolean
+    lastLoginAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -2140,9 +2691,10 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: boolean
     googleProfilePicture?: boolean
+    lastLoginAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "updatedAt" | "name" | "isVerified" | "googleId" | "googleProfilePicture", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "updatedAt" | "name" | "isVerified" | "googleId" | "googleProfilePicture" | "lastLoginAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | User$productsArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
@@ -2151,6 +2703,9 @@ export namespace Prisma {
     verificationToken?: boolean | User$verificationTokenArgs<ExtArgs>
     refreshToken?: boolean | User$refreshTokenArgs<ExtArgs>
     passwordResetToken?: boolean | User$passwordResetTokenArgs<ExtArgs>
+    sellerWallet?: boolean | User$sellerWalletArgs<ExtArgs>
+    disputesAsBuyer?: boolean | User$disputesAsBuyerArgs<ExtArgs>
+    disputesAsSeller?: boolean | User$disputesAsSellerArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2166,6 +2721,9 @@ export namespace Prisma {
       verificationToken: Prisma.$VerificationTokenPayload<ExtArgs> | null
       refreshToken: Prisma.$RefreshTokenPayload<ExtArgs>[]
       passwordResetToken: Prisma.$PasswordResetTokenPayload<ExtArgs> | null
+      sellerWallet: Prisma.$SellerWalletPayload<ExtArgs> | null
+      disputesAsBuyer: Prisma.$DisputePayload<ExtArgs>[]
+      disputesAsSeller: Prisma.$DisputePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2178,6 +2736,7 @@ export namespace Prisma {
       isVerified: boolean
       googleId: string | null
       googleProfilePicture: string | null
+      lastLoginAt: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2579,6 +3138,9 @@ export namespace Prisma {
     verificationToken<T extends User$verificationTokenArgs<ExtArgs> = {}>(args?: Subset<T, User$verificationTokenArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     refreshToken<T extends User$refreshTokenArgs<ExtArgs> = {}>(args?: Subset<T, User$refreshTokenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     passwordResetToken<T extends User$passwordResetTokenArgs<ExtArgs> = {}>(args?: Subset<T, User$passwordResetTokenArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    sellerWallet<T extends User$sellerWalletArgs<ExtArgs> = {}>(args?: Subset<T, User$sellerWalletArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    disputesAsBuyer<T extends User$disputesAsBuyerArgs<ExtArgs> = {}>(args?: Subset<T, User$disputesAsBuyerArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    disputesAsSeller<T extends User$disputesAsSellerArgs<ExtArgs> = {}>(args?: Subset<T, User$disputesAsSellerArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2618,6 +3180,7 @@ export namespace Prisma {
     readonly isVerified: FieldRef<"User", 'Boolean'>
     readonly googleId: FieldRef<"User", 'String'>
     readonly googleProfilePicture: FieldRef<"User", 'String'>
+    readonly lastLoginAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -3156,6 +3719,73 @@ export namespace Prisma {
      */
     include?: PasswordResetTokenInclude<ExtArgs> | null
     where?: PasswordResetTokenWhereInput
+  }
+
+  /**
+   * User.sellerWallet
+   */
+  export type User$sellerWalletArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    where?: SellerWalletWhereInput
+  }
+
+  /**
+   * User.disputesAsBuyer
+   */
+  export type User$disputesAsBuyerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    where?: DisputeWhereInput
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    cursor?: DisputeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
+  }
+
+  /**
+   * User.disputesAsSeller
+   */
+  export type User$disputesAsSellerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    where?: DisputeWhereInput
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    cursor?: DisputeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
   }
 
   /**
@@ -6352,6 +6982,1076 @@ export namespace Prisma {
 
 
   /**
+   * Model GameCategory
+   */
+
+  export type AggregateGameCategory = {
+    _count: GameCategoryCountAggregateOutputType | null
+    _min: GameCategoryMinAggregateOutputType | null
+    _max: GameCategoryMaxAggregateOutputType | null
+  }
+
+  export type GameCategoryMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    isRestricted: boolean | null
+    createdAt: Date | null
+  }
+
+  export type GameCategoryMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    isRestricted: boolean | null
+    createdAt: Date | null
+  }
+
+  export type GameCategoryCountAggregateOutputType = {
+    id: number
+    name: number
+    slug: number
+    isRestricted: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type GameCategoryMinAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    isRestricted?: true
+    createdAt?: true
+  }
+
+  export type GameCategoryMaxAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    isRestricted?: true
+    createdAt?: true
+  }
+
+  export type GameCategoryCountAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    isRestricted?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type GameCategoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GameCategory to aggregate.
+     */
+    where?: GameCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GameCategories to fetch.
+     */
+    orderBy?: GameCategoryOrderByWithRelationInput | GameCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GameCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GameCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GameCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GameCategories
+    **/
+    _count?: true | GameCategoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GameCategoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GameCategoryMaxAggregateInputType
+  }
+
+  export type GetGameCategoryAggregateType<T extends GameCategoryAggregateArgs> = {
+        [P in keyof T & keyof AggregateGameCategory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGameCategory[P]>
+      : GetScalarType<T[P], AggregateGameCategory[P]>
+  }
+
+
+
+
+  export type GameCategoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GameCategoryWhereInput
+    orderBy?: GameCategoryOrderByWithAggregationInput | GameCategoryOrderByWithAggregationInput[]
+    by: GameCategoryScalarFieldEnum[] | GameCategoryScalarFieldEnum
+    having?: GameCategoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GameCategoryCountAggregateInputType | true
+    _min?: GameCategoryMinAggregateInputType
+    _max?: GameCategoryMaxAggregateInputType
+  }
+
+  export type GameCategoryGroupByOutputType = {
+    id: string
+    name: string
+    slug: string
+    isRestricted: boolean
+    createdAt: Date
+    _count: GameCategoryCountAggregateOutputType | null
+    _min: GameCategoryMinAggregateOutputType | null
+    _max: GameCategoryMaxAggregateOutputType | null
+  }
+
+  type GetGameCategoryGroupByPayload<T extends GameCategoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GameCategoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GameCategoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GameCategoryGroupByOutputType[P]>
+            : GetScalarType<T[P], GameCategoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GameCategorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    isRestricted?: boolean
+    createdAt?: boolean
+    products?: boolean | GameCategory$productsArgs<ExtArgs>
+    _count?: boolean | GameCategoryCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gameCategory"]>
+
+  export type GameCategorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    isRestricted?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["gameCategory"]>
+
+  export type GameCategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    isRestricted?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["gameCategory"]>
+
+  export type GameCategorySelectScalar = {
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    isRestricted?: boolean
+    createdAt?: boolean
+  }
+
+  export type GameCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "isRestricted" | "createdAt", ExtArgs["result"]["gameCategory"]>
+  export type GameCategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    products?: boolean | GameCategory$productsArgs<ExtArgs>
+    _count?: boolean | GameCategoryCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type GameCategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type GameCategoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $GameCategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GameCategory"
+    objects: {
+      products: Prisma.$ProductPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      slug: string
+      isRestricted: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["gameCategory"]>
+    composites: {}
+  }
+
+  type GameCategoryGetPayload<S extends boolean | null | undefined | GameCategoryDefaultArgs> = $Result.GetResult<Prisma.$GameCategoryPayload, S>
+
+  type GameCategoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GameCategoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GameCategoryCountAggregateInputType | true
+    }
+
+  export interface GameCategoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GameCategory'], meta: { name: 'GameCategory' } }
+    /**
+     * Find zero or one GameCategory that matches the filter.
+     * @param {GameCategoryFindUniqueArgs} args - Arguments to find a GameCategory
+     * @example
+     * // Get one GameCategory
+     * const gameCategory = await prisma.gameCategory.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GameCategoryFindUniqueArgs>(args: SelectSubset<T, GameCategoryFindUniqueArgs<ExtArgs>>): Prisma__GameCategoryClient<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GameCategory that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GameCategoryFindUniqueOrThrowArgs} args - Arguments to find a GameCategory
+     * @example
+     * // Get one GameCategory
+     * const gameCategory = await prisma.gameCategory.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GameCategoryFindUniqueOrThrowArgs>(args: SelectSubset<T, GameCategoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GameCategoryClient<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GameCategory that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameCategoryFindFirstArgs} args - Arguments to find a GameCategory
+     * @example
+     * // Get one GameCategory
+     * const gameCategory = await prisma.gameCategory.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GameCategoryFindFirstArgs>(args?: SelectSubset<T, GameCategoryFindFirstArgs<ExtArgs>>): Prisma__GameCategoryClient<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GameCategory that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameCategoryFindFirstOrThrowArgs} args - Arguments to find a GameCategory
+     * @example
+     * // Get one GameCategory
+     * const gameCategory = await prisma.gameCategory.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GameCategoryFindFirstOrThrowArgs>(args?: SelectSubset<T, GameCategoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__GameCategoryClient<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GameCategories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameCategoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GameCategories
+     * const gameCategories = await prisma.gameCategory.findMany()
+     * 
+     * // Get first 10 GameCategories
+     * const gameCategories = await prisma.gameCategory.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const gameCategoryWithIdOnly = await prisma.gameCategory.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GameCategoryFindManyArgs>(args?: SelectSubset<T, GameCategoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GameCategory.
+     * @param {GameCategoryCreateArgs} args - Arguments to create a GameCategory.
+     * @example
+     * // Create one GameCategory
+     * const GameCategory = await prisma.gameCategory.create({
+     *   data: {
+     *     // ... data to create a GameCategory
+     *   }
+     * })
+     * 
+     */
+    create<T extends GameCategoryCreateArgs>(args: SelectSubset<T, GameCategoryCreateArgs<ExtArgs>>): Prisma__GameCategoryClient<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GameCategories.
+     * @param {GameCategoryCreateManyArgs} args - Arguments to create many GameCategories.
+     * @example
+     * // Create many GameCategories
+     * const gameCategory = await prisma.gameCategory.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GameCategoryCreateManyArgs>(args?: SelectSubset<T, GameCategoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GameCategories and returns the data saved in the database.
+     * @param {GameCategoryCreateManyAndReturnArgs} args - Arguments to create many GameCategories.
+     * @example
+     * // Create many GameCategories
+     * const gameCategory = await prisma.gameCategory.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GameCategories and only return the `id`
+     * const gameCategoryWithIdOnly = await prisma.gameCategory.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GameCategoryCreateManyAndReturnArgs>(args?: SelectSubset<T, GameCategoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GameCategory.
+     * @param {GameCategoryDeleteArgs} args - Arguments to delete one GameCategory.
+     * @example
+     * // Delete one GameCategory
+     * const GameCategory = await prisma.gameCategory.delete({
+     *   where: {
+     *     // ... filter to delete one GameCategory
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GameCategoryDeleteArgs>(args: SelectSubset<T, GameCategoryDeleteArgs<ExtArgs>>): Prisma__GameCategoryClient<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GameCategory.
+     * @param {GameCategoryUpdateArgs} args - Arguments to update one GameCategory.
+     * @example
+     * // Update one GameCategory
+     * const gameCategory = await prisma.gameCategory.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GameCategoryUpdateArgs>(args: SelectSubset<T, GameCategoryUpdateArgs<ExtArgs>>): Prisma__GameCategoryClient<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GameCategories.
+     * @param {GameCategoryDeleteManyArgs} args - Arguments to filter GameCategories to delete.
+     * @example
+     * // Delete a few GameCategories
+     * const { count } = await prisma.gameCategory.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GameCategoryDeleteManyArgs>(args?: SelectSubset<T, GameCategoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GameCategories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameCategoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GameCategories
+     * const gameCategory = await prisma.gameCategory.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GameCategoryUpdateManyArgs>(args: SelectSubset<T, GameCategoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GameCategories and returns the data updated in the database.
+     * @param {GameCategoryUpdateManyAndReturnArgs} args - Arguments to update many GameCategories.
+     * @example
+     * // Update many GameCategories
+     * const gameCategory = await prisma.gameCategory.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GameCategories and only return the `id`
+     * const gameCategoryWithIdOnly = await prisma.gameCategory.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GameCategoryUpdateManyAndReturnArgs>(args: SelectSubset<T, GameCategoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GameCategory.
+     * @param {GameCategoryUpsertArgs} args - Arguments to update or create a GameCategory.
+     * @example
+     * // Update or create a GameCategory
+     * const gameCategory = await prisma.gameCategory.upsert({
+     *   create: {
+     *     // ... data to create a GameCategory
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GameCategory we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GameCategoryUpsertArgs>(args: SelectSubset<T, GameCategoryUpsertArgs<ExtArgs>>): Prisma__GameCategoryClient<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GameCategories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameCategoryCountArgs} args - Arguments to filter GameCategories to count.
+     * @example
+     * // Count the number of GameCategories
+     * const count = await prisma.gameCategory.count({
+     *   where: {
+     *     // ... the filter for the GameCategories we want to count
+     *   }
+     * })
+    **/
+    count<T extends GameCategoryCountArgs>(
+      args?: Subset<T, GameCategoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GameCategoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GameCategory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameCategoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GameCategoryAggregateArgs>(args: Subset<T, GameCategoryAggregateArgs>): Prisma.PrismaPromise<GetGameCategoryAggregateType<T>>
+
+    /**
+     * Group by GameCategory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameCategoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GameCategoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GameCategoryGroupByArgs['orderBy'] }
+        : { orderBy?: GameCategoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GameCategoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGameCategoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GameCategory model
+   */
+  readonly fields: GameCategoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GameCategory.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GameCategoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    products<T extends GameCategory$productsArgs<ExtArgs> = {}>(args?: Subset<T, GameCategory$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GameCategory model
+   */
+  interface GameCategoryFieldRefs {
+    readonly id: FieldRef<"GameCategory", 'String'>
+    readonly name: FieldRef<"GameCategory", 'String'>
+    readonly slug: FieldRef<"GameCategory", 'String'>
+    readonly isRestricted: FieldRef<"GameCategory", 'Boolean'>
+    readonly createdAt: FieldRef<"GameCategory", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GameCategory findUnique
+   */
+  export type GameCategoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which GameCategory to fetch.
+     */
+    where: GameCategoryWhereUniqueInput
+  }
+
+  /**
+   * GameCategory findUniqueOrThrow
+   */
+  export type GameCategoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which GameCategory to fetch.
+     */
+    where: GameCategoryWhereUniqueInput
+  }
+
+  /**
+   * GameCategory findFirst
+   */
+  export type GameCategoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which GameCategory to fetch.
+     */
+    where?: GameCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GameCategories to fetch.
+     */
+    orderBy?: GameCategoryOrderByWithRelationInput | GameCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GameCategories.
+     */
+    cursor?: GameCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GameCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GameCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GameCategories.
+     */
+    distinct?: GameCategoryScalarFieldEnum | GameCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * GameCategory findFirstOrThrow
+   */
+  export type GameCategoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which GameCategory to fetch.
+     */
+    where?: GameCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GameCategories to fetch.
+     */
+    orderBy?: GameCategoryOrderByWithRelationInput | GameCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GameCategories.
+     */
+    cursor?: GameCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GameCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GameCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GameCategories.
+     */
+    distinct?: GameCategoryScalarFieldEnum | GameCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * GameCategory findMany
+   */
+  export type GameCategoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which GameCategories to fetch.
+     */
+    where?: GameCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GameCategories to fetch.
+     */
+    orderBy?: GameCategoryOrderByWithRelationInput | GameCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GameCategories.
+     */
+    cursor?: GameCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GameCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GameCategories.
+     */
+    skip?: number
+    distinct?: GameCategoryScalarFieldEnum | GameCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * GameCategory create
+   */
+  export type GameCategoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GameCategory.
+     */
+    data: XOR<GameCategoryCreateInput, GameCategoryUncheckedCreateInput>
+  }
+
+  /**
+   * GameCategory createMany
+   */
+  export type GameCategoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GameCategories.
+     */
+    data: GameCategoryCreateManyInput | GameCategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GameCategory createManyAndReturn
+   */
+  export type GameCategoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * The data used to create many GameCategories.
+     */
+    data: GameCategoryCreateManyInput | GameCategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GameCategory update
+   */
+  export type GameCategoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GameCategory.
+     */
+    data: XOR<GameCategoryUpdateInput, GameCategoryUncheckedUpdateInput>
+    /**
+     * Choose, which GameCategory to update.
+     */
+    where: GameCategoryWhereUniqueInput
+  }
+
+  /**
+   * GameCategory updateMany
+   */
+  export type GameCategoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GameCategories.
+     */
+    data: XOR<GameCategoryUpdateManyMutationInput, GameCategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which GameCategories to update
+     */
+    where?: GameCategoryWhereInput
+    /**
+     * Limit how many GameCategories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GameCategory updateManyAndReturn
+   */
+  export type GameCategoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * The data used to update GameCategories.
+     */
+    data: XOR<GameCategoryUpdateManyMutationInput, GameCategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which GameCategories to update
+     */
+    where?: GameCategoryWhereInput
+    /**
+     * Limit how many GameCategories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GameCategory upsert
+   */
+  export type GameCategoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GameCategory to update in case it exists.
+     */
+    where: GameCategoryWhereUniqueInput
+    /**
+     * In case the GameCategory found by the `where` argument doesn't exist, create a new GameCategory with this data.
+     */
+    create: XOR<GameCategoryCreateInput, GameCategoryUncheckedCreateInput>
+    /**
+     * In case the GameCategory was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GameCategoryUpdateInput, GameCategoryUncheckedUpdateInput>
+  }
+
+  /**
+   * GameCategory delete
+   */
+  export type GameCategoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    /**
+     * Filter which GameCategory to delete.
+     */
+    where: GameCategoryWhereUniqueInput
+  }
+
+  /**
+   * GameCategory deleteMany
+   */
+  export type GameCategoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GameCategories to delete
+     */
+    where?: GameCategoryWhereInput
+    /**
+     * Limit how many GameCategories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GameCategory.products
+   */
+  export type GameCategory$productsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Product
+     */
+    select?: ProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Product
+     */
+    omit?: ProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductInclude<ExtArgs> | null
+    where?: ProductWhereInput
+    orderBy?: ProductOrderByWithRelationInput | ProductOrderByWithRelationInput[]
+    cursor?: ProductWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProductScalarFieldEnum | ProductScalarFieldEnum[]
+  }
+
+  /**
+   * GameCategory without action
+   */
+  export type GameCategoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Product
    */
 
@@ -6374,6 +8074,7 @@ export namespace Prisma {
   export type ProductMinAggregateOutputType = {
     id: string | null
     gameType: string | null
+    gameCategoryId: string | null
     title: string | null
     description: string | null
     price: number | null
@@ -6381,6 +8082,7 @@ export namespace Prisma {
     sellerDelisted: boolean | null
     isAvailable: boolean | null
     transactionBlock: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     imageUrl: string | null
@@ -6394,6 +8096,7 @@ export namespace Prisma {
   export type ProductMaxAggregateOutputType = {
     id: string | null
     gameType: string | null
+    gameCategoryId: string | null
     title: string | null
     description: string | null
     price: number | null
@@ -6401,6 +8104,7 @@ export namespace Prisma {
     sellerDelisted: boolean | null
     isAvailable: boolean | null
     transactionBlock: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     imageUrl: string | null
@@ -6414,6 +8118,7 @@ export namespace Prisma {
   export type ProductCountAggregateOutputType = {
     id: number
     gameType: number
+    gameCategoryId: number
     title: number
     description: number
     price: number
@@ -6422,6 +8127,7 @@ export namespace Prisma {
     isAvailable: number
     specifications: number
     transactionBlock: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     imageUrl: number
@@ -6445,6 +8151,7 @@ export namespace Prisma {
   export type ProductMinAggregateInputType = {
     id?: true
     gameType?: true
+    gameCategoryId?: true
     title?: true
     description?: true
     price?: true
@@ -6452,6 +8159,7 @@ export namespace Prisma {
     sellerDelisted?: true
     isAvailable?: true
     transactionBlock?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     imageUrl?: true
@@ -6465,6 +8173,7 @@ export namespace Prisma {
   export type ProductMaxAggregateInputType = {
     id?: true
     gameType?: true
+    gameCategoryId?: true
     title?: true
     description?: true
     price?: true
@@ -6472,6 +8181,7 @@ export namespace Prisma {
     sellerDelisted?: true
     isAvailable?: true
     transactionBlock?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     imageUrl?: true
@@ -6485,6 +8195,7 @@ export namespace Prisma {
   export type ProductCountAggregateInputType = {
     id?: true
     gameType?: true
+    gameCategoryId?: true
     title?: true
     description?: true
     price?: true
@@ -6493,6 +8204,7 @@ export namespace Prisma {
     isAvailable?: true
     specifications?: true
     transactionBlock?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     imageUrl?: true
@@ -6593,6 +8305,7 @@ export namespace Prisma {
   export type ProductGroupByOutputType = {
     id: string
     gameType: string
+    gameCategoryId: string | null
     title: string
     description: string | null
     price: number
@@ -6601,6 +8314,7 @@ export namespace Prisma {
     isAvailable: boolean
     specifications: JsonValue
     transactionBlock: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     imageUrl: string | null
@@ -6633,6 +8347,7 @@ export namespace Prisma {
   export type ProductSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     gameType?: boolean
+    gameCategoryId?: boolean
     title?: boolean
     description?: boolean
     price?: boolean
@@ -6641,6 +8356,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications?: boolean
     transactionBlock?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     imageUrl?: boolean
@@ -6649,6 +8365,7 @@ export namespace Prisma {
     accountEmail?: boolean
     accountEmailPassword?: boolean
     sellerId?: boolean
+    gameCategory?: boolean | Product$gameCategoryArgs<ExtArgs>
     seller?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | Product$itemsArgs<ExtArgs>
     cartItems?: boolean | Product$cartItemsArgs<ExtArgs>
@@ -6658,6 +8375,7 @@ export namespace Prisma {
   export type ProductSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     gameType?: boolean
+    gameCategoryId?: boolean
     title?: boolean
     description?: boolean
     price?: boolean
@@ -6666,6 +8384,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications?: boolean
     transactionBlock?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     imageUrl?: boolean
@@ -6674,12 +8393,14 @@ export namespace Prisma {
     accountEmail?: boolean
     accountEmailPassword?: boolean
     sellerId?: boolean
+    gameCategory?: boolean | Product$gameCategoryArgs<ExtArgs>
     seller?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     gameType?: boolean
+    gameCategoryId?: boolean
     title?: boolean
     description?: boolean
     price?: boolean
@@ -6688,6 +8409,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications?: boolean
     transactionBlock?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     imageUrl?: boolean
@@ -6696,12 +8418,14 @@ export namespace Prisma {
     accountEmail?: boolean
     accountEmailPassword?: boolean
     sellerId?: boolean
+    gameCategory?: boolean | Product$gameCategoryArgs<ExtArgs>
     seller?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectScalar = {
     id?: boolean
     gameType?: boolean
+    gameCategoryId?: boolean
     title?: boolean
     description?: boolean
     price?: boolean
@@ -6710,6 +8434,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications?: boolean
     transactionBlock?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     imageUrl?: boolean
@@ -6720,23 +8445,27 @@ export namespace Prisma {
     sellerId?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameType" | "title" | "description" | "price" | "status" | "sellerDelisted" | "isAvailable" | "specifications" | "transactionBlock" | "createdAt" | "updatedAt" | "imageUrl" | "accountUsername" | "accountPassword" | "accountEmail" | "accountEmailPassword" | "sellerId", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameType" | "gameCategoryId" | "title" | "description" | "price" | "status" | "sellerDelisted" | "isAvailable" | "specifications" | "transactionBlock" | "deletedAt" | "createdAt" | "updatedAt" | "imageUrl" | "accountUsername" | "accountPassword" | "accountEmail" | "accountEmailPassword" | "sellerId", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    gameCategory?: boolean | Product$gameCategoryArgs<ExtArgs>
     seller?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | Product$itemsArgs<ExtArgs>
     cartItems?: boolean | Product$cartItemsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    gameCategory?: boolean | Product$gameCategoryArgs<ExtArgs>
     seller?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type ProductIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    gameCategory?: boolean | Product$gameCategoryArgs<ExtArgs>
     seller?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $ProductPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Product"
     objects: {
+      gameCategory: Prisma.$GameCategoryPayload<ExtArgs> | null
       seller: Prisma.$UserPayload<ExtArgs>
       items: Prisma.$OrderItemPayload<ExtArgs>[]
       cartItems: Prisma.$CartItemPayload<ExtArgs>[]
@@ -6744,6 +8473,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       gameType: string
+      gameCategoryId: string | null
       title: string
       description: string | null
       price: number
@@ -6752,6 +8482,7 @@ export namespace Prisma {
       isAvailable: boolean
       specifications: Prisma.JsonValue
       transactionBlock: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
       imageUrl: string | null
@@ -7154,6 +8885,7 @@ export namespace Prisma {
    */
   export interface Prisma__ProductClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    gameCategory<T extends Product$gameCategoryArgs<ExtArgs> = {}>(args?: Subset<T, Product$gameCategoryArgs<ExtArgs>>): Prisma__GameCategoryClient<$Result.GetResult<Prisma.$GameCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     seller<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     items<T extends Product$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Product$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cartItems<T extends Product$cartItemsArgs<ExtArgs> = {}>(args?: Subset<T, Product$cartItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CartItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7188,6 +8920,7 @@ export namespace Prisma {
   interface ProductFieldRefs {
     readonly id: FieldRef<"Product", 'String'>
     readonly gameType: FieldRef<"Product", 'String'>
+    readonly gameCategoryId: FieldRef<"Product", 'String'>
     readonly title: FieldRef<"Product", 'String'>
     readonly description: FieldRef<"Product", 'String'>
     readonly price: FieldRef<"Product", 'Float'>
@@ -7196,6 +8929,7 @@ export namespace Prisma {
     readonly isAvailable: FieldRef<"Product", 'Boolean'>
     readonly specifications: FieldRef<"Product", 'Json'>
     readonly transactionBlock: FieldRef<"Product", 'Boolean'>
+    readonly deletedAt: FieldRef<"Product", 'DateTime'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
     readonly imageUrl: FieldRef<"Product", 'String'>
@@ -7597,6 +9331,25 @@ export namespace Prisma {
      * Limit how many Products to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Product.gameCategory
+   */
+  export type Product$gameCategoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCategory
+     */
+    select?: GameCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameCategory
+     */
+    omit?: GameCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameCategoryInclude<ExtArgs> | null
+    where?: GameCategoryWhereInput
   }
 
   /**
@@ -9838,6 +11591,7 @@ export namespace Prisma {
   export type OrderMinAggregateOutputType = {
     id: string | null
     status: $Enums.OrderStatus | null
+    paymentStatus: $Enums.PaymentStatus | null
     totalAmount: number | null
     paymentIntent: string | null
     paymentProvider: string | null
@@ -9849,6 +11603,7 @@ export namespace Prisma {
   export type OrderMaxAggregateOutputType = {
     id: string | null
     status: $Enums.OrderStatus | null
+    paymentStatus: $Enums.PaymentStatus | null
     totalAmount: number | null
     paymentIntent: string | null
     paymentProvider: string | null
@@ -9860,6 +11615,7 @@ export namespace Prisma {
   export type OrderCountAggregateOutputType = {
     id: number
     status: number
+    paymentStatus: number
     totalAmount: number
     paymentIntent: number
     paymentProvider: number
@@ -9881,6 +11637,7 @@ export namespace Prisma {
   export type OrderMinAggregateInputType = {
     id?: true
     status?: true
+    paymentStatus?: true
     totalAmount?: true
     paymentIntent?: true
     paymentProvider?: true
@@ -9892,6 +11649,7 @@ export namespace Prisma {
   export type OrderMaxAggregateInputType = {
     id?: true
     status?: true
+    paymentStatus?: true
     totalAmount?: true
     paymentIntent?: true
     paymentProvider?: true
@@ -9903,6 +11661,7 @@ export namespace Prisma {
   export type OrderCountAggregateInputType = {
     id?: true
     status?: true
+    paymentStatus?: true
     totalAmount?: true
     paymentIntent?: true
     paymentProvider?: true
@@ -10001,6 +11760,7 @@ export namespace Prisma {
   export type OrderGroupByOutputType = {
     id: string
     status: $Enums.OrderStatus
+    paymentStatus: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent: string | null
     paymentProvider: string | null
@@ -10031,6 +11791,7 @@ export namespace Prisma {
   export type OrderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
+    paymentStatus?: boolean
     totalAmount?: boolean
     paymentIntent?: boolean
     paymentProvider?: boolean
@@ -10039,12 +11800,15 @@ export namespace Prisma {
     buyerId?: boolean
     buyer?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
+    disputes?: boolean | Order$disputesArgs<ExtArgs>
+    walletEntries?: boolean | Order$walletEntriesArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
+    paymentStatus?: boolean
     totalAmount?: boolean
     paymentIntent?: boolean
     paymentProvider?: boolean
@@ -10057,6 +11821,7 @@ export namespace Prisma {
   export type OrderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
+    paymentStatus?: boolean
     totalAmount?: boolean
     paymentIntent?: boolean
     paymentProvider?: boolean
@@ -10069,6 +11834,7 @@ export namespace Prisma {
   export type OrderSelectScalar = {
     id?: boolean
     status?: boolean
+    paymentStatus?: boolean
     totalAmount?: boolean
     paymentIntent?: boolean
     paymentProvider?: boolean
@@ -10077,10 +11843,12 @@ export namespace Prisma {
     buyerId?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "totalAmount" | "paymentIntent" | "paymentProvider" | "createdAt" | "updatedAt" | "buyerId", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "paymentStatus" | "totalAmount" | "paymentIntent" | "paymentProvider" | "createdAt" | "updatedAt" | "buyerId", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     buyer?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
+    disputes?: boolean | Order$disputesArgs<ExtArgs>
+    walletEntries?: boolean | Order$walletEntriesArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10095,10 +11863,13 @@ export namespace Prisma {
     objects: {
       buyer: Prisma.$UserPayload<ExtArgs>
       items: Prisma.$OrderItemPayload<ExtArgs>[]
+      disputes: Prisma.$DisputePayload<ExtArgs>[]
+      walletEntries: Prisma.$WalletLedgerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       status: $Enums.OrderStatus
+      paymentStatus: $Enums.PaymentStatus
       totalAmount: number
       paymentIntent: string | null
       paymentProvider: string | null
@@ -10501,6 +12272,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     buyer<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     items<T extends Order$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Order$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    disputes<T extends Order$disputesArgs<ExtArgs> = {}>(args?: Subset<T, Order$disputesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    walletEntries<T extends Order$walletEntriesArgs<ExtArgs> = {}>(args?: Subset<T, Order$walletEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10532,6 +12305,7 @@ export namespace Prisma {
   interface OrderFieldRefs {
     readonly id: FieldRef<"Order", 'String'>
     readonly status: FieldRef<"Order", 'OrderStatus'>
+    readonly paymentStatus: FieldRef<"Order", 'PaymentStatus'>
     readonly totalAmount: FieldRef<"Order", 'Float'>
     readonly paymentIntent: FieldRef<"Order", 'String'>
     readonly paymentProvider: FieldRef<"Order", 'String'>
@@ -10955,6 +12729,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: OrderItemScalarFieldEnum | OrderItemScalarFieldEnum[]
+  }
+
+  /**
+   * Order.disputes
+   */
+  export type Order$disputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    where?: DisputeWhereInput
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    cursor?: DisputeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
+  }
+
+  /**
+   * Order.walletEntries
+   */
+  export type Order$walletEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    where?: WalletLedgerWhereInput
+    orderBy?: WalletLedgerOrderByWithRelationInput | WalletLedgerOrderByWithRelationInput[]
+    cursor?: WalletLedgerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WalletLedgerScalarFieldEnum | WalletLedgerScalarFieldEnum[]
   }
 
   /**
@@ -13139,6 +14961,3473 @@ export namespace Prisma {
 
 
   /**
+   * Model Dispute
+   */
+
+  export type AggregateDispute = {
+    _count: DisputeCountAggregateOutputType | null
+    _min: DisputeMinAggregateOutputType | null
+    _max: DisputeMaxAggregateOutputType | null
+  }
+
+  export type DisputeMinAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    buyerId: string | null
+    sellerId: string | null
+    status: $Enums.DisputeStatus | null
+    reason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DisputeMaxAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    buyerId: string | null
+    sellerId: string | null
+    status: $Enums.DisputeStatus | null
+    reason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DisputeCountAggregateOutputType = {
+    id: number
+    orderId: number
+    buyerId: number
+    sellerId: number
+    status: number
+    reason: number
+    details: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type DisputeMinAggregateInputType = {
+    id?: true
+    orderId?: true
+    buyerId?: true
+    sellerId?: true
+    status?: true
+    reason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DisputeMaxAggregateInputType = {
+    id?: true
+    orderId?: true
+    buyerId?: true
+    sellerId?: true
+    status?: true
+    reason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DisputeCountAggregateInputType = {
+    id?: true
+    orderId?: true
+    buyerId?: true
+    sellerId?: true
+    status?: true
+    reason?: true
+    details?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type DisputeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Dispute to aggregate.
+     */
+    where?: DisputeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Disputes to fetch.
+     */
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DisputeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Disputes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Disputes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Disputes
+    **/
+    _count?: true | DisputeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DisputeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DisputeMaxAggregateInputType
+  }
+
+  export type GetDisputeAggregateType<T extends DisputeAggregateArgs> = {
+        [P in keyof T & keyof AggregateDispute]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDispute[P]>
+      : GetScalarType<T[P], AggregateDispute[P]>
+  }
+
+
+
+
+  export type DisputeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DisputeWhereInput
+    orderBy?: DisputeOrderByWithAggregationInput | DisputeOrderByWithAggregationInput[]
+    by: DisputeScalarFieldEnum[] | DisputeScalarFieldEnum
+    having?: DisputeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DisputeCountAggregateInputType | true
+    _min?: DisputeMinAggregateInputType
+    _max?: DisputeMaxAggregateInputType
+  }
+
+  export type DisputeGroupByOutputType = {
+    id: string
+    orderId: string
+    buyerId: string
+    sellerId: string
+    status: $Enums.DisputeStatus
+    reason: string
+    details: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: DisputeCountAggregateOutputType | null
+    _min: DisputeMinAggregateOutputType | null
+    _max: DisputeMaxAggregateOutputType | null
+  }
+
+  type GetDisputeGroupByPayload<T extends DisputeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DisputeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DisputeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DisputeGroupByOutputType[P]>
+            : GetScalarType<T[P], DisputeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DisputeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    buyerId?: boolean
+    sellerId?: boolean
+    status?: boolean
+    reason?: boolean
+    details?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+    buyer?: boolean | UserDefaultArgs<ExtArgs>
+    seller?: boolean | UserDefaultArgs<ExtArgs>
+    walletEntries?: boolean | Dispute$walletEntriesArgs<ExtArgs>
+    _count?: boolean | DisputeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dispute"]>
+
+  export type DisputeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    buyerId?: boolean
+    sellerId?: boolean
+    status?: boolean
+    reason?: boolean
+    details?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+    buyer?: boolean | UserDefaultArgs<ExtArgs>
+    seller?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dispute"]>
+
+  export type DisputeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    buyerId?: boolean
+    sellerId?: boolean
+    status?: boolean
+    reason?: boolean
+    details?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+    buyer?: boolean | UserDefaultArgs<ExtArgs>
+    seller?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dispute"]>
+
+  export type DisputeSelectScalar = {
+    id?: boolean
+    orderId?: boolean
+    buyerId?: boolean
+    sellerId?: boolean
+    status?: boolean
+    reason?: boolean
+    details?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type DisputeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "buyerId" | "sellerId" | "status" | "reason" | "details" | "createdAt" | "updatedAt", ExtArgs["result"]["dispute"]>
+  export type DisputeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+    buyer?: boolean | UserDefaultArgs<ExtArgs>
+    seller?: boolean | UserDefaultArgs<ExtArgs>
+    walletEntries?: boolean | Dispute$walletEntriesArgs<ExtArgs>
+    _count?: boolean | DisputeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DisputeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+    buyer?: boolean | UserDefaultArgs<ExtArgs>
+    seller?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DisputeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+    buyer?: boolean | UserDefaultArgs<ExtArgs>
+    seller?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $DisputePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Dispute"
+    objects: {
+      order: Prisma.$OrderPayload<ExtArgs>
+      buyer: Prisma.$UserPayload<ExtArgs>
+      seller: Prisma.$UserPayload<ExtArgs>
+      walletEntries: Prisma.$WalletLedgerPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orderId: string
+      buyerId: string
+      sellerId: string
+      status: $Enums.DisputeStatus
+      reason: string
+      details: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["dispute"]>
+    composites: {}
+  }
+
+  type DisputeGetPayload<S extends boolean | null | undefined | DisputeDefaultArgs> = $Result.GetResult<Prisma.$DisputePayload, S>
+
+  type DisputeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DisputeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DisputeCountAggregateInputType | true
+    }
+
+  export interface DisputeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Dispute'], meta: { name: 'Dispute' } }
+    /**
+     * Find zero or one Dispute that matches the filter.
+     * @param {DisputeFindUniqueArgs} args - Arguments to find a Dispute
+     * @example
+     * // Get one Dispute
+     * const dispute = await prisma.dispute.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DisputeFindUniqueArgs>(args: SelectSubset<T, DisputeFindUniqueArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Dispute that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DisputeFindUniqueOrThrowArgs} args - Arguments to find a Dispute
+     * @example
+     * // Get one Dispute
+     * const dispute = await prisma.dispute.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DisputeFindUniqueOrThrowArgs>(args: SelectSubset<T, DisputeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Dispute that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DisputeFindFirstArgs} args - Arguments to find a Dispute
+     * @example
+     * // Get one Dispute
+     * const dispute = await prisma.dispute.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DisputeFindFirstArgs>(args?: SelectSubset<T, DisputeFindFirstArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Dispute that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DisputeFindFirstOrThrowArgs} args - Arguments to find a Dispute
+     * @example
+     * // Get one Dispute
+     * const dispute = await prisma.dispute.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DisputeFindFirstOrThrowArgs>(args?: SelectSubset<T, DisputeFindFirstOrThrowArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Disputes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DisputeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Disputes
+     * const disputes = await prisma.dispute.findMany()
+     * 
+     * // Get first 10 Disputes
+     * const disputes = await prisma.dispute.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const disputeWithIdOnly = await prisma.dispute.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DisputeFindManyArgs>(args?: SelectSubset<T, DisputeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Dispute.
+     * @param {DisputeCreateArgs} args - Arguments to create a Dispute.
+     * @example
+     * // Create one Dispute
+     * const Dispute = await prisma.dispute.create({
+     *   data: {
+     *     // ... data to create a Dispute
+     *   }
+     * })
+     * 
+     */
+    create<T extends DisputeCreateArgs>(args: SelectSubset<T, DisputeCreateArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Disputes.
+     * @param {DisputeCreateManyArgs} args - Arguments to create many Disputes.
+     * @example
+     * // Create many Disputes
+     * const dispute = await prisma.dispute.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DisputeCreateManyArgs>(args?: SelectSubset<T, DisputeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Disputes and returns the data saved in the database.
+     * @param {DisputeCreateManyAndReturnArgs} args - Arguments to create many Disputes.
+     * @example
+     * // Create many Disputes
+     * const dispute = await prisma.dispute.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Disputes and only return the `id`
+     * const disputeWithIdOnly = await prisma.dispute.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DisputeCreateManyAndReturnArgs>(args?: SelectSubset<T, DisputeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Dispute.
+     * @param {DisputeDeleteArgs} args - Arguments to delete one Dispute.
+     * @example
+     * // Delete one Dispute
+     * const Dispute = await prisma.dispute.delete({
+     *   where: {
+     *     // ... filter to delete one Dispute
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DisputeDeleteArgs>(args: SelectSubset<T, DisputeDeleteArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Dispute.
+     * @param {DisputeUpdateArgs} args - Arguments to update one Dispute.
+     * @example
+     * // Update one Dispute
+     * const dispute = await prisma.dispute.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DisputeUpdateArgs>(args: SelectSubset<T, DisputeUpdateArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Disputes.
+     * @param {DisputeDeleteManyArgs} args - Arguments to filter Disputes to delete.
+     * @example
+     * // Delete a few Disputes
+     * const { count } = await prisma.dispute.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DisputeDeleteManyArgs>(args?: SelectSubset<T, DisputeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Disputes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DisputeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Disputes
+     * const dispute = await prisma.dispute.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DisputeUpdateManyArgs>(args: SelectSubset<T, DisputeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Disputes and returns the data updated in the database.
+     * @param {DisputeUpdateManyAndReturnArgs} args - Arguments to update many Disputes.
+     * @example
+     * // Update many Disputes
+     * const dispute = await prisma.dispute.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Disputes and only return the `id`
+     * const disputeWithIdOnly = await prisma.dispute.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DisputeUpdateManyAndReturnArgs>(args: SelectSubset<T, DisputeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Dispute.
+     * @param {DisputeUpsertArgs} args - Arguments to update or create a Dispute.
+     * @example
+     * // Update or create a Dispute
+     * const dispute = await prisma.dispute.upsert({
+     *   create: {
+     *     // ... data to create a Dispute
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Dispute we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DisputeUpsertArgs>(args: SelectSubset<T, DisputeUpsertArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Disputes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DisputeCountArgs} args - Arguments to filter Disputes to count.
+     * @example
+     * // Count the number of Disputes
+     * const count = await prisma.dispute.count({
+     *   where: {
+     *     // ... the filter for the Disputes we want to count
+     *   }
+     * })
+    **/
+    count<T extends DisputeCountArgs>(
+      args?: Subset<T, DisputeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DisputeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Dispute.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DisputeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DisputeAggregateArgs>(args: Subset<T, DisputeAggregateArgs>): Prisma.PrismaPromise<GetDisputeAggregateType<T>>
+
+    /**
+     * Group by Dispute.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DisputeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DisputeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DisputeGroupByArgs['orderBy'] }
+        : { orderBy?: DisputeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DisputeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDisputeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Dispute model
+   */
+  readonly fields: DisputeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Dispute.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DisputeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    order<T extends OrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderDefaultArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    buyer<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    seller<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    walletEntries<T extends Dispute$walletEntriesArgs<ExtArgs> = {}>(args?: Subset<T, Dispute$walletEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Dispute model
+   */
+  interface DisputeFieldRefs {
+    readonly id: FieldRef<"Dispute", 'String'>
+    readonly orderId: FieldRef<"Dispute", 'String'>
+    readonly buyerId: FieldRef<"Dispute", 'String'>
+    readonly sellerId: FieldRef<"Dispute", 'String'>
+    readonly status: FieldRef<"Dispute", 'DisputeStatus'>
+    readonly reason: FieldRef<"Dispute", 'String'>
+    readonly details: FieldRef<"Dispute", 'Json'>
+    readonly createdAt: FieldRef<"Dispute", 'DateTime'>
+    readonly updatedAt: FieldRef<"Dispute", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Dispute findUnique
+   */
+  export type DisputeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    /**
+     * Filter, which Dispute to fetch.
+     */
+    where: DisputeWhereUniqueInput
+  }
+
+  /**
+   * Dispute findUniqueOrThrow
+   */
+  export type DisputeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    /**
+     * Filter, which Dispute to fetch.
+     */
+    where: DisputeWhereUniqueInput
+  }
+
+  /**
+   * Dispute findFirst
+   */
+  export type DisputeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    /**
+     * Filter, which Dispute to fetch.
+     */
+    where?: DisputeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Disputes to fetch.
+     */
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Disputes.
+     */
+    cursor?: DisputeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Disputes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Disputes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Disputes.
+     */
+    distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
+  }
+
+  /**
+   * Dispute findFirstOrThrow
+   */
+  export type DisputeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    /**
+     * Filter, which Dispute to fetch.
+     */
+    where?: DisputeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Disputes to fetch.
+     */
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Disputes.
+     */
+    cursor?: DisputeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Disputes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Disputes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Disputes.
+     */
+    distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
+  }
+
+  /**
+   * Dispute findMany
+   */
+  export type DisputeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    /**
+     * Filter, which Disputes to fetch.
+     */
+    where?: DisputeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Disputes to fetch.
+     */
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Disputes.
+     */
+    cursor?: DisputeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Disputes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Disputes.
+     */
+    skip?: number
+    distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
+  }
+
+  /**
+   * Dispute create
+   */
+  export type DisputeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Dispute.
+     */
+    data: XOR<DisputeCreateInput, DisputeUncheckedCreateInput>
+  }
+
+  /**
+   * Dispute createMany
+   */
+  export type DisputeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Disputes.
+     */
+    data: DisputeCreateManyInput | DisputeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Dispute createManyAndReturn
+   */
+  export type DisputeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * The data used to create many Disputes.
+     */
+    data: DisputeCreateManyInput | DisputeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Dispute update
+   */
+  export type DisputeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Dispute.
+     */
+    data: XOR<DisputeUpdateInput, DisputeUncheckedUpdateInput>
+    /**
+     * Choose, which Dispute to update.
+     */
+    where: DisputeWhereUniqueInput
+  }
+
+  /**
+   * Dispute updateMany
+   */
+  export type DisputeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Disputes.
+     */
+    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyInput>
+    /**
+     * Filter which Disputes to update
+     */
+    where?: DisputeWhereInput
+    /**
+     * Limit how many Disputes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Dispute updateManyAndReturn
+   */
+  export type DisputeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * The data used to update Disputes.
+     */
+    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyInput>
+    /**
+     * Filter which Disputes to update
+     */
+    where?: DisputeWhereInput
+    /**
+     * Limit how many Disputes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Dispute upsert
+   */
+  export type DisputeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Dispute to update in case it exists.
+     */
+    where: DisputeWhereUniqueInput
+    /**
+     * In case the Dispute found by the `where` argument doesn't exist, create a new Dispute with this data.
+     */
+    create: XOR<DisputeCreateInput, DisputeUncheckedCreateInput>
+    /**
+     * In case the Dispute was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DisputeUpdateInput, DisputeUncheckedUpdateInput>
+  }
+
+  /**
+   * Dispute delete
+   */
+  export type DisputeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    /**
+     * Filter which Dispute to delete.
+     */
+    where: DisputeWhereUniqueInput
+  }
+
+  /**
+   * Dispute deleteMany
+   */
+  export type DisputeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Disputes to delete
+     */
+    where?: DisputeWhereInput
+    /**
+     * Limit how many Disputes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Dispute.walletEntries
+   */
+  export type Dispute$walletEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    where?: WalletLedgerWhereInput
+    orderBy?: WalletLedgerOrderByWithRelationInput | WalletLedgerOrderByWithRelationInput[]
+    cursor?: WalletLedgerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WalletLedgerScalarFieldEnum | WalletLedgerScalarFieldEnum[]
+  }
+
+  /**
+   * Dispute without action
+   */
+  export type DisputeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SellerWallet
+   */
+
+  export type AggregateSellerWallet = {
+    _count: SellerWalletCountAggregateOutputType | null
+    _avg: SellerWalletAvgAggregateOutputType | null
+    _sum: SellerWalletSumAggregateOutputType | null
+    _min: SellerWalletMinAggregateOutputType | null
+    _max: SellerWalletMaxAggregateOutputType | null
+  }
+
+  export type SellerWalletAvgAggregateOutputType = {
+    pendingBalance: number | null
+    availableBalance: number | null
+    frozenBalance: number | null
+  }
+
+  export type SellerWalletSumAggregateOutputType = {
+    pendingBalance: number | null
+    availableBalance: number | null
+    frozenBalance: number | null
+  }
+
+  export type SellerWalletMinAggregateOutputType = {
+    userId: string | null
+    pendingBalance: number | null
+    availableBalance: number | null
+    frozenBalance: number | null
+    updatedAt: Date | null
+  }
+
+  export type SellerWalletMaxAggregateOutputType = {
+    userId: string | null
+    pendingBalance: number | null
+    availableBalance: number | null
+    frozenBalance: number | null
+    updatedAt: Date | null
+  }
+
+  export type SellerWalletCountAggregateOutputType = {
+    userId: number
+    pendingBalance: number
+    availableBalance: number
+    frozenBalance: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SellerWalletAvgAggregateInputType = {
+    pendingBalance?: true
+    availableBalance?: true
+    frozenBalance?: true
+  }
+
+  export type SellerWalletSumAggregateInputType = {
+    pendingBalance?: true
+    availableBalance?: true
+    frozenBalance?: true
+  }
+
+  export type SellerWalletMinAggregateInputType = {
+    userId?: true
+    pendingBalance?: true
+    availableBalance?: true
+    frozenBalance?: true
+    updatedAt?: true
+  }
+
+  export type SellerWalletMaxAggregateInputType = {
+    userId?: true
+    pendingBalance?: true
+    availableBalance?: true
+    frozenBalance?: true
+    updatedAt?: true
+  }
+
+  export type SellerWalletCountAggregateInputType = {
+    userId?: true
+    pendingBalance?: true
+    availableBalance?: true
+    frozenBalance?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SellerWalletAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SellerWallet to aggregate.
+     */
+    where?: SellerWalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SellerWallets to fetch.
+     */
+    orderBy?: SellerWalletOrderByWithRelationInput | SellerWalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SellerWalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SellerWallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SellerWallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SellerWallets
+    **/
+    _count?: true | SellerWalletCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SellerWalletAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SellerWalletSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SellerWalletMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SellerWalletMaxAggregateInputType
+  }
+
+  export type GetSellerWalletAggregateType<T extends SellerWalletAggregateArgs> = {
+        [P in keyof T & keyof AggregateSellerWallet]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSellerWallet[P]>
+      : GetScalarType<T[P], AggregateSellerWallet[P]>
+  }
+
+
+
+
+  export type SellerWalletGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SellerWalletWhereInput
+    orderBy?: SellerWalletOrderByWithAggregationInput | SellerWalletOrderByWithAggregationInput[]
+    by: SellerWalletScalarFieldEnum[] | SellerWalletScalarFieldEnum
+    having?: SellerWalletScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SellerWalletCountAggregateInputType | true
+    _avg?: SellerWalletAvgAggregateInputType
+    _sum?: SellerWalletSumAggregateInputType
+    _min?: SellerWalletMinAggregateInputType
+    _max?: SellerWalletMaxAggregateInputType
+  }
+
+  export type SellerWalletGroupByOutputType = {
+    userId: string
+    pendingBalance: number
+    availableBalance: number
+    frozenBalance: number
+    updatedAt: Date
+    _count: SellerWalletCountAggregateOutputType | null
+    _avg: SellerWalletAvgAggregateOutputType | null
+    _sum: SellerWalletSumAggregateOutputType | null
+    _min: SellerWalletMinAggregateOutputType | null
+    _max: SellerWalletMaxAggregateOutputType | null
+  }
+
+  type GetSellerWalletGroupByPayload<T extends SellerWalletGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SellerWalletGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SellerWalletGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SellerWalletGroupByOutputType[P]>
+            : GetScalarType<T[P], SellerWalletGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SellerWalletSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    pendingBalance?: boolean
+    availableBalance?: boolean
+    frozenBalance?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    ledgerEntries?: boolean | SellerWallet$ledgerEntriesArgs<ExtArgs>
+    _count?: boolean | SellerWalletCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sellerWallet"]>
+
+  export type SellerWalletSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    pendingBalance?: boolean
+    availableBalance?: boolean
+    frozenBalance?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sellerWallet"]>
+
+  export type SellerWalletSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    pendingBalance?: boolean
+    availableBalance?: boolean
+    frozenBalance?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sellerWallet"]>
+
+  export type SellerWalletSelectScalar = {
+    userId?: boolean
+    pendingBalance?: boolean
+    availableBalance?: boolean
+    frozenBalance?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SellerWalletOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "pendingBalance" | "availableBalance" | "frozenBalance" | "updatedAt", ExtArgs["result"]["sellerWallet"]>
+  export type SellerWalletInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    ledgerEntries?: boolean | SellerWallet$ledgerEntriesArgs<ExtArgs>
+    _count?: boolean | SellerWalletCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SellerWalletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SellerWalletIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $SellerWalletPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SellerWallet"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      ledgerEntries: Prisma.$WalletLedgerPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      userId: string
+      pendingBalance: number
+      availableBalance: number
+      frozenBalance: number
+      updatedAt: Date
+    }, ExtArgs["result"]["sellerWallet"]>
+    composites: {}
+  }
+
+  type SellerWalletGetPayload<S extends boolean | null | undefined | SellerWalletDefaultArgs> = $Result.GetResult<Prisma.$SellerWalletPayload, S>
+
+  type SellerWalletCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SellerWalletFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SellerWalletCountAggregateInputType | true
+    }
+
+  export interface SellerWalletDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SellerWallet'], meta: { name: 'SellerWallet' } }
+    /**
+     * Find zero or one SellerWallet that matches the filter.
+     * @param {SellerWalletFindUniqueArgs} args - Arguments to find a SellerWallet
+     * @example
+     * // Get one SellerWallet
+     * const sellerWallet = await prisma.sellerWallet.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SellerWalletFindUniqueArgs>(args: SelectSubset<T, SellerWalletFindUniqueArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SellerWallet that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SellerWalletFindUniqueOrThrowArgs} args - Arguments to find a SellerWallet
+     * @example
+     * // Get one SellerWallet
+     * const sellerWallet = await prisma.sellerWallet.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SellerWalletFindUniqueOrThrowArgs>(args: SelectSubset<T, SellerWalletFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SellerWallet that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SellerWalletFindFirstArgs} args - Arguments to find a SellerWallet
+     * @example
+     * // Get one SellerWallet
+     * const sellerWallet = await prisma.sellerWallet.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SellerWalletFindFirstArgs>(args?: SelectSubset<T, SellerWalletFindFirstArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SellerWallet that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SellerWalletFindFirstOrThrowArgs} args - Arguments to find a SellerWallet
+     * @example
+     * // Get one SellerWallet
+     * const sellerWallet = await prisma.sellerWallet.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SellerWalletFindFirstOrThrowArgs>(args?: SelectSubset<T, SellerWalletFindFirstOrThrowArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SellerWallets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SellerWalletFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SellerWallets
+     * const sellerWallets = await prisma.sellerWallet.findMany()
+     * 
+     * // Get first 10 SellerWallets
+     * const sellerWallets = await prisma.sellerWallet.findMany({ take: 10 })
+     * 
+     * // Only select the `userId`
+     * const sellerWalletWithUserIdOnly = await prisma.sellerWallet.findMany({ select: { userId: true } })
+     * 
+     */
+    findMany<T extends SellerWalletFindManyArgs>(args?: SelectSubset<T, SellerWalletFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SellerWallet.
+     * @param {SellerWalletCreateArgs} args - Arguments to create a SellerWallet.
+     * @example
+     * // Create one SellerWallet
+     * const SellerWallet = await prisma.sellerWallet.create({
+     *   data: {
+     *     // ... data to create a SellerWallet
+     *   }
+     * })
+     * 
+     */
+    create<T extends SellerWalletCreateArgs>(args: SelectSubset<T, SellerWalletCreateArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SellerWallets.
+     * @param {SellerWalletCreateManyArgs} args - Arguments to create many SellerWallets.
+     * @example
+     * // Create many SellerWallets
+     * const sellerWallet = await prisma.sellerWallet.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SellerWalletCreateManyArgs>(args?: SelectSubset<T, SellerWalletCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SellerWallets and returns the data saved in the database.
+     * @param {SellerWalletCreateManyAndReturnArgs} args - Arguments to create many SellerWallets.
+     * @example
+     * // Create many SellerWallets
+     * const sellerWallet = await prisma.sellerWallet.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SellerWallets and only return the `userId`
+     * const sellerWalletWithUserIdOnly = await prisma.sellerWallet.createManyAndReturn({
+     *   select: { userId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SellerWalletCreateManyAndReturnArgs>(args?: SelectSubset<T, SellerWalletCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SellerWallet.
+     * @param {SellerWalletDeleteArgs} args - Arguments to delete one SellerWallet.
+     * @example
+     * // Delete one SellerWallet
+     * const SellerWallet = await prisma.sellerWallet.delete({
+     *   where: {
+     *     // ... filter to delete one SellerWallet
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SellerWalletDeleteArgs>(args: SelectSubset<T, SellerWalletDeleteArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SellerWallet.
+     * @param {SellerWalletUpdateArgs} args - Arguments to update one SellerWallet.
+     * @example
+     * // Update one SellerWallet
+     * const sellerWallet = await prisma.sellerWallet.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SellerWalletUpdateArgs>(args: SelectSubset<T, SellerWalletUpdateArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SellerWallets.
+     * @param {SellerWalletDeleteManyArgs} args - Arguments to filter SellerWallets to delete.
+     * @example
+     * // Delete a few SellerWallets
+     * const { count } = await prisma.sellerWallet.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SellerWalletDeleteManyArgs>(args?: SelectSubset<T, SellerWalletDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SellerWallets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SellerWalletUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SellerWallets
+     * const sellerWallet = await prisma.sellerWallet.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SellerWalletUpdateManyArgs>(args: SelectSubset<T, SellerWalletUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SellerWallets and returns the data updated in the database.
+     * @param {SellerWalletUpdateManyAndReturnArgs} args - Arguments to update many SellerWallets.
+     * @example
+     * // Update many SellerWallets
+     * const sellerWallet = await prisma.sellerWallet.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SellerWallets and only return the `userId`
+     * const sellerWalletWithUserIdOnly = await prisma.sellerWallet.updateManyAndReturn({
+     *   select: { userId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SellerWalletUpdateManyAndReturnArgs>(args: SelectSubset<T, SellerWalletUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SellerWallet.
+     * @param {SellerWalletUpsertArgs} args - Arguments to update or create a SellerWallet.
+     * @example
+     * // Update or create a SellerWallet
+     * const sellerWallet = await prisma.sellerWallet.upsert({
+     *   create: {
+     *     // ... data to create a SellerWallet
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SellerWallet we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SellerWalletUpsertArgs>(args: SelectSubset<T, SellerWalletUpsertArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SellerWallets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SellerWalletCountArgs} args - Arguments to filter SellerWallets to count.
+     * @example
+     * // Count the number of SellerWallets
+     * const count = await prisma.sellerWallet.count({
+     *   where: {
+     *     // ... the filter for the SellerWallets we want to count
+     *   }
+     * })
+    **/
+    count<T extends SellerWalletCountArgs>(
+      args?: Subset<T, SellerWalletCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SellerWalletCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SellerWallet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SellerWalletAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SellerWalletAggregateArgs>(args: Subset<T, SellerWalletAggregateArgs>): Prisma.PrismaPromise<GetSellerWalletAggregateType<T>>
+
+    /**
+     * Group by SellerWallet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SellerWalletGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SellerWalletGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SellerWalletGroupByArgs['orderBy'] }
+        : { orderBy?: SellerWalletGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SellerWalletGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSellerWalletGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SellerWallet model
+   */
+  readonly fields: SellerWalletFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SellerWallet.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SellerWalletClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    ledgerEntries<T extends SellerWallet$ledgerEntriesArgs<ExtArgs> = {}>(args?: Subset<T, SellerWallet$ledgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SellerWallet model
+   */
+  interface SellerWalletFieldRefs {
+    readonly userId: FieldRef<"SellerWallet", 'String'>
+    readonly pendingBalance: FieldRef<"SellerWallet", 'Float'>
+    readonly availableBalance: FieldRef<"SellerWallet", 'Float'>
+    readonly frozenBalance: FieldRef<"SellerWallet", 'Float'>
+    readonly updatedAt: FieldRef<"SellerWallet", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SellerWallet findUnique
+   */
+  export type SellerWalletFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which SellerWallet to fetch.
+     */
+    where: SellerWalletWhereUniqueInput
+  }
+
+  /**
+   * SellerWallet findUniqueOrThrow
+   */
+  export type SellerWalletFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which SellerWallet to fetch.
+     */
+    where: SellerWalletWhereUniqueInput
+  }
+
+  /**
+   * SellerWallet findFirst
+   */
+  export type SellerWalletFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which SellerWallet to fetch.
+     */
+    where?: SellerWalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SellerWallets to fetch.
+     */
+    orderBy?: SellerWalletOrderByWithRelationInput | SellerWalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SellerWallets.
+     */
+    cursor?: SellerWalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SellerWallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SellerWallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SellerWallets.
+     */
+    distinct?: SellerWalletScalarFieldEnum | SellerWalletScalarFieldEnum[]
+  }
+
+  /**
+   * SellerWallet findFirstOrThrow
+   */
+  export type SellerWalletFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which SellerWallet to fetch.
+     */
+    where?: SellerWalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SellerWallets to fetch.
+     */
+    orderBy?: SellerWalletOrderByWithRelationInput | SellerWalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SellerWallets.
+     */
+    cursor?: SellerWalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SellerWallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SellerWallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SellerWallets.
+     */
+    distinct?: SellerWalletScalarFieldEnum | SellerWalletScalarFieldEnum[]
+  }
+
+  /**
+   * SellerWallet findMany
+   */
+  export type SellerWalletFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which SellerWallets to fetch.
+     */
+    where?: SellerWalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SellerWallets to fetch.
+     */
+    orderBy?: SellerWalletOrderByWithRelationInput | SellerWalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SellerWallets.
+     */
+    cursor?: SellerWalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SellerWallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SellerWallets.
+     */
+    skip?: number
+    distinct?: SellerWalletScalarFieldEnum | SellerWalletScalarFieldEnum[]
+  }
+
+  /**
+   * SellerWallet create
+   */
+  export type SellerWalletCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SellerWallet.
+     */
+    data: XOR<SellerWalletCreateInput, SellerWalletUncheckedCreateInput>
+  }
+
+  /**
+   * SellerWallet createMany
+   */
+  export type SellerWalletCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SellerWallets.
+     */
+    data: SellerWalletCreateManyInput | SellerWalletCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SellerWallet createManyAndReturn
+   */
+  export type SellerWalletCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * The data used to create many SellerWallets.
+     */
+    data: SellerWalletCreateManyInput | SellerWalletCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SellerWallet update
+   */
+  export type SellerWalletUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SellerWallet.
+     */
+    data: XOR<SellerWalletUpdateInput, SellerWalletUncheckedUpdateInput>
+    /**
+     * Choose, which SellerWallet to update.
+     */
+    where: SellerWalletWhereUniqueInput
+  }
+
+  /**
+   * SellerWallet updateMany
+   */
+  export type SellerWalletUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SellerWallets.
+     */
+    data: XOR<SellerWalletUpdateManyMutationInput, SellerWalletUncheckedUpdateManyInput>
+    /**
+     * Filter which SellerWallets to update
+     */
+    where?: SellerWalletWhereInput
+    /**
+     * Limit how many SellerWallets to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SellerWallet updateManyAndReturn
+   */
+  export type SellerWalletUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * The data used to update SellerWallets.
+     */
+    data: XOR<SellerWalletUpdateManyMutationInput, SellerWalletUncheckedUpdateManyInput>
+    /**
+     * Filter which SellerWallets to update
+     */
+    where?: SellerWalletWhereInput
+    /**
+     * Limit how many SellerWallets to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SellerWallet upsert
+   */
+  export type SellerWalletUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SellerWallet to update in case it exists.
+     */
+    where: SellerWalletWhereUniqueInput
+    /**
+     * In case the SellerWallet found by the `where` argument doesn't exist, create a new SellerWallet with this data.
+     */
+    create: XOR<SellerWalletCreateInput, SellerWalletUncheckedCreateInput>
+    /**
+     * In case the SellerWallet was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SellerWalletUpdateInput, SellerWalletUncheckedUpdateInput>
+  }
+
+  /**
+   * SellerWallet delete
+   */
+  export type SellerWalletDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+    /**
+     * Filter which SellerWallet to delete.
+     */
+    where: SellerWalletWhereUniqueInput
+  }
+
+  /**
+   * SellerWallet deleteMany
+   */
+  export type SellerWalletDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SellerWallets to delete
+     */
+    where?: SellerWalletWhereInput
+    /**
+     * Limit how many SellerWallets to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SellerWallet.ledgerEntries
+   */
+  export type SellerWallet$ledgerEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    where?: WalletLedgerWhereInput
+    orderBy?: WalletLedgerOrderByWithRelationInput | WalletLedgerOrderByWithRelationInput[]
+    cursor?: WalletLedgerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WalletLedgerScalarFieldEnum | WalletLedgerScalarFieldEnum[]
+  }
+
+  /**
+   * SellerWallet without action
+   */
+  export type SellerWalletDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SellerWallet
+     */
+    select?: SellerWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SellerWallet
+     */
+    omit?: SellerWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SellerWalletInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WalletLedger
+   */
+
+  export type AggregateWalletLedger = {
+    _count: WalletLedgerCountAggregateOutputType | null
+    _avg: WalletLedgerAvgAggregateOutputType | null
+    _sum: WalletLedgerSumAggregateOutputType | null
+    _min: WalletLedgerMinAggregateOutputType | null
+    _max: WalletLedgerMaxAggregateOutputType | null
+  }
+
+  export type WalletLedgerAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type WalletLedgerSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type WalletLedgerMinAggregateOutputType = {
+    id: string | null
+    walletUserId: string | null
+    type: $Enums.WalletLedgerType | null
+    amount: number | null
+    orderId: string | null
+    disputeId: string | null
+    note: string | null
+    createdAt: Date | null
+  }
+
+  export type WalletLedgerMaxAggregateOutputType = {
+    id: string | null
+    walletUserId: string | null
+    type: $Enums.WalletLedgerType | null
+    amount: number | null
+    orderId: string | null
+    disputeId: string | null
+    note: string | null
+    createdAt: Date | null
+  }
+
+  export type WalletLedgerCountAggregateOutputType = {
+    id: number
+    walletUserId: number
+    type: number
+    amount: number
+    orderId: number
+    disputeId: number
+    note: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type WalletLedgerAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type WalletLedgerSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type WalletLedgerMinAggregateInputType = {
+    id?: true
+    walletUserId?: true
+    type?: true
+    amount?: true
+    orderId?: true
+    disputeId?: true
+    note?: true
+    createdAt?: true
+  }
+
+  export type WalletLedgerMaxAggregateInputType = {
+    id?: true
+    walletUserId?: true
+    type?: true
+    amount?: true
+    orderId?: true
+    disputeId?: true
+    note?: true
+    createdAt?: true
+  }
+
+  export type WalletLedgerCountAggregateInputType = {
+    id?: true
+    walletUserId?: true
+    type?: true
+    amount?: true
+    orderId?: true
+    disputeId?: true
+    note?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type WalletLedgerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WalletLedger to aggregate.
+     */
+    where?: WalletLedgerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WalletLedgers to fetch.
+     */
+    orderBy?: WalletLedgerOrderByWithRelationInput | WalletLedgerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WalletLedgerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WalletLedgers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WalletLedgers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WalletLedgers
+    **/
+    _count?: true | WalletLedgerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WalletLedgerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WalletLedgerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WalletLedgerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WalletLedgerMaxAggregateInputType
+  }
+
+  export type GetWalletLedgerAggregateType<T extends WalletLedgerAggregateArgs> = {
+        [P in keyof T & keyof AggregateWalletLedger]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWalletLedger[P]>
+      : GetScalarType<T[P], AggregateWalletLedger[P]>
+  }
+
+
+
+
+  export type WalletLedgerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WalletLedgerWhereInput
+    orderBy?: WalletLedgerOrderByWithAggregationInput | WalletLedgerOrderByWithAggregationInput[]
+    by: WalletLedgerScalarFieldEnum[] | WalletLedgerScalarFieldEnum
+    having?: WalletLedgerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WalletLedgerCountAggregateInputType | true
+    _avg?: WalletLedgerAvgAggregateInputType
+    _sum?: WalletLedgerSumAggregateInputType
+    _min?: WalletLedgerMinAggregateInputType
+    _max?: WalletLedgerMaxAggregateInputType
+  }
+
+  export type WalletLedgerGroupByOutputType = {
+    id: string
+    walletUserId: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    orderId: string | null
+    disputeId: string | null
+    note: string | null
+    createdAt: Date
+    _count: WalletLedgerCountAggregateOutputType | null
+    _avg: WalletLedgerAvgAggregateOutputType | null
+    _sum: WalletLedgerSumAggregateOutputType | null
+    _min: WalletLedgerMinAggregateOutputType | null
+    _max: WalletLedgerMaxAggregateOutputType | null
+  }
+
+  type GetWalletLedgerGroupByPayload<T extends WalletLedgerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WalletLedgerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WalletLedgerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WalletLedgerGroupByOutputType[P]>
+            : GetScalarType<T[P], WalletLedgerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WalletLedgerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    walletUserId?: boolean
+    type?: boolean
+    amount?: boolean
+    orderId?: boolean
+    disputeId?: boolean
+    note?: boolean
+    createdAt?: boolean
+    wallet?: boolean | SellerWalletDefaultArgs<ExtArgs>
+    order?: boolean | WalletLedger$orderArgs<ExtArgs>
+    dispute?: boolean | WalletLedger$disputeArgs<ExtArgs>
+  }, ExtArgs["result"]["walletLedger"]>
+
+  export type WalletLedgerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    walletUserId?: boolean
+    type?: boolean
+    amount?: boolean
+    orderId?: boolean
+    disputeId?: boolean
+    note?: boolean
+    createdAt?: boolean
+    wallet?: boolean | SellerWalletDefaultArgs<ExtArgs>
+    order?: boolean | WalletLedger$orderArgs<ExtArgs>
+    dispute?: boolean | WalletLedger$disputeArgs<ExtArgs>
+  }, ExtArgs["result"]["walletLedger"]>
+
+  export type WalletLedgerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    walletUserId?: boolean
+    type?: boolean
+    amount?: boolean
+    orderId?: boolean
+    disputeId?: boolean
+    note?: boolean
+    createdAt?: boolean
+    wallet?: boolean | SellerWalletDefaultArgs<ExtArgs>
+    order?: boolean | WalletLedger$orderArgs<ExtArgs>
+    dispute?: boolean | WalletLedger$disputeArgs<ExtArgs>
+  }, ExtArgs["result"]["walletLedger"]>
+
+  export type WalletLedgerSelectScalar = {
+    id?: boolean
+    walletUserId?: boolean
+    type?: boolean
+    amount?: boolean
+    orderId?: boolean
+    disputeId?: boolean
+    note?: boolean
+    createdAt?: boolean
+  }
+
+  export type WalletLedgerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "walletUserId" | "type" | "amount" | "orderId" | "disputeId" | "note" | "createdAt", ExtArgs["result"]["walletLedger"]>
+  export type WalletLedgerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    wallet?: boolean | SellerWalletDefaultArgs<ExtArgs>
+    order?: boolean | WalletLedger$orderArgs<ExtArgs>
+    dispute?: boolean | WalletLedger$disputeArgs<ExtArgs>
+  }
+  export type WalletLedgerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    wallet?: boolean | SellerWalletDefaultArgs<ExtArgs>
+    order?: boolean | WalletLedger$orderArgs<ExtArgs>
+    dispute?: boolean | WalletLedger$disputeArgs<ExtArgs>
+  }
+  export type WalletLedgerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    wallet?: boolean | SellerWalletDefaultArgs<ExtArgs>
+    order?: boolean | WalletLedger$orderArgs<ExtArgs>
+    dispute?: boolean | WalletLedger$disputeArgs<ExtArgs>
+  }
+
+  export type $WalletLedgerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WalletLedger"
+    objects: {
+      wallet: Prisma.$SellerWalletPayload<ExtArgs>
+      order: Prisma.$OrderPayload<ExtArgs> | null
+      dispute: Prisma.$DisputePayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      walletUserId: string
+      type: $Enums.WalletLedgerType
+      amount: number
+      orderId: string | null
+      disputeId: string | null
+      note: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["walletLedger"]>
+    composites: {}
+  }
+
+  type WalletLedgerGetPayload<S extends boolean | null | undefined | WalletLedgerDefaultArgs> = $Result.GetResult<Prisma.$WalletLedgerPayload, S>
+
+  type WalletLedgerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WalletLedgerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WalletLedgerCountAggregateInputType | true
+    }
+
+  export interface WalletLedgerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WalletLedger'], meta: { name: 'WalletLedger' } }
+    /**
+     * Find zero or one WalletLedger that matches the filter.
+     * @param {WalletLedgerFindUniqueArgs} args - Arguments to find a WalletLedger
+     * @example
+     * // Get one WalletLedger
+     * const walletLedger = await prisma.walletLedger.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WalletLedgerFindUniqueArgs>(args: SelectSubset<T, WalletLedgerFindUniqueArgs<ExtArgs>>): Prisma__WalletLedgerClient<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WalletLedger that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WalletLedgerFindUniqueOrThrowArgs} args - Arguments to find a WalletLedger
+     * @example
+     * // Get one WalletLedger
+     * const walletLedger = await prisma.walletLedger.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WalletLedgerFindUniqueOrThrowArgs>(args: SelectSubset<T, WalletLedgerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WalletLedgerClient<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WalletLedger that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletLedgerFindFirstArgs} args - Arguments to find a WalletLedger
+     * @example
+     * // Get one WalletLedger
+     * const walletLedger = await prisma.walletLedger.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WalletLedgerFindFirstArgs>(args?: SelectSubset<T, WalletLedgerFindFirstArgs<ExtArgs>>): Prisma__WalletLedgerClient<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WalletLedger that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletLedgerFindFirstOrThrowArgs} args - Arguments to find a WalletLedger
+     * @example
+     * // Get one WalletLedger
+     * const walletLedger = await prisma.walletLedger.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WalletLedgerFindFirstOrThrowArgs>(args?: SelectSubset<T, WalletLedgerFindFirstOrThrowArgs<ExtArgs>>): Prisma__WalletLedgerClient<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WalletLedgers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletLedgerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WalletLedgers
+     * const walletLedgers = await prisma.walletLedger.findMany()
+     * 
+     * // Get first 10 WalletLedgers
+     * const walletLedgers = await prisma.walletLedger.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const walletLedgerWithIdOnly = await prisma.walletLedger.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WalletLedgerFindManyArgs>(args?: SelectSubset<T, WalletLedgerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WalletLedger.
+     * @param {WalletLedgerCreateArgs} args - Arguments to create a WalletLedger.
+     * @example
+     * // Create one WalletLedger
+     * const WalletLedger = await prisma.walletLedger.create({
+     *   data: {
+     *     // ... data to create a WalletLedger
+     *   }
+     * })
+     * 
+     */
+    create<T extends WalletLedgerCreateArgs>(args: SelectSubset<T, WalletLedgerCreateArgs<ExtArgs>>): Prisma__WalletLedgerClient<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WalletLedgers.
+     * @param {WalletLedgerCreateManyArgs} args - Arguments to create many WalletLedgers.
+     * @example
+     * // Create many WalletLedgers
+     * const walletLedger = await prisma.walletLedger.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WalletLedgerCreateManyArgs>(args?: SelectSubset<T, WalletLedgerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WalletLedgers and returns the data saved in the database.
+     * @param {WalletLedgerCreateManyAndReturnArgs} args - Arguments to create many WalletLedgers.
+     * @example
+     * // Create many WalletLedgers
+     * const walletLedger = await prisma.walletLedger.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WalletLedgers and only return the `id`
+     * const walletLedgerWithIdOnly = await prisma.walletLedger.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WalletLedgerCreateManyAndReturnArgs>(args?: SelectSubset<T, WalletLedgerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WalletLedger.
+     * @param {WalletLedgerDeleteArgs} args - Arguments to delete one WalletLedger.
+     * @example
+     * // Delete one WalletLedger
+     * const WalletLedger = await prisma.walletLedger.delete({
+     *   where: {
+     *     // ... filter to delete one WalletLedger
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WalletLedgerDeleteArgs>(args: SelectSubset<T, WalletLedgerDeleteArgs<ExtArgs>>): Prisma__WalletLedgerClient<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WalletLedger.
+     * @param {WalletLedgerUpdateArgs} args - Arguments to update one WalletLedger.
+     * @example
+     * // Update one WalletLedger
+     * const walletLedger = await prisma.walletLedger.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WalletLedgerUpdateArgs>(args: SelectSubset<T, WalletLedgerUpdateArgs<ExtArgs>>): Prisma__WalletLedgerClient<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WalletLedgers.
+     * @param {WalletLedgerDeleteManyArgs} args - Arguments to filter WalletLedgers to delete.
+     * @example
+     * // Delete a few WalletLedgers
+     * const { count } = await prisma.walletLedger.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WalletLedgerDeleteManyArgs>(args?: SelectSubset<T, WalletLedgerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WalletLedgers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletLedgerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WalletLedgers
+     * const walletLedger = await prisma.walletLedger.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WalletLedgerUpdateManyArgs>(args: SelectSubset<T, WalletLedgerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WalletLedgers and returns the data updated in the database.
+     * @param {WalletLedgerUpdateManyAndReturnArgs} args - Arguments to update many WalletLedgers.
+     * @example
+     * // Update many WalletLedgers
+     * const walletLedger = await prisma.walletLedger.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WalletLedgers and only return the `id`
+     * const walletLedgerWithIdOnly = await prisma.walletLedger.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WalletLedgerUpdateManyAndReturnArgs>(args: SelectSubset<T, WalletLedgerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WalletLedger.
+     * @param {WalletLedgerUpsertArgs} args - Arguments to update or create a WalletLedger.
+     * @example
+     * // Update or create a WalletLedger
+     * const walletLedger = await prisma.walletLedger.upsert({
+     *   create: {
+     *     // ... data to create a WalletLedger
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WalletLedger we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WalletLedgerUpsertArgs>(args: SelectSubset<T, WalletLedgerUpsertArgs<ExtArgs>>): Prisma__WalletLedgerClient<$Result.GetResult<Prisma.$WalletLedgerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WalletLedgers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletLedgerCountArgs} args - Arguments to filter WalletLedgers to count.
+     * @example
+     * // Count the number of WalletLedgers
+     * const count = await prisma.walletLedger.count({
+     *   where: {
+     *     // ... the filter for the WalletLedgers we want to count
+     *   }
+     * })
+    **/
+    count<T extends WalletLedgerCountArgs>(
+      args?: Subset<T, WalletLedgerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WalletLedgerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WalletLedger.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletLedgerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WalletLedgerAggregateArgs>(args: Subset<T, WalletLedgerAggregateArgs>): Prisma.PrismaPromise<GetWalletLedgerAggregateType<T>>
+
+    /**
+     * Group by WalletLedger.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletLedgerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WalletLedgerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WalletLedgerGroupByArgs['orderBy'] }
+        : { orderBy?: WalletLedgerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WalletLedgerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWalletLedgerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WalletLedger model
+   */
+  readonly fields: WalletLedgerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WalletLedger.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WalletLedgerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    wallet<T extends SellerWalletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SellerWalletDefaultArgs<ExtArgs>>): Prisma__SellerWalletClient<$Result.GetResult<Prisma.$SellerWalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    order<T extends WalletLedger$orderArgs<ExtArgs> = {}>(args?: Subset<T, WalletLedger$orderArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    dispute<T extends WalletLedger$disputeArgs<ExtArgs> = {}>(args?: Subset<T, WalletLedger$disputeArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WalletLedger model
+   */
+  interface WalletLedgerFieldRefs {
+    readonly id: FieldRef<"WalletLedger", 'String'>
+    readonly walletUserId: FieldRef<"WalletLedger", 'String'>
+    readonly type: FieldRef<"WalletLedger", 'WalletLedgerType'>
+    readonly amount: FieldRef<"WalletLedger", 'Float'>
+    readonly orderId: FieldRef<"WalletLedger", 'String'>
+    readonly disputeId: FieldRef<"WalletLedger", 'String'>
+    readonly note: FieldRef<"WalletLedger", 'String'>
+    readonly createdAt: FieldRef<"WalletLedger", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WalletLedger findUnique
+   */
+  export type WalletLedgerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which WalletLedger to fetch.
+     */
+    where: WalletLedgerWhereUniqueInput
+  }
+
+  /**
+   * WalletLedger findUniqueOrThrow
+   */
+  export type WalletLedgerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which WalletLedger to fetch.
+     */
+    where: WalletLedgerWhereUniqueInput
+  }
+
+  /**
+   * WalletLedger findFirst
+   */
+  export type WalletLedgerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which WalletLedger to fetch.
+     */
+    where?: WalletLedgerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WalletLedgers to fetch.
+     */
+    orderBy?: WalletLedgerOrderByWithRelationInput | WalletLedgerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WalletLedgers.
+     */
+    cursor?: WalletLedgerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WalletLedgers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WalletLedgers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WalletLedgers.
+     */
+    distinct?: WalletLedgerScalarFieldEnum | WalletLedgerScalarFieldEnum[]
+  }
+
+  /**
+   * WalletLedger findFirstOrThrow
+   */
+  export type WalletLedgerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which WalletLedger to fetch.
+     */
+    where?: WalletLedgerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WalletLedgers to fetch.
+     */
+    orderBy?: WalletLedgerOrderByWithRelationInput | WalletLedgerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WalletLedgers.
+     */
+    cursor?: WalletLedgerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WalletLedgers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WalletLedgers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WalletLedgers.
+     */
+    distinct?: WalletLedgerScalarFieldEnum | WalletLedgerScalarFieldEnum[]
+  }
+
+  /**
+   * WalletLedger findMany
+   */
+  export type WalletLedgerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which WalletLedgers to fetch.
+     */
+    where?: WalletLedgerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WalletLedgers to fetch.
+     */
+    orderBy?: WalletLedgerOrderByWithRelationInput | WalletLedgerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WalletLedgers.
+     */
+    cursor?: WalletLedgerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WalletLedgers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WalletLedgers.
+     */
+    skip?: number
+    distinct?: WalletLedgerScalarFieldEnum | WalletLedgerScalarFieldEnum[]
+  }
+
+  /**
+   * WalletLedger create
+   */
+  export type WalletLedgerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WalletLedger.
+     */
+    data: XOR<WalletLedgerCreateInput, WalletLedgerUncheckedCreateInput>
+  }
+
+  /**
+   * WalletLedger createMany
+   */
+  export type WalletLedgerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WalletLedgers.
+     */
+    data: WalletLedgerCreateManyInput | WalletLedgerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WalletLedger createManyAndReturn
+   */
+  export type WalletLedgerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * The data used to create many WalletLedgers.
+     */
+    data: WalletLedgerCreateManyInput | WalletLedgerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WalletLedger update
+   */
+  export type WalletLedgerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WalletLedger.
+     */
+    data: XOR<WalletLedgerUpdateInput, WalletLedgerUncheckedUpdateInput>
+    /**
+     * Choose, which WalletLedger to update.
+     */
+    where: WalletLedgerWhereUniqueInput
+  }
+
+  /**
+   * WalletLedger updateMany
+   */
+  export type WalletLedgerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WalletLedgers.
+     */
+    data: XOR<WalletLedgerUpdateManyMutationInput, WalletLedgerUncheckedUpdateManyInput>
+    /**
+     * Filter which WalletLedgers to update
+     */
+    where?: WalletLedgerWhereInput
+    /**
+     * Limit how many WalletLedgers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WalletLedger updateManyAndReturn
+   */
+  export type WalletLedgerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * The data used to update WalletLedgers.
+     */
+    data: XOR<WalletLedgerUpdateManyMutationInput, WalletLedgerUncheckedUpdateManyInput>
+    /**
+     * Filter which WalletLedgers to update
+     */
+    where?: WalletLedgerWhereInput
+    /**
+     * Limit how many WalletLedgers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WalletLedger upsert
+   */
+  export type WalletLedgerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WalletLedger to update in case it exists.
+     */
+    where: WalletLedgerWhereUniqueInput
+    /**
+     * In case the WalletLedger found by the `where` argument doesn't exist, create a new WalletLedger with this data.
+     */
+    create: XOR<WalletLedgerCreateInput, WalletLedgerUncheckedCreateInput>
+    /**
+     * In case the WalletLedger was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WalletLedgerUpdateInput, WalletLedgerUncheckedUpdateInput>
+  }
+
+  /**
+   * WalletLedger delete
+   */
+  export type WalletLedgerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+    /**
+     * Filter which WalletLedger to delete.
+     */
+    where: WalletLedgerWhereUniqueInput
+  }
+
+  /**
+   * WalletLedger deleteMany
+   */
+  export type WalletLedgerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WalletLedgers to delete
+     */
+    where?: WalletLedgerWhereInput
+    /**
+     * Limit how many WalletLedgers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WalletLedger.order
+   */
+  export type WalletLedger$orderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Order
+     */
+    omit?: OrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderInclude<ExtArgs> | null
+    where?: OrderWhereInput
+  }
+
+  /**
+   * WalletLedger.dispute
+   */
+  export type WalletLedger$disputeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    where?: DisputeWhereInput
+  }
+
+  /**
+   * WalletLedger without action
+   */
+  export type WalletLedgerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WalletLedger
+     */
+    select?: WalletLedgerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WalletLedger
+     */
+    omit?: WalletLedgerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletLedgerInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -13162,7 +18451,8 @@ export namespace Prisma {
     name: 'name',
     isVerified: 'isVerified',
     googleId: 'googleId',
-    googleProfilePicture: 'googleProfilePicture'
+    googleProfilePicture: 'googleProfilePicture',
+    lastLoginAt: 'lastLoginAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -13201,9 +18491,21 @@ export namespace Prisma {
   export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
+  export const GameCategoryScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    slug: 'slug',
+    isRestricted: 'isRestricted',
+    createdAt: 'createdAt'
+  };
+
+  export type GameCategoryScalarFieldEnum = (typeof GameCategoryScalarFieldEnum)[keyof typeof GameCategoryScalarFieldEnum]
+
+
   export const ProductScalarFieldEnum: {
     id: 'id',
     gameType: 'gameType',
+    gameCategoryId: 'gameCategoryId',
     title: 'title',
     description: 'description',
     price: 'price',
@@ -13212,6 +18514,7 @@ export namespace Prisma {
     isAvailable: 'isAvailable',
     specifications: 'specifications',
     transactionBlock: 'transactionBlock',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     imageUrl: 'imageUrl',
@@ -13247,6 +18550,7 @@ export namespace Prisma {
   export const OrderScalarFieldEnum: {
     id: 'id',
     status: 'status',
+    paymentStatus: 'paymentStatus',
     totalAmount: 'totalAmount',
     paymentIntent: 'paymentIntent',
     paymentProvider: 'paymentProvider',
@@ -13280,6 +18584,46 @@ export namespace Prisma {
   export type EnquiryScalarFieldEnum = (typeof EnquiryScalarFieldEnum)[keyof typeof EnquiryScalarFieldEnum]
 
 
+  export const DisputeScalarFieldEnum: {
+    id: 'id',
+    orderId: 'orderId',
+    buyerId: 'buyerId',
+    sellerId: 'sellerId',
+    status: 'status',
+    reason: 'reason',
+    details: 'details',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type DisputeScalarFieldEnum = (typeof DisputeScalarFieldEnum)[keyof typeof DisputeScalarFieldEnum]
+
+
+  export const SellerWalletScalarFieldEnum: {
+    userId: 'userId',
+    pendingBalance: 'pendingBalance',
+    availableBalance: 'availableBalance',
+    frozenBalance: 'frozenBalance',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SellerWalletScalarFieldEnum = (typeof SellerWalletScalarFieldEnum)[keyof typeof SellerWalletScalarFieldEnum]
+
+
+  export const WalletLedgerScalarFieldEnum: {
+    id: 'id',
+    walletUserId: 'walletUserId',
+    type: 'type',
+    amount: 'amount',
+    orderId: 'orderId',
+    disputeId: 'disputeId',
+    note: 'note',
+    createdAt: 'createdAt'
+  };
+
+  export type WalletLedgerScalarFieldEnum = (typeof WalletLedgerScalarFieldEnum)[keyof typeof WalletLedgerScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -13293,6 +18637,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -13456,6 +18808,48 @@ export namespace Prisma {
    */
   export type ListEnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'PaymentStatus'
+   */
+  export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentStatus[]'
+   */
+  export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DisputeStatus'
+   */
+  export type EnumDisputeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DisputeStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'DisputeStatus[]'
+   */
+  export type ListEnumDisputeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DisputeStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WalletLedgerType'
+   */
+  export type EnumWalletLedgerTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WalletLedgerType'>
+    
+
+
+  /**
+   * Reference to a field of type 'WalletLedgerType[]'
+   */
+  export type ListEnumWalletLedgerTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WalletLedgerType[]'>
+    
   /**
    * Deep Input Types
    */
@@ -13475,6 +18869,7 @@ export namespace Prisma {
     isVerified?: BoolFilter<"User"> | boolean
     googleId?: StringNullableFilter<"User"> | string | null
     googleProfilePicture?: StringNullableFilter<"User"> | string | null
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     products?: ProductListRelationFilter
     orders?: OrderListRelationFilter
     cart?: XOR<CartNullableScalarRelationFilter, CartWhereInput> | null
@@ -13482,6 +18877,9 @@ export namespace Prisma {
     verificationToken?: XOR<VerificationTokenNullableScalarRelationFilter, VerificationTokenWhereInput> | null
     refreshToken?: RefreshTokenListRelationFilter
     passwordResetToken?: XOR<PasswordResetTokenNullableScalarRelationFilter, PasswordResetTokenWhereInput> | null
+    sellerWallet?: XOR<SellerWalletNullableScalarRelationFilter, SellerWalletWhereInput> | null
+    disputesAsBuyer?: DisputeListRelationFilter
+    disputesAsSeller?: DisputeListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -13495,6 +18893,7 @@ export namespace Prisma {
     isVerified?: SortOrder
     googleId?: SortOrderInput | SortOrder
     googleProfilePicture?: SortOrderInput | SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
     products?: ProductOrderByRelationAggregateInput
     orders?: OrderOrderByRelationAggregateInput
     cart?: CartOrderByWithRelationInput
@@ -13502,6 +18901,9 @@ export namespace Prisma {
     verificationToken?: VerificationTokenOrderByWithRelationInput
     refreshToken?: RefreshTokenOrderByRelationAggregateInput
     passwordResetToken?: PasswordResetTokenOrderByWithRelationInput
+    sellerWallet?: SellerWalletOrderByWithRelationInput
+    disputesAsBuyer?: DisputeOrderByRelationAggregateInput
+    disputesAsSeller?: DisputeOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -13518,6 +18920,7 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     isVerified?: BoolFilter<"User"> | boolean
     googleProfilePicture?: StringNullableFilter<"User"> | string | null
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     products?: ProductListRelationFilter
     orders?: OrderListRelationFilter
     cart?: XOR<CartNullableScalarRelationFilter, CartWhereInput> | null
@@ -13525,6 +18928,9 @@ export namespace Prisma {
     verificationToken?: XOR<VerificationTokenNullableScalarRelationFilter, VerificationTokenWhereInput> | null
     refreshToken?: RefreshTokenListRelationFilter
     passwordResetToken?: XOR<PasswordResetTokenNullableScalarRelationFilter, PasswordResetTokenWhereInput> | null
+    sellerWallet?: XOR<SellerWalletNullableScalarRelationFilter, SellerWalletWhereInput> | null
+    disputesAsBuyer?: DisputeListRelationFilter
+    disputesAsSeller?: DisputeListRelationFilter
   }, "id" | "email" | "googleId">
 
   export type UserOrderByWithAggregationInput = {
@@ -13538,6 +18944,7 @@ export namespace Prisma {
     isVerified?: SortOrder
     googleId?: SortOrderInput | SortOrder
     googleProfilePicture?: SortOrderInput | SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -13557,6 +18964,7 @@ export namespace Prisma {
     isVerified?: BoolWithAggregatesFilter<"User"> | boolean
     googleId?: StringNullableWithAggregatesFilter<"User"> | string | null
     googleProfilePicture?: StringNullableWithAggregatesFilter<"User"> | string | null
+    lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
   export type VerificationTokenWhereInput = {
@@ -13724,12 +19132,68 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"RefreshToken"> | Date | string
   }
 
+  export type GameCategoryWhereInput = {
+    AND?: GameCategoryWhereInput | GameCategoryWhereInput[]
+    OR?: GameCategoryWhereInput[]
+    NOT?: GameCategoryWhereInput | GameCategoryWhereInput[]
+    id?: StringFilter<"GameCategory"> | string
+    name?: StringFilter<"GameCategory"> | string
+    slug?: StringFilter<"GameCategory"> | string
+    isRestricted?: BoolFilter<"GameCategory"> | boolean
+    createdAt?: DateTimeFilter<"GameCategory"> | Date | string
+    products?: ProductListRelationFilter
+  }
+
+  export type GameCategoryOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+    products?: ProductOrderByRelationAggregateInput
+  }
+
+  export type GameCategoryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    slug?: string
+    AND?: GameCategoryWhereInput | GameCategoryWhereInput[]
+    OR?: GameCategoryWhereInput[]
+    NOT?: GameCategoryWhereInput | GameCategoryWhereInput[]
+    name?: StringFilter<"GameCategory"> | string
+    isRestricted?: BoolFilter<"GameCategory"> | boolean
+    createdAt?: DateTimeFilter<"GameCategory"> | Date | string
+    products?: ProductListRelationFilter
+  }, "id" | "slug">
+
+  export type GameCategoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+    _count?: GameCategoryCountOrderByAggregateInput
+    _max?: GameCategoryMaxOrderByAggregateInput
+    _min?: GameCategoryMinOrderByAggregateInput
+  }
+
+  export type GameCategoryScalarWhereWithAggregatesInput = {
+    AND?: GameCategoryScalarWhereWithAggregatesInput | GameCategoryScalarWhereWithAggregatesInput[]
+    OR?: GameCategoryScalarWhereWithAggregatesInput[]
+    NOT?: GameCategoryScalarWhereWithAggregatesInput | GameCategoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GameCategory"> | string
+    name?: StringWithAggregatesFilter<"GameCategory"> | string
+    slug?: StringWithAggregatesFilter<"GameCategory"> | string
+    isRestricted?: BoolWithAggregatesFilter<"GameCategory"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"GameCategory"> | Date | string
+  }
+
   export type ProductWhereInput = {
     AND?: ProductWhereInput | ProductWhereInput[]
     OR?: ProductWhereInput[]
     NOT?: ProductWhereInput | ProductWhereInput[]
     id?: StringFilter<"Product"> | string
     gameType?: StringFilter<"Product"> | string
+    gameCategoryId?: StringNullableFilter<"Product"> | string | null
     title?: StringFilter<"Product"> | string
     description?: StringNullableFilter<"Product"> | string | null
     price?: FloatFilter<"Product"> | number
@@ -13738,6 +19202,7 @@ export namespace Prisma {
     isAvailable?: BoolFilter<"Product"> | boolean
     specifications?: JsonFilter<"Product">
     transactionBlock?: BoolFilter<"Product"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     imageUrl?: StringNullableFilter<"Product"> | string | null
@@ -13746,6 +19211,7 @@ export namespace Prisma {
     accountEmail?: BytesFilter<"Product"> | Bytes
     accountEmailPassword?: BytesFilter<"Product"> | Bytes
     sellerId?: StringFilter<"Product"> | string
+    gameCategory?: XOR<GameCategoryNullableScalarRelationFilter, GameCategoryWhereInput> | null
     seller?: XOR<UserScalarRelationFilter, UserWhereInput>
     items?: OrderItemListRelationFilter
     cartItems?: CartItemListRelationFilter
@@ -13754,6 +19220,7 @@ export namespace Prisma {
   export type ProductOrderByWithRelationInput = {
     id?: SortOrder
     gameType?: SortOrder
+    gameCategoryId?: SortOrderInput | SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     price?: SortOrder
@@ -13762,6 +19229,7 @@ export namespace Prisma {
     isAvailable?: SortOrder
     specifications?: SortOrder
     transactionBlock?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     imageUrl?: SortOrderInput | SortOrder
@@ -13770,6 +19238,7 @@ export namespace Prisma {
     accountEmail?: SortOrder
     accountEmailPassword?: SortOrder
     sellerId?: SortOrder
+    gameCategory?: GameCategoryOrderByWithRelationInput
     seller?: UserOrderByWithRelationInput
     items?: OrderItemOrderByRelationAggregateInput
     cartItems?: CartItemOrderByRelationAggregateInput
@@ -13781,6 +19250,7 @@ export namespace Prisma {
     OR?: ProductWhereInput[]
     NOT?: ProductWhereInput | ProductWhereInput[]
     gameType?: StringFilter<"Product"> | string
+    gameCategoryId?: StringNullableFilter<"Product"> | string | null
     title?: StringFilter<"Product"> | string
     description?: StringNullableFilter<"Product"> | string | null
     price?: FloatFilter<"Product"> | number
@@ -13789,6 +19259,7 @@ export namespace Prisma {
     isAvailable?: BoolFilter<"Product"> | boolean
     specifications?: JsonFilter<"Product">
     transactionBlock?: BoolFilter<"Product"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     imageUrl?: StringNullableFilter<"Product"> | string | null
@@ -13797,6 +19268,7 @@ export namespace Prisma {
     accountEmail?: BytesFilter<"Product"> | Bytes
     accountEmailPassword?: BytesFilter<"Product"> | Bytes
     sellerId?: StringFilter<"Product"> | string
+    gameCategory?: XOR<GameCategoryNullableScalarRelationFilter, GameCategoryWhereInput> | null
     seller?: XOR<UserScalarRelationFilter, UserWhereInput>
     items?: OrderItemListRelationFilter
     cartItems?: CartItemListRelationFilter
@@ -13805,6 +19277,7 @@ export namespace Prisma {
   export type ProductOrderByWithAggregationInput = {
     id?: SortOrder
     gameType?: SortOrder
+    gameCategoryId?: SortOrderInput | SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     price?: SortOrder
@@ -13813,6 +19286,7 @@ export namespace Prisma {
     isAvailable?: SortOrder
     specifications?: SortOrder
     transactionBlock?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     imageUrl?: SortOrderInput | SortOrder
@@ -13834,6 +19308,7 @@ export namespace Prisma {
     NOT?: ProductScalarWhereWithAggregatesInput | ProductScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Product"> | string
     gameType?: StringWithAggregatesFilter<"Product"> | string
+    gameCategoryId?: StringNullableWithAggregatesFilter<"Product"> | string | null
     title?: StringWithAggregatesFilter<"Product"> | string
     description?: StringNullableWithAggregatesFilter<"Product"> | string | null
     price?: FloatWithAggregatesFilter<"Product"> | number
@@ -13842,6 +19317,7 @@ export namespace Prisma {
     isAvailable?: BoolWithAggregatesFilter<"Product"> | boolean
     specifications?: JsonWithAggregatesFilter<"Product">
     transactionBlock?: BoolWithAggregatesFilter<"Product"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     imageUrl?: StringNullableWithAggregatesFilter<"Product"> | string | null
@@ -13962,6 +19438,7 @@ export namespace Prisma {
     NOT?: OrderWhereInput | OrderWhereInput[]
     id?: StringFilter<"Order"> | string
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
     totalAmount?: FloatFilter<"Order"> | number
     paymentIntent?: StringNullableFilter<"Order"> | string | null
     paymentProvider?: StringNullableFilter<"Order"> | string | null
@@ -13970,11 +19447,14 @@ export namespace Prisma {
     buyerId?: StringFilter<"Order"> | string
     buyer?: XOR<UserScalarRelationFilter, UserWhereInput>
     items?: OrderItemListRelationFilter
+    disputes?: DisputeListRelationFilter
+    walletEntries?: WalletLedgerListRelationFilter
   }
 
   export type OrderOrderByWithRelationInput = {
     id?: SortOrder
     status?: SortOrder
+    paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrderInput | SortOrder
     paymentProvider?: SortOrderInput | SortOrder
@@ -13983,6 +19463,8 @@ export namespace Prisma {
     buyerId?: SortOrder
     buyer?: UserOrderByWithRelationInput
     items?: OrderItemOrderByRelationAggregateInput
+    disputes?: DisputeOrderByRelationAggregateInput
+    walletEntries?: WalletLedgerOrderByRelationAggregateInput
   }
 
   export type OrderWhereUniqueInput = Prisma.AtLeast<{
@@ -13992,6 +19474,7 @@ export namespace Prisma {
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
     totalAmount?: FloatFilter<"Order"> | number
     paymentProvider?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
@@ -13999,11 +19482,14 @@ export namespace Prisma {
     buyerId?: StringFilter<"Order"> | string
     buyer?: XOR<UserScalarRelationFilter, UserWhereInput>
     items?: OrderItemListRelationFilter
+    disputes?: DisputeListRelationFilter
+    walletEntries?: WalletLedgerListRelationFilter
   }, "id" | "paymentIntent">
 
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
     status?: SortOrder
+    paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrderInput | SortOrder
     paymentProvider?: SortOrderInput | SortOrder
@@ -14023,6 +19509,7 @@ export namespace Prisma {
     NOT?: OrderScalarWhereWithAggregatesInput | OrderScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Order"> | string
     status?: EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusWithAggregatesFilter<"Order"> | $Enums.PaymentStatus
     totalAmount?: FloatWithAggregatesFilter<"Order"> | number
     paymentIntent?: StringNullableWithAggregatesFilter<"Order"> | string | null
     paymentProvider?: StringNullableWithAggregatesFilter<"Order"> | string | null
@@ -14147,6 +19634,228 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Enquiry"> | string
   }
 
+  export type DisputeWhereInput = {
+    AND?: DisputeWhereInput | DisputeWhereInput[]
+    OR?: DisputeWhereInput[]
+    NOT?: DisputeWhereInput | DisputeWhereInput[]
+    id?: StringFilter<"Dispute"> | string
+    orderId?: StringFilter<"Dispute"> | string
+    buyerId?: StringFilter<"Dispute"> | string
+    sellerId?: StringFilter<"Dispute"> | string
+    status?: EnumDisputeStatusFilter<"Dispute"> | $Enums.DisputeStatus
+    reason?: StringFilter<"Dispute"> | string
+    details?: JsonNullableFilter<"Dispute">
+    createdAt?: DateTimeFilter<"Dispute"> | Date | string
+    updatedAt?: DateTimeFilter<"Dispute"> | Date | string
+    order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+    buyer?: XOR<UserScalarRelationFilter, UserWhereInput>
+    seller?: XOR<UserScalarRelationFilter, UserWhereInput>
+    walletEntries?: WalletLedgerListRelationFilter
+  }
+
+  export type DisputeOrderByWithRelationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    buyerId?: SortOrder
+    sellerId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    details?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    order?: OrderOrderByWithRelationInput
+    buyer?: UserOrderByWithRelationInput
+    seller?: UserOrderByWithRelationInput
+    walletEntries?: WalletLedgerOrderByRelationAggregateInput
+  }
+
+  export type DisputeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DisputeWhereInput | DisputeWhereInput[]
+    OR?: DisputeWhereInput[]
+    NOT?: DisputeWhereInput | DisputeWhereInput[]
+    orderId?: StringFilter<"Dispute"> | string
+    buyerId?: StringFilter<"Dispute"> | string
+    sellerId?: StringFilter<"Dispute"> | string
+    status?: EnumDisputeStatusFilter<"Dispute"> | $Enums.DisputeStatus
+    reason?: StringFilter<"Dispute"> | string
+    details?: JsonNullableFilter<"Dispute">
+    createdAt?: DateTimeFilter<"Dispute"> | Date | string
+    updatedAt?: DateTimeFilter<"Dispute"> | Date | string
+    order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+    buyer?: XOR<UserScalarRelationFilter, UserWhereInput>
+    seller?: XOR<UserScalarRelationFilter, UserWhereInput>
+    walletEntries?: WalletLedgerListRelationFilter
+  }, "id">
+
+  export type DisputeOrderByWithAggregationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    buyerId?: SortOrder
+    sellerId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    details?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: DisputeCountOrderByAggregateInput
+    _max?: DisputeMaxOrderByAggregateInput
+    _min?: DisputeMinOrderByAggregateInput
+  }
+
+  export type DisputeScalarWhereWithAggregatesInput = {
+    AND?: DisputeScalarWhereWithAggregatesInput | DisputeScalarWhereWithAggregatesInput[]
+    OR?: DisputeScalarWhereWithAggregatesInput[]
+    NOT?: DisputeScalarWhereWithAggregatesInput | DisputeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Dispute"> | string
+    orderId?: StringWithAggregatesFilter<"Dispute"> | string
+    buyerId?: StringWithAggregatesFilter<"Dispute"> | string
+    sellerId?: StringWithAggregatesFilter<"Dispute"> | string
+    status?: EnumDisputeStatusWithAggregatesFilter<"Dispute"> | $Enums.DisputeStatus
+    reason?: StringWithAggregatesFilter<"Dispute"> | string
+    details?: JsonNullableWithAggregatesFilter<"Dispute">
+    createdAt?: DateTimeWithAggregatesFilter<"Dispute"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Dispute"> | Date | string
+  }
+
+  export type SellerWalletWhereInput = {
+    AND?: SellerWalletWhereInput | SellerWalletWhereInput[]
+    OR?: SellerWalletWhereInput[]
+    NOT?: SellerWalletWhereInput | SellerWalletWhereInput[]
+    userId?: StringFilter<"SellerWallet"> | string
+    pendingBalance?: FloatFilter<"SellerWallet"> | number
+    availableBalance?: FloatFilter<"SellerWallet"> | number
+    frozenBalance?: FloatFilter<"SellerWallet"> | number
+    updatedAt?: DateTimeFilter<"SellerWallet"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    ledgerEntries?: WalletLedgerListRelationFilter
+  }
+
+  export type SellerWalletOrderByWithRelationInput = {
+    userId?: SortOrder
+    pendingBalance?: SortOrder
+    availableBalance?: SortOrder
+    frozenBalance?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    ledgerEntries?: WalletLedgerOrderByRelationAggregateInput
+  }
+
+  export type SellerWalletWhereUniqueInput = Prisma.AtLeast<{
+    userId?: string
+    AND?: SellerWalletWhereInput | SellerWalletWhereInput[]
+    OR?: SellerWalletWhereInput[]
+    NOT?: SellerWalletWhereInput | SellerWalletWhereInput[]
+    pendingBalance?: FloatFilter<"SellerWallet"> | number
+    availableBalance?: FloatFilter<"SellerWallet"> | number
+    frozenBalance?: FloatFilter<"SellerWallet"> | number
+    updatedAt?: DateTimeFilter<"SellerWallet"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    ledgerEntries?: WalletLedgerListRelationFilter
+  }, "userId">
+
+  export type SellerWalletOrderByWithAggregationInput = {
+    userId?: SortOrder
+    pendingBalance?: SortOrder
+    availableBalance?: SortOrder
+    frozenBalance?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SellerWalletCountOrderByAggregateInput
+    _avg?: SellerWalletAvgOrderByAggregateInput
+    _max?: SellerWalletMaxOrderByAggregateInput
+    _min?: SellerWalletMinOrderByAggregateInput
+    _sum?: SellerWalletSumOrderByAggregateInput
+  }
+
+  export type SellerWalletScalarWhereWithAggregatesInput = {
+    AND?: SellerWalletScalarWhereWithAggregatesInput | SellerWalletScalarWhereWithAggregatesInput[]
+    OR?: SellerWalletScalarWhereWithAggregatesInput[]
+    NOT?: SellerWalletScalarWhereWithAggregatesInput | SellerWalletScalarWhereWithAggregatesInput[]
+    userId?: StringWithAggregatesFilter<"SellerWallet"> | string
+    pendingBalance?: FloatWithAggregatesFilter<"SellerWallet"> | number
+    availableBalance?: FloatWithAggregatesFilter<"SellerWallet"> | number
+    frozenBalance?: FloatWithAggregatesFilter<"SellerWallet"> | number
+    updatedAt?: DateTimeWithAggregatesFilter<"SellerWallet"> | Date | string
+  }
+
+  export type WalletLedgerWhereInput = {
+    AND?: WalletLedgerWhereInput | WalletLedgerWhereInput[]
+    OR?: WalletLedgerWhereInput[]
+    NOT?: WalletLedgerWhereInput | WalletLedgerWhereInput[]
+    id?: StringFilter<"WalletLedger"> | string
+    walletUserId?: StringFilter<"WalletLedger"> | string
+    type?: EnumWalletLedgerTypeFilter<"WalletLedger"> | $Enums.WalletLedgerType
+    amount?: FloatFilter<"WalletLedger"> | number
+    orderId?: StringNullableFilter<"WalletLedger"> | string | null
+    disputeId?: StringNullableFilter<"WalletLedger"> | string | null
+    note?: StringNullableFilter<"WalletLedger"> | string | null
+    createdAt?: DateTimeFilter<"WalletLedger"> | Date | string
+    wallet?: XOR<SellerWalletScalarRelationFilter, SellerWalletWhereInput>
+    order?: XOR<OrderNullableScalarRelationFilter, OrderWhereInput> | null
+    dispute?: XOR<DisputeNullableScalarRelationFilter, DisputeWhereInput> | null
+  }
+
+  export type WalletLedgerOrderByWithRelationInput = {
+    id?: SortOrder
+    walletUserId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    orderId?: SortOrderInput | SortOrder
+    disputeId?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    wallet?: SellerWalletOrderByWithRelationInput
+    order?: OrderOrderByWithRelationInput
+    dispute?: DisputeOrderByWithRelationInput
+  }
+
+  export type WalletLedgerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WalletLedgerWhereInput | WalletLedgerWhereInput[]
+    OR?: WalletLedgerWhereInput[]
+    NOT?: WalletLedgerWhereInput | WalletLedgerWhereInput[]
+    walletUserId?: StringFilter<"WalletLedger"> | string
+    type?: EnumWalletLedgerTypeFilter<"WalletLedger"> | $Enums.WalletLedgerType
+    amount?: FloatFilter<"WalletLedger"> | number
+    orderId?: StringNullableFilter<"WalletLedger"> | string | null
+    disputeId?: StringNullableFilter<"WalletLedger"> | string | null
+    note?: StringNullableFilter<"WalletLedger"> | string | null
+    createdAt?: DateTimeFilter<"WalletLedger"> | Date | string
+    wallet?: XOR<SellerWalletScalarRelationFilter, SellerWalletWhereInput>
+    order?: XOR<OrderNullableScalarRelationFilter, OrderWhereInput> | null
+    dispute?: XOR<DisputeNullableScalarRelationFilter, DisputeWhereInput> | null
+  }, "id">
+
+  export type WalletLedgerOrderByWithAggregationInput = {
+    id?: SortOrder
+    walletUserId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    orderId?: SortOrderInput | SortOrder
+    disputeId?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: WalletLedgerCountOrderByAggregateInput
+    _avg?: WalletLedgerAvgOrderByAggregateInput
+    _max?: WalletLedgerMaxOrderByAggregateInput
+    _min?: WalletLedgerMinOrderByAggregateInput
+    _sum?: WalletLedgerSumOrderByAggregateInput
+  }
+
+  export type WalletLedgerScalarWhereWithAggregatesInput = {
+    AND?: WalletLedgerScalarWhereWithAggregatesInput | WalletLedgerScalarWhereWithAggregatesInput[]
+    OR?: WalletLedgerScalarWhereWithAggregatesInput[]
+    NOT?: WalletLedgerScalarWhereWithAggregatesInput | WalletLedgerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WalletLedger"> | string
+    walletUserId?: StringWithAggregatesFilter<"WalletLedger"> | string
+    type?: EnumWalletLedgerTypeWithAggregatesFilter<"WalletLedger"> | $Enums.WalletLedgerType
+    amount?: FloatWithAggregatesFilter<"WalletLedger"> | number
+    orderId?: StringNullableWithAggregatesFilter<"WalletLedger"> | string | null
+    disputeId?: StringNullableWithAggregatesFilter<"WalletLedger"> | string | null
+    note?: StringNullableWithAggregatesFilter<"WalletLedger"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WalletLedger"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -14158,6 +19867,7 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -14165,6 +19875,9 @@ export namespace Prisma {
     verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -14178,6 +19891,7 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -14185,6 +19899,9 @@ export namespace Prisma {
     verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
   }
 
   export type UserUpdateInput = {
@@ -14198,6 +19915,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -14205,6 +19923,9 @@ export namespace Prisma {
     verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -14218,6 +19939,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -14225,6 +19947,9 @@ export namespace Prisma {
     verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -14238,6 +19963,7 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -14251,6 +19977,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -14264,6 +19991,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type VerificationTokenCreateInput = {
@@ -14431,6 +20159,66 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GameCategoryCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    isRestricted?: boolean
+    createdAt?: Date | string
+    products?: ProductCreateNestedManyWithoutGameCategoryInput
+  }
+
+  export type GameCategoryUncheckedCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    isRestricted?: boolean
+    createdAt?: Date | string
+    products?: ProductUncheckedCreateNestedManyWithoutGameCategoryInput
+  }
+
+  export type GameCategoryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductUpdateManyWithoutGameCategoryNestedInput
+  }
+
+  export type GameCategoryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductUncheckedUpdateManyWithoutGameCategoryNestedInput
+  }
+
+  export type GameCategoryCreateManyInput = {
+    id?: string
+    name: string
+    slug: string
+    isRestricted?: boolean
+    createdAt?: Date | string
+  }
+
+  export type GameCategoryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GameCategoryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ProductCreateInput = {
     id?: string
     gameType: string
@@ -14442,6 +20230,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -14449,6 +20238,7 @@ export namespace Prisma {
     accountPassword: Bytes
     accountEmail: Bytes
     accountEmailPassword: Bytes
+    gameCategory?: GameCategoryCreateNestedOneWithoutProductsInput
     seller: UserCreateNestedOneWithoutProductsInput
     items?: OrderItemCreateNestedManyWithoutProductInput
     cartItems?: CartItemCreateNestedManyWithoutProductInput
@@ -14457,6 +20247,7 @@ export namespace Prisma {
   export type ProductUncheckedCreateInput = {
     id?: string
     gameType: string
+    gameCategoryId?: string | null
     title: string
     description?: string | null
     price: number
@@ -14465,6 +20256,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -14488,6 +20280,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14495,6 +20288,7 @@ export namespace Prisma {
     accountPassword?: BytesFieldUpdateOperationsInput | Bytes
     accountEmail?: BytesFieldUpdateOperationsInput | Bytes
     accountEmailPassword?: BytesFieldUpdateOperationsInput | Bytes
+    gameCategory?: GameCategoryUpdateOneWithoutProductsNestedInput
     seller?: UserUpdateOneRequiredWithoutProductsNestedInput
     items?: OrderItemUpdateManyWithoutProductNestedInput
     cartItems?: CartItemUpdateManyWithoutProductNestedInput
@@ -14503,6 +20297,7 @@ export namespace Prisma {
   export type ProductUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     gameType?: StringFieldUpdateOperationsInput | string
+    gameCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
@@ -14511,6 +20306,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14526,6 +20322,7 @@ export namespace Prisma {
   export type ProductCreateManyInput = {
     id?: string
     gameType: string
+    gameCategoryId?: string | null
     title: string
     description?: string | null
     price: number
@@ -14534,6 +20331,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -14555,6 +20353,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14567,6 +20366,7 @@ export namespace Prisma {
   export type ProductUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     gameType?: StringFieldUpdateOperationsInput | string
+    gameCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
@@ -14575,6 +20375,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14680,6 +20481,7 @@ export namespace Prisma {
   export type OrderCreateInput = {
     id?: string
     status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
     paymentProvider?: string | null
@@ -14687,11 +20489,14 @@ export namespace Prisma {
     updatedAt?: Date | string
     buyer: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
+    disputes?: DisputeCreateNestedManyWithoutOrderInput
+    walletEntries?: WalletLedgerCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateInput = {
     id?: string
     status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
     paymentProvider?: string | null
@@ -14699,11 +20504,14 @@ export namespace Prisma {
     updatedAt?: Date | string
     buyerId: string
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutOrderInput
+    walletEntries?: WalletLedgerUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14711,11 +20519,14 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     buyer?: UserUpdateOneRequiredWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
+    disputes?: DisputeUpdateManyWithoutOrderNestedInput
+    walletEntries?: WalletLedgerUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14723,11 +20534,14 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     buyerId?: StringFieldUpdateOperationsInput | string
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutOrderNestedInput
+    walletEntries?: WalletLedgerUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderCreateManyInput = {
     id?: string
     status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
     paymentProvider?: string | null
@@ -14739,6 +20553,7 @@ export namespace Prisma {
   export type OrderUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14749,6 +20564,7 @@ export namespace Prisma {
   export type OrderUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14866,6 +20682,224 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type DisputeCreateInput = {
+    id?: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    order: OrderCreateNestedOneWithoutDisputesInput
+    buyer: UserCreateNestedOneWithoutDisputesAsBuyerInput
+    seller: UserCreateNestedOneWithoutDisputesAsSellerInput
+    walletEntries?: WalletLedgerCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeUncheckedCreateInput = {
+    id?: string
+    orderId: string
+    buyerId: string
+    sellerId: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    walletEntries?: WalletLedgerUncheckedCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneRequiredWithoutDisputesNestedInput
+    buyer?: UserUpdateOneRequiredWithoutDisputesAsBuyerNestedInput
+    seller?: UserUpdateOneRequiredWithoutDisputesAsSellerNestedInput
+    walletEntries?: WalletLedgerUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    buyerId?: StringFieldUpdateOperationsInput | string
+    sellerId?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    walletEntries?: WalletLedgerUncheckedUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeCreateManyInput = {
+    id?: string
+    orderId: string
+    buyerId: string
+    sellerId: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DisputeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DisputeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    buyerId?: StringFieldUpdateOperationsInput | string
+    sellerId?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SellerWalletCreateInput = {
+    pendingBalance?: number
+    availableBalance?: number
+    frozenBalance?: number
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutSellerWalletInput
+    ledgerEntries?: WalletLedgerCreateNestedManyWithoutWalletInput
+  }
+
+  export type SellerWalletUncheckedCreateInput = {
+    userId: string
+    pendingBalance?: number
+    availableBalance?: number
+    frozenBalance?: number
+    updatedAt?: Date | string
+    ledgerEntries?: WalletLedgerUncheckedCreateNestedManyWithoutWalletInput
+  }
+
+  export type SellerWalletUpdateInput = {
+    pendingBalance?: FloatFieldUpdateOperationsInput | number
+    availableBalance?: FloatFieldUpdateOperationsInput | number
+    frozenBalance?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSellerWalletNestedInput
+    ledgerEntries?: WalletLedgerUpdateManyWithoutWalletNestedInput
+  }
+
+  export type SellerWalletUncheckedUpdateInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    pendingBalance?: FloatFieldUpdateOperationsInput | number
+    availableBalance?: FloatFieldUpdateOperationsInput | number
+    frozenBalance?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ledgerEntries?: WalletLedgerUncheckedUpdateManyWithoutWalletNestedInput
+  }
+
+  export type SellerWalletCreateManyInput = {
+    userId: string
+    pendingBalance?: number
+    availableBalance?: number
+    frozenBalance?: number
+    updatedAt?: Date | string
+  }
+
+  export type SellerWalletUpdateManyMutationInput = {
+    pendingBalance?: FloatFieldUpdateOperationsInput | number
+    availableBalance?: FloatFieldUpdateOperationsInput | number
+    frozenBalance?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SellerWalletUncheckedUpdateManyInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    pendingBalance?: FloatFieldUpdateOperationsInput | number
+    availableBalance?: FloatFieldUpdateOperationsInput | number
+    frozenBalance?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletLedgerCreateInput = {
+    id?: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    note?: string | null
+    createdAt?: Date | string
+    wallet: SellerWalletCreateNestedOneWithoutLedgerEntriesInput
+    order?: OrderCreateNestedOneWithoutWalletEntriesInput
+    dispute?: DisputeCreateNestedOneWithoutWalletEntriesInput
+  }
+
+  export type WalletLedgerUncheckedCreateInput = {
+    id?: string
+    walletUserId: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    orderId?: string | null
+    disputeId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WalletLedgerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    wallet?: SellerWalletUpdateOneRequiredWithoutLedgerEntriesNestedInput
+    order?: OrderUpdateOneWithoutWalletEntriesNestedInput
+    dispute?: DisputeUpdateOneWithoutWalletEntriesNestedInput
+  }
+
+  export type WalletLedgerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    walletUserId?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    disputeId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletLedgerCreateManyInput = {
+    id?: string
+    walletUserId: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    orderId?: string | null
+    disputeId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WalletLedgerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletLedgerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    walletUserId?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    disputeId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -14919,6 +20953,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type ProductListRelationFilter = {
     every?: ProductWhereInput
     some?: ProductWhereInput
@@ -14958,6 +21003,17 @@ export namespace Prisma {
     isNot?: PasswordResetTokenWhereInput | null
   }
 
+  export type SellerWalletNullableScalarRelationFilter = {
+    is?: SellerWalletWhereInput | null
+    isNot?: SellerWalletWhereInput | null
+  }
+
+  export type DisputeListRelationFilter = {
+    every?: DisputeWhereInput
+    some?: DisputeWhereInput
+    none?: DisputeWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -14979,6 +21035,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type DisputeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
@@ -14990,6 +21050,7 @@ export namespace Prisma {
     isVerified?: SortOrder
     googleId?: SortOrder
     googleProfilePicture?: SortOrder
+    lastLoginAt?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -15003,6 +21064,7 @@ export namespace Prisma {
     isVerified?: SortOrder
     googleId?: SortOrder
     googleProfilePicture?: SortOrder
+    lastLoginAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -15016,6 +21078,7 @@ export namespace Prisma {
     isVerified?: SortOrder
     googleId?: SortOrder
     googleProfilePicture?: SortOrder
+    lastLoginAt?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -15084,6 +21147,20 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type UserScalarRelationFilter = {
@@ -15163,6 +21240,30 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type GameCategoryCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GameCategoryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GameCategoryMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -15211,6 +21312,11 @@ export namespace Prisma {
     not?: NestedBytesFilter<$PrismaModel> | Bytes
   }
 
+  export type GameCategoryNullableScalarRelationFilter = {
+    is?: GameCategoryWhereInput | null
+    isNot?: GameCategoryWhereInput | null
+  }
+
   export type OrderItemListRelationFilter = {
     every?: OrderItemWhereInput
     some?: OrderItemWhereInput
@@ -15234,6 +21340,7 @@ export namespace Prisma {
   export type ProductCountOrderByAggregateInput = {
     id?: SortOrder
     gameType?: SortOrder
+    gameCategoryId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     price?: SortOrder
@@ -15242,6 +21349,7 @@ export namespace Prisma {
     isAvailable?: SortOrder
     specifications?: SortOrder
     transactionBlock?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     imageUrl?: SortOrder
@@ -15259,6 +21367,7 @@ export namespace Prisma {
   export type ProductMaxOrderByAggregateInput = {
     id?: SortOrder
     gameType?: SortOrder
+    gameCategoryId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     price?: SortOrder
@@ -15266,6 +21375,7 @@ export namespace Prisma {
     sellerDelisted?: SortOrder
     isAvailable?: SortOrder
     transactionBlock?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     imageUrl?: SortOrder
@@ -15279,6 +21389,7 @@ export namespace Prisma {
   export type ProductMinOrderByAggregateInput = {
     id?: SortOrder
     gameType?: SortOrder
+    gameCategoryId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     price?: SortOrder
@@ -15286,6 +21397,7 @@ export namespace Prisma {
     sellerDelisted?: SortOrder
     isAvailable?: SortOrder
     transactionBlock?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     imageUrl?: SortOrder
@@ -15458,9 +21570,27 @@ export namespace Prisma {
     not?: NestedEnumOrderStatusFilter<$PrismaModel> | $Enums.OrderStatus
   }
 
+  export type EnumPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
+  }
+
+  export type WalletLedgerListRelationFilter = {
+    every?: WalletLedgerWhereInput
+    some?: WalletLedgerWhereInput
+    none?: WalletLedgerWhereInput
+  }
+
+  export type WalletLedgerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type OrderCountOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
+    paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrder
     paymentProvider?: SortOrder
@@ -15476,6 +21606,7 @@ export namespace Prisma {
   export type OrderMaxOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
+    paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrder
     paymentProvider?: SortOrder
@@ -15487,6 +21618,7 @@ export namespace Prisma {
   export type OrderMinOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
+    paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrder
     paymentProvider?: SortOrder
@@ -15507,6 +21639,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumOrderStatusFilter<$PrismaModel>
     _max?: NestedEnumOrderStatusFilter<$PrismaModel>
+  }
+
+  export type EnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
   }
 
   export type OrderScalarRelationFilter = {
@@ -15577,6 +21719,215 @@ export namespace Prisma {
     userId?: SortOrder
   }
 
+  export type EnumDisputeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.DisputeStatus | EnumDisputeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DisputeStatus[] | ListEnumDisputeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DisputeStatus[] | ListEnumDisputeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDisputeStatusFilter<$PrismaModel> | $Enums.DisputeStatus
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type DisputeCountOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    buyerId?: SortOrder
+    sellerId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    details?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DisputeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    buyerId?: SortOrder
+    sellerId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DisputeMinOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    buyerId?: SortOrder
+    sellerId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumDisputeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DisputeStatus | EnumDisputeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DisputeStatus[] | ListEnumDisputeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DisputeStatus[] | ListEnumDisputeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDisputeStatusWithAggregatesFilter<$PrismaModel> | $Enums.DisputeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDisputeStatusFilter<$PrismaModel>
+    _max?: NestedEnumDisputeStatusFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type SellerWalletCountOrderByAggregateInput = {
+    userId?: SortOrder
+    pendingBalance?: SortOrder
+    availableBalance?: SortOrder
+    frozenBalance?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SellerWalletAvgOrderByAggregateInput = {
+    pendingBalance?: SortOrder
+    availableBalance?: SortOrder
+    frozenBalance?: SortOrder
+  }
+
+  export type SellerWalletMaxOrderByAggregateInput = {
+    userId?: SortOrder
+    pendingBalance?: SortOrder
+    availableBalance?: SortOrder
+    frozenBalance?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SellerWalletMinOrderByAggregateInput = {
+    userId?: SortOrder
+    pendingBalance?: SortOrder
+    availableBalance?: SortOrder
+    frozenBalance?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SellerWalletSumOrderByAggregateInput = {
+    pendingBalance?: SortOrder
+    availableBalance?: SortOrder
+    frozenBalance?: SortOrder
+  }
+
+  export type EnumWalletLedgerTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.WalletLedgerType | EnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WalletLedgerType[] | ListEnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WalletLedgerType[] | ListEnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWalletLedgerTypeFilter<$PrismaModel> | $Enums.WalletLedgerType
+  }
+
+  export type SellerWalletScalarRelationFilter = {
+    is?: SellerWalletWhereInput
+    isNot?: SellerWalletWhereInput
+  }
+
+  export type OrderNullableScalarRelationFilter = {
+    is?: OrderWhereInput | null
+    isNot?: OrderWhereInput | null
+  }
+
+  export type DisputeNullableScalarRelationFilter = {
+    is?: DisputeWhereInput | null
+    isNot?: DisputeWhereInput | null
+  }
+
+  export type WalletLedgerCountOrderByAggregateInput = {
+    id?: SortOrder
+    walletUserId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    orderId?: SortOrder
+    disputeId?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WalletLedgerAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type WalletLedgerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    walletUserId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    orderId?: SortOrder
+    disputeId?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WalletLedgerMinOrderByAggregateInput = {
+    id?: SortOrder
+    walletUserId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    orderId?: SortOrder
+    disputeId?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WalletLedgerSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumWalletLedgerTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WalletLedgerType | EnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WalletLedgerType[] | ListEnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WalletLedgerType[] | ListEnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWalletLedgerTypeWithAggregatesFilter<$PrismaModel> | $Enums.WalletLedgerType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWalletLedgerTypeFilter<$PrismaModel>
+    _max?: NestedEnumWalletLedgerTypeFilter<$PrismaModel>
+  }
+
   export type ProductCreateNestedManyWithoutSellerInput = {
     create?: XOR<ProductCreateWithoutSellerInput, ProductUncheckedCreateWithoutSellerInput> | ProductCreateWithoutSellerInput[] | ProductUncheckedCreateWithoutSellerInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutSellerInput | ProductCreateOrConnectWithoutSellerInput[]
@@ -15621,6 +21972,26 @@ export namespace Prisma {
     create?: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput>
     connectOrCreate?: PasswordResetTokenCreateOrConnectWithoutUserInput
     connect?: PasswordResetTokenWhereUniqueInput
+  }
+
+  export type SellerWalletCreateNestedOneWithoutUserInput = {
+    create?: XOR<SellerWalletCreateWithoutUserInput, SellerWalletUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SellerWalletCreateOrConnectWithoutUserInput
+    connect?: SellerWalletWhereUniqueInput
+  }
+
+  export type DisputeCreateNestedManyWithoutBuyerInput = {
+    create?: XOR<DisputeCreateWithoutBuyerInput, DisputeUncheckedCreateWithoutBuyerInput> | DisputeCreateWithoutBuyerInput[] | DisputeUncheckedCreateWithoutBuyerInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutBuyerInput | DisputeCreateOrConnectWithoutBuyerInput[]
+    createMany?: DisputeCreateManyBuyerInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
+  export type DisputeCreateNestedManyWithoutSellerInput = {
+    create?: XOR<DisputeCreateWithoutSellerInput, DisputeUncheckedCreateWithoutSellerInput> | DisputeCreateWithoutSellerInput[] | DisputeUncheckedCreateWithoutSellerInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutSellerInput | DisputeCreateOrConnectWithoutSellerInput[]
+    createMany?: DisputeCreateManySellerInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
   }
 
   export type ProductUncheckedCreateNestedManyWithoutSellerInput = {
@@ -15669,6 +22040,26 @@ export namespace Prisma {
     connect?: PasswordResetTokenWhereUniqueInput
   }
 
+  export type SellerWalletUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<SellerWalletCreateWithoutUserInput, SellerWalletUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SellerWalletCreateOrConnectWithoutUserInput
+    connect?: SellerWalletWhereUniqueInput
+  }
+
+  export type DisputeUncheckedCreateNestedManyWithoutBuyerInput = {
+    create?: XOR<DisputeCreateWithoutBuyerInput, DisputeUncheckedCreateWithoutBuyerInput> | DisputeCreateWithoutBuyerInput[] | DisputeUncheckedCreateWithoutBuyerInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutBuyerInput | DisputeCreateOrConnectWithoutBuyerInput[]
+    createMany?: DisputeCreateManyBuyerInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
+  export type DisputeUncheckedCreateNestedManyWithoutSellerInput = {
+    create?: XOR<DisputeCreateWithoutSellerInput, DisputeUncheckedCreateWithoutSellerInput> | DisputeCreateWithoutSellerInput[] | DisputeUncheckedCreateWithoutSellerInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutSellerInput | DisputeCreateOrConnectWithoutSellerInput[]
+    createMany?: DisputeCreateManySellerInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -15687,6 +22078,10 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type ProductUpdateManyWithoutSellerNestedInput = {
@@ -15775,6 +22170,44 @@ export namespace Prisma {
     update?: XOR<XOR<PasswordResetTokenUpdateToOneWithWhereWithoutUserInput, PasswordResetTokenUpdateWithoutUserInput>, PasswordResetTokenUncheckedUpdateWithoutUserInput>
   }
 
+  export type SellerWalletUpdateOneWithoutUserNestedInput = {
+    create?: XOR<SellerWalletCreateWithoutUserInput, SellerWalletUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SellerWalletCreateOrConnectWithoutUserInput
+    upsert?: SellerWalletUpsertWithoutUserInput
+    disconnect?: SellerWalletWhereInput | boolean
+    delete?: SellerWalletWhereInput | boolean
+    connect?: SellerWalletWhereUniqueInput
+    update?: XOR<XOR<SellerWalletUpdateToOneWithWhereWithoutUserInput, SellerWalletUpdateWithoutUserInput>, SellerWalletUncheckedUpdateWithoutUserInput>
+  }
+
+  export type DisputeUpdateManyWithoutBuyerNestedInput = {
+    create?: XOR<DisputeCreateWithoutBuyerInput, DisputeUncheckedCreateWithoutBuyerInput> | DisputeCreateWithoutBuyerInput[] | DisputeUncheckedCreateWithoutBuyerInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutBuyerInput | DisputeCreateOrConnectWithoutBuyerInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutBuyerInput | DisputeUpsertWithWhereUniqueWithoutBuyerInput[]
+    createMany?: DisputeCreateManyBuyerInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutBuyerInput | DisputeUpdateWithWhereUniqueWithoutBuyerInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutBuyerInput | DisputeUpdateManyWithWhereWithoutBuyerInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
+  export type DisputeUpdateManyWithoutSellerNestedInput = {
+    create?: XOR<DisputeCreateWithoutSellerInput, DisputeUncheckedCreateWithoutSellerInput> | DisputeCreateWithoutSellerInput[] | DisputeUncheckedCreateWithoutSellerInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutSellerInput | DisputeCreateOrConnectWithoutSellerInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutSellerInput | DisputeUpsertWithWhereUniqueWithoutSellerInput[]
+    createMany?: DisputeCreateManySellerInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutSellerInput | DisputeUpdateWithWhereUniqueWithoutSellerInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutSellerInput | DisputeUpdateManyWithWhereWithoutSellerInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
   export type ProductUncheckedUpdateManyWithoutSellerNestedInput = {
     create?: XOR<ProductCreateWithoutSellerInput, ProductUncheckedCreateWithoutSellerInput> | ProductCreateWithoutSellerInput[] | ProductUncheckedCreateWithoutSellerInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutSellerInput | ProductCreateOrConnectWithoutSellerInput[]
@@ -15861,6 +22294,44 @@ export namespace Prisma {
     update?: XOR<XOR<PasswordResetTokenUpdateToOneWithWhereWithoutUserInput, PasswordResetTokenUpdateWithoutUserInput>, PasswordResetTokenUncheckedUpdateWithoutUserInput>
   }
 
+  export type SellerWalletUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<SellerWalletCreateWithoutUserInput, SellerWalletUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SellerWalletCreateOrConnectWithoutUserInput
+    upsert?: SellerWalletUpsertWithoutUserInput
+    disconnect?: SellerWalletWhereInput | boolean
+    delete?: SellerWalletWhereInput | boolean
+    connect?: SellerWalletWhereUniqueInput
+    update?: XOR<XOR<SellerWalletUpdateToOneWithWhereWithoutUserInput, SellerWalletUpdateWithoutUserInput>, SellerWalletUncheckedUpdateWithoutUserInput>
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutBuyerNestedInput = {
+    create?: XOR<DisputeCreateWithoutBuyerInput, DisputeUncheckedCreateWithoutBuyerInput> | DisputeCreateWithoutBuyerInput[] | DisputeUncheckedCreateWithoutBuyerInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutBuyerInput | DisputeCreateOrConnectWithoutBuyerInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutBuyerInput | DisputeUpsertWithWhereUniqueWithoutBuyerInput[]
+    createMany?: DisputeCreateManyBuyerInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutBuyerInput | DisputeUpdateWithWhereUniqueWithoutBuyerInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutBuyerInput | DisputeUpdateManyWithWhereWithoutBuyerInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutSellerNestedInput = {
+    create?: XOR<DisputeCreateWithoutSellerInput, DisputeUncheckedCreateWithoutSellerInput> | DisputeCreateWithoutSellerInput[] | DisputeUncheckedCreateWithoutSellerInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutSellerInput | DisputeCreateOrConnectWithoutSellerInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutSellerInput | DisputeUpsertWithWhereUniqueWithoutSellerInput[]
+    createMany?: DisputeCreateManySellerInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutSellerInput | DisputeUpdateWithWhereUniqueWithoutSellerInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutSellerInput | DisputeUpdateManyWithWhereWithoutSellerInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutVerificationTokenInput = {
     create?: XOR<UserCreateWithoutVerificationTokenInput, UserUncheckedCreateWithoutVerificationTokenInput>
     connectOrCreate?: UserCreateOrConnectWithoutVerificationTokenInput
@@ -15901,6 +22372,54 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutRefreshTokenInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRefreshTokenInput, UserUpdateWithoutRefreshTokenInput>, UserUncheckedUpdateWithoutRefreshTokenInput>
+  }
+
+  export type ProductCreateNestedManyWithoutGameCategoryInput = {
+    create?: XOR<ProductCreateWithoutGameCategoryInput, ProductUncheckedCreateWithoutGameCategoryInput> | ProductCreateWithoutGameCategoryInput[] | ProductUncheckedCreateWithoutGameCategoryInput[]
+    connectOrCreate?: ProductCreateOrConnectWithoutGameCategoryInput | ProductCreateOrConnectWithoutGameCategoryInput[]
+    createMany?: ProductCreateManyGameCategoryInputEnvelope
+    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+  }
+
+  export type ProductUncheckedCreateNestedManyWithoutGameCategoryInput = {
+    create?: XOR<ProductCreateWithoutGameCategoryInput, ProductUncheckedCreateWithoutGameCategoryInput> | ProductCreateWithoutGameCategoryInput[] | ProductUncheckedCreateWithoutGameCategoryInput[]
+    connectOrCreate?: ProductCreateOrConnectWithoutGameCategoryInput | ProductCreateOrConnectWithoutGameCategoryInput[]
+    createMany?: ProductCreateManyGameCategoryInputEnvelope
+    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+  }
+
+  export type ProductUpdateManyWithoutGameCategoryNestedInput = {
+    create?: XOR<ProductCreateWithoutGameCategoryInput, ProductUncheckedCreateWithoutGameCategoryInput> | ProductCreateWithoutGameCategoryInput[] | ProductUncheckedCreateWithoutGameCategoryInput[]
+    connectOrCreate?: ProductCreateOrConnectWithoutGameCategoryInput | ProductCreateOrConnectWithoutGameCategoryInput[]
+    upsert?: ProductUpsertWithWhereUniqueWithoutGameCategoryInput | ProductUpsertWithWhereUniqueWithoutGameCategoryInput[]
+    createMany?: ProductCreateManyGameCategoryInputEnvelope
+    set?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    disconnect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    delete?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    update?: ProductUpdateWithWhereUniqueWithoutGameCategoryInput | ProductUpdateWithWhereUniqueWithoutGameCategoryInput[]
+    updateMany?: ProductUpdateManyWithWhereWithoutGameCategoryInput | ProductUpdateManyWithWhereWithoutGameCategoryInput[]
+    deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
+  }
+
+  export type ProductUncheckedUpdateManyWithoutGameCategoryNestedInput = {
+    create?: XOR<ProductCreateWithoutGameCategoryInput, ProductUncheckedCreateWithoutGameCategoryInput> | ProductCreateWithoutGameCategoryInput[] | ProductUncheckedCreateWithoutGameCategoryInput[]
+    connectOrCreate?: ProductCreateOrConnectWithoutGameCategoryInput | ProductCreateOrConnectWithoutGameCategoryInput[]
+    upsert?: ProductUpsertWithWhereUniqueWithoutGameCategoryInput | ProductUpsertWithWhereUniqueWithoutGameCategoryInput[]
+    createMany?: ProductCreateManyGameCategoryInputEnvelope
+    set?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    disconnect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    delete?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    update?: ProductUpdateWithWhereUniqueWithoutGameCategoryInput | ProductUpdateWithWhereUniqueWithoutGameCategoryInput[]
+    updateMany?: ProductUpdateManyWithWhereWithoutGameCategoryInput | ProductUpdateManyWithWhereWithoutGameCategoryInput[]
+    deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
+  }
+
+  export type GameCategoryCreateNestedOneWithoutProductsInput = {
+    create?: XOR<GameCategoryCreateWithoutProductsInput, GameCategoryUncheckedCreateWithoutProductsInput>
+    connectOrCreate?: GameCategoryCreateOrConnectWithoutProductsInput
+    connect?: GameCategoryWhereUniqueInput
   }
 
   export type UserCreateNestedOneWithoutProductsInput = {
@@ -15951,6 +22470,16 @@ export namespace Prisma {
 
   export type BytesFieldUpdateOperationsInput = {
     set?: Bytes
+  }
+
+  export type GameCategoryUpdateOneWithoutProductsNestedInput = {
+    create?: XOR<GameCategoryCreateWithoutProductsInput, GameCategoryUncheckedCreateWithoutProductsInput>
+    connectOrCreate?: GameCategoryCreateOrConnectWithoutProductsInput
+    upsert?: GameCategoryUpsertWithoutProductsInput
+    disconnect?: GameCategoryWhereInput | boolean
+    delete?: GameCategoryWhereInput | boolean
+    connect?: GameCategoryWhereUniqueInput
+    update?: XOR<XOR<GameCategoryUpdateToOneWithWhereWithoutProductsInput, GameCategoryUpdateWithoutProductsInput>, GameCategoryUncheckedUpdateWithoutProductsInput>
   }
 
   export type UserUpdateOneRequiredWithoutProductsNestedInput = {
@@ -16122,6 +22651,20 @@ export namespace Prisma {
     connect?: OrderItemWhereUniqueInput | OrderItemWhereUniqueInput[]
   }
 
+  export type DisputeCreateNestedManyWithoutOrderInput = {
+    create?: XOR<DisputeCreateWithoutOrderInput, DisputeUncheckedCreateWithoutOrderInput> | DisputeCreateWithoutOrderInput[] | DisputeUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutOrderInput | DisputeCreateOrConnectWithoutOrderInput[]
+    createMany?: DisputeCreateManyOrderInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
+  export type WalletLedgerCreateNestedManyWithoutOrderInput = {
+    create?: XOR<WalletLedgerCreateWithoutOrderInput, WalletLedgerUncheckedCreateWithoutOrderInput> | WalletLedgerCreateWithoutOrderInput[] | WalletLedgerUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutOrderInput | WalletLedgerCreateOrConnectWithoutOrderInput[]
+    createMany?: WalletLedgerCreateManyOrderInputEnvelope
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+  }
+
   export type OrderItemUncheckedCreateNestedManyWithoutOrderInput = {
     create?: XOR<OrderItemCreateWithoutOrderInput, OrderItemUncheckedCreateWithoutOrderInput> | OrderItemCreateWithoutOrderInput[] | OrderItemUncheckedCreateWithoutOrderInput[]
     connectOrCreate?: OrderItemCreateOrConnectWithoutOrderInput | OrderItemCreateOrConnectWithoutOrderInput[]
@@ -16129,8 +22672,26 @@ export namespace Prisma {
     connect?: OrderItemWhereUniqueInput | OrderItemWhereUniqueInput[]
   }
 
+  export type DisputeUncheckedCreateNestedManyWithoutOrderInput = {
+    create?: XOR<DisputeCreateWithoutOrderInput, DisputeUncheckedCreateWithoutOrderInput> | DisputeCreateWithoutOrderInput[] | DisputeUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutOrderInput | DisputeCreateOrConnectWithoutOrderInput[]
+    createMany?: DisputeCreateManyOrderInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
+  export type WalletLedgerUncheckedCreateNestedManyWithoutOrderInput = {
+    create?: XOR<WalletLedgerCreateWithoutOrderInput, WalletLedgerUncheckedCreateWithoutOrderInput> | WalletLedgerCreateWithoutOrderInput[] | WalletLedgerUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutOrderInput | WalletLedgerCreateOrConnectWithoutOrderInput[]
+    createMany?: WalletLedgerCreateManyOrderInputEnvelope
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+  }
+
   export type EnumOrderStatusFieldUpdateOperationsInput = {
     set?: $Enums.OrderStatus
+  }
+
+  export type EnumPaymentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentStatus
   }
 
   export type UserUpdateOneRequiredWithoutOrdersNestedInput = {
@@ -16155,6 +22716,34 @@ export namespace Prisma {
     deleteMany?: OrderItemScalarWhereInput | OrderItemScalarWhereInput[]
   }
 
+  export type DisputeUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<DisputeCreateWithoutOrderInput, DisputeUncheckedCreateWithoutOrderInput> | DisputeCreateWithoutOrderInput[] | DisputeUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutOrderInput | DisputeCreateOrConnectWithoutOrderInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutOrderInput | DisputeUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: DisputeCreateManyOrderInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutOrderInput | DisputeUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutOrderInput | DisputeUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
+  export type WalletLedgerUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<WalletLedgerCreateWithoutOrderInput, WalletLedgerUncheckedCreateWithoutOrderInput> | WalletLedgerCreateWithoutOrderInput[] | WalletLedgerUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutOrderInput | WalletLedgerCreateOrConnectWithoutOrderInput[]
+    upsert?: WalletLedgerUpsertWithWhereUniqueWithoutOrderInput | WalletLedgerUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: WalletLedgerCreateManyOrderInputEnvelope
+    set?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    disconnect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    delete?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    update?: WalletLedgerUpdateWithWhereUniqueWithoutOrderInput | WalletLedgerUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: WalletLedgerUpdateManyWithWhereWithoutOrderInput | WalletLedgerUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: WalletLedgerScalarWhereInput | WalletLedgerScalarWhereInput[]
+  }
+
   export type OrderItemUncheckedUpdateManyWithoutOrderNestedInput = {
     create?: XOR<OrderItemCreateWithoutOrderInput, OrderItemUncheckedCreateWithoutOrderInput> | OrderItemCreateWithoutOrderInput[] | OrderItemUncheckedCreateWithoutOrderInput[]
     connectOrCreate?: OrderItemCreateOrConnectWithoutOrderInput | OrderItemCreateOrConnectWithoutOrderInput[]
@@ -16167,6 +22756,34 @@ export namespace Prisma {
     update?: OrderItemUpdateWithWhereUniqueWithoutOrderInput | OrderItemUpdateWithWhereUniqueWithoutOrderInput[]
     updateMany?: OrderItemUpdateManyWithWhereWithoutOrderInput | OrderItemUpdateManyWithWhereWithoutOrderInput[]
     deleteMany?: OrderItemScalarWhereInput | OrderItemScalarWhereInput[]
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<DisputeCreateWithoutOrderInput, DisputeUncheckedCreateWithoutOrderInput> | DisputeCreateWithoutOrderInput[] | DisputeUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutOrderInput | DisputeCreateOrConnectWithoutOrderInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutOrderInput | DisputeUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: DisputeCreateManyOrderInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutOrderInput | DisputeUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutOrderInput | DisputeUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
+  export type WalletLedgerUncheckedUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<WalletLedgerCreateWithoutOrderInput, WalletLedgerUncheckedCreateWithoutOrderInput> | WalletLedgerCreateWithoutOrderInput[] | WalletLedgerUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutOrderInput | WalletLedgerCreateOrConnectWithoutOrderInput[]
+    upsert?: WalletLedgerUpsertWithWhereUniqueWithoutOrderInput | WalletLedgerUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: WalletLedgerCreateManyOrderInputEnvelope
+    set?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    disconnect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    delete?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    update?: WalletLedgerUpdateWithWhereUniqueWithoutOrderInput | WalletLedgerUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: WalletLedgerUpdateManyWithWhereWithoutOrderInput | WalletLedgerUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: WalletLedgerScalarWhereInput | WalletLedgerScalarWhereInput[]
   }
 
   export type OrderCreateNestedOneWithoutItemsInput = {
@@ -16209,6 +22826,200 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutEnquiriesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEnquiriesInput, UserUpdateWithoutEnquiriesInput>, UserUncheckedUpdateWithoutEnquiriesInput>
+  }
+
+  export type OrderCreateNestedOneWithoutDisputesInput = {
+    create?: XOR<OrderCreateWithoutDisputesInput, OrderUncheckedCreateWithoutDisputesInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutDisputesInput
+    connect?: OrderWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutDisputesAsBuyerInput = {
+    create?: XOR<UserCreateWithoutDisputesAsBuyerInput, UserUncheckedCreateWithoutDisputesAsBuyerInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDisputesAsBuyerInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutDisputesAsSellerInput = {
+    create?: XOR<UserCreateWithoutDisputesAsSellerInput, UserUncheckedCreateWithoutDisputesAsSellerInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDisputesAsSellerInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type WalletLedgerCreateNestedManyWithoutDisputeInput = {
+    create?: XOR<WalletLedgerCreateWithoutDisputeInput, WalletLedgerUncheckedCreateWithoutDisputeInput> | WalletLedgerCreateWithoutDisputeInput[] | WalletLedgerUncheckedCreateWithoutDisputeInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutDisputeInput | WalletLedgerCreateOrConnectWithoutDisputeInput[]
+    createMany?: WalletLedgerCreateManyDisputeInputEnvelope
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+  }
+
+  export type WalletLedgerUncheckedCreateNestedManyWithoutDisputeInput = {
+    create?: XOR<WalletLedgerCreateWithoutDisputeInput, WalletLedgerUncheckedCreateWithoutDisputeInput> | WalletLedgerCreateWithoutDisputeInput[] | WalletLedgerUncheckedCreateWithoutDisputeInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutDisputeInput | WalletLedgerCreateOrConnectWithoutDisputeInput[]
+    createMany?: WalletLedgerCreateManyDisputeInputEnvelope
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+  }
+
+  export type EnumDisputeStatusFieldUpdateOperationsInput = {
+    set?: $Enums.DisputeStatus
+  }
+
+  export type OrderUpdateOneRequiredWithoutDisputesNestedInput = {
+    create?: XOR<OrderCreateWithoutDisputesInput, OrderUncheckedCreateWithoutDisputesInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutDisputesInput
+    upsert?: OrderUpsertWithoutDisputesInput
+    connect?: OrderWhereUniqueInput
+    update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutDisputesInput, OrderUpdateWithoutDisputesInput>, OrderUncheckedUpdateWithoutDisputesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutDisputesAsBuyerNestedInput = {
+    create?: XOR<UserCreateWithoutDisputesAsBuyerInput, UserUncheckedCreateWithoutDisputesAsBuyerInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDisputesAsBuyerInput
+    upsert?: UserUpsertWithoutDisputesAsBuyerInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDisputesAsBuyerInput, UserUpdateWithoutDisputesAsBuyerInput>, UserUncheckedUpdateWithoutDisputesAsBuyerInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutDisputesAsSellerNestedInput = {
+    create?: XOR<UserCreateWithoutDisputesAsSellerInput, UserUncheckedCreateWithoutDisputesAsSellerInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDisputesAsSellerInput
+    upsert?: UserUpsertWithoutDisputesAsSellerInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDisputesAsSellerInput, UserUpdateWithoutDisputesAsSellerInput>, UserUncheckedUpdateWithoutDisputesAsSellerInput>
+  }
+
+  export type WalletLedgerUpdateManyWithoutDisputeNestedInput = {
+    create?: XOR<WalletLedgerCreateWithoutDisputeInput, WalletLedgerUncheckedCreateWithoutDisputeInput> | WalletLedgerCreateWithoutDisputeInput[] | WalletLedgerUncheckedCreateWithoutDisputeInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutDisputeInput | WalletLedgerCreateOrConnectWithoutDisputeInput[]
+    upsert?: WalletLedgerUpsertWithWhereUniqueWithoutDisputeInput | WalletLedgerUpsertWithWhereUniqueWithoutDisputeInput[]
+    createMany?: WalletLedgerCreateManyDisputeInputEnvelope
+    set?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    disconnect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    delete?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    update?: WalletLedgerUpdateWithWhereUniqueWithoutDisputeInput | WalletLedgerUpdateWithWhereUniqueWithoutDisputeInput[]
+    updateMany?: WalletLedgerUpdateManyWithWhereWithoutDisputeInput | WalletLedgerUpdateManyWithWhereWithoutDisputeInput[]
+    deleteMany?: WalletLedgerScalarWhereInput | WalletLedgerScalarWhereInput[]
+  }
+
+  export type WalletLedgerUncheckedUpdateManyWithoutDisputeNestedInput = {
+    create?: XOR<WalletLedgerCreateWithoutDisputeInput, WalletLedgerUncheckedCreateWithoutDisputeInput> | WalletLedgerCreateWithoutDisputeInput[] | WalletLedgerUncheckedCreateWithoutDisputeInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutDisputeInput | WalletLedgerCreateOrConnectWithoutDisputeInput[]
+    upsert?: WalletLedgerUpsertWithWhereUniqueWithoutDisputeInput | WalletLedgerUpsertWithWhereUniqueWithoutDisputeInput[]
+    createMany?: WalletLedgerCreateManyDisputeInputEnvelope
+    set?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    disconnect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    delete?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    update?: WalletLedgerUpdateWithWhereUniqueWithoutDisputeInput | WalletLedgerUpdateWithWhereUniqueWithoutDisputeInput[]
+    updateMany?: WalletLedgerUpdateManyWithWhereWithoutDisputeInput | WalletLedgerUpdateManyWithWhereWithoutDisputeInput[]
+    deleteMany?: WalletLedgerScalarWhereInput | WalletLedgerScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutSellerWalletInput = {
+    create?: XOR<UserCreateWithoutSellerWalletInput, UserUncheckedCreateWithoutSellerWalletInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSellerWalletInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type WalletLedgerCreateNestedManyWithoutWalletInput = {
+    create?: XOR<WalletLedgerCreateWithoutWalletInput, WalletLedgerUncheckedCreateWithoutWalletInput> | WalletLedgerCreateWithoutWalletInput[] | WalletLedgerUncheckedCreateWithoutWalletInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutWalletInput | WalletLedgerCreateOrConnectWithoutWalletInput[]
+    createMany?: WalletLedgerCreateManyWalletInputEnvelope
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+  }
+
+  export type WalletLedgerUncheckedCreateNestedManyWithoutWalletInput = {
+    create?: XOR<WalletLedgerCreateWithoutWalletInput, WalletLedgerUncheckedCreateWithoutWalletInput> | WalletLedgerCreateWithoutWalletInput[] | WalletLedgerUncheckedCreateWithoutWalletInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutWalletInput | WalletLedgerCreateOrConnectWithoutWalletInput[]
+    createMany?: WalletLedgerCreateManyWalletInputEnvelope
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutSellerWalletNestedInput = {
+    create?: XOR<UserCreateWithoutSellerWalletInput, UserUncheckedCreateWithoutSellerWalletInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSellerWalletInput
+    upsert?: UserUpsertWithoutSellerWalletInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSellerWalletInput, UserUpdateWithoutSellerWalletInput>, UserUncheckedUpdateWithoutSellerWalletInput>
+  }
+
+  export type WalletLedgerUpdateManyWithoutWalletNestedInput = {
+    create?: XOR<WalletLedgerCreateWithoutWalletInput, WalletLedgerUncheckedCreateWithoutWalletInput> | WalletLedgerCreateWithoutWalletInput[] | WalletLedgerUncheckedCreateWithoutWalletInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutWalletInput | WalletLedgerCreateOrConnectWithoutWalletInput[]
+    upsert?: WalletLedgerUpsertWithWhereUniqueWithoutWalletInput | WalletLedgerUpsertWithWhereUniqueWithoutWalletInput[]
+    createMany?: WalletLedgerCreateManyWalletInputEnvelope
+    set?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    disconnect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    delete?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    update?: WalletLedgerUpdateWithWhereUniqueWithoutWalletInput | WalletLedgerUpdateWithWhereUniqueWithoutWalletInput[]
+    updateMany?: WalletLedgerUpdateManyWithWhereWithoutWalletInput | WalletLedgerUpdateManyWithWhereWithoutWalletInput[]
+    deleteMany?: WalletLedgerScalarWhereInput | WalletLedgerScalarWhereInput[]
+  }
+
+  export type WalletLedgerUncheckedUpdateManyWithoutWalletNestedInput = {
+    create?: XOR<WalletLedgerCreateWithoutWalletInput, WalletLedgerUncheckedCreateWithoutWalletInput> | WalletLedgerCreateWithoutWalletInput[] | WalletLedgerUncheckedCreateWithoutWalletInput[]
+    connectOrCreate?: WalletLedgerCreateOrConnectWithoutWalletInput | WalletLedgerCreateOrConnectWithoutWalletInput[]
+    upsert?: WalletLedgerUpsertWithWhereUniqueWithoutWalletInput | WalletLedgerUpsertWithWhereUniqueWithoutWalletInput[]
+    createMany?: WalletLedgerCreateManyWalletInputEnvelope
+    set?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    disconnect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    delete?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    connect?: WalletLedgerWhereUniqueInput | WalletLedgerWhereUniqueInput[]
+    update?: WalletLedgerUpdateWithWhereUniqueWithoutWalletInput | WalletLedgerUpdateWithWhereUniqueWithoutWalletInput[]
+    updateMany?: WalletLedgerUpdateManyWithWhereWithoutWalletInput | WalletLedgerUpdateManyWithWhereWithoutWalletInput[]
+    deleteMany?: WalletLedgerScalarWhereInput | WalletLedgerScalarWhereInput[]
+  }
+
+  export type SellerWalletCreateNestedOneWithoutLedgerEntriesInput = {
+    create?: XOR<SellerWalletCreateWithoutLedgerEntriesInput, SellerWalletUncheckedCreateWithoutLedgerEntriesInput>
+    connectOrCreate?: SellerWalletCreateOrConnectWithoutLedgerEntriesInput
+    connect?: SellerWalletWhereUniqueInput
+  }
+
+  export type OrderCreateNestedOneWithoutWalletEntriesInput = {
+    create?: XOR<OrderCreateWithoutWalletEntriesInput, OrderUncheckedCreateWithoutWalletEntriesInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutWalletEntriesInput
+    connect?: OrderWhereUniqueInput
+  }
+
+  export type DisputeCreateNestedOneWithoutWalletEntriesInput = {
+    create?: XOR<DisputeCreateWithoutWalletEntriesInput, DisputeUncheckedCreateWithoutWalletEntriesInput>
+    connectOrCreate?: DisputeCreateOrConnectWithoutWalletEntriesInput
+    connect?: DisputeWhereUniqueInput
+  }
+
+  export type EnumWalletLedgerTypeFieldUpdateOperationsInput = {
+    set?: $Enums.WalletLedgerType
+  }
+
+  export type SellerWalletUpdateOneRequiredWithoutLedgerEntriesNestedInput = {
+    create?: XOR<SellerWalletCreateWithoutLedgerEntriesInput, SellerWalletUncheckedCreateWithoutLedgerEntriesInput>
+    connectOrCreate?: SellerWalletCreateOrConnectWithoutLedgerEntriesInput
+    upsert?: SellerWalletUpsertWithoutLedgerEntriesInput
+    connect?: SellerWalletWhereUniqueInput
+    update?: XOR<XOR<SellerWalletUpdateToOneWithWhereWithoutLedgerEntriesInput, SellerWalletUpdateWithoutLedgerEntriesInput>, SellerWalletUncheckedUpdateWithoutLedgerEntriesInput>
+  }
+
+  export type OrderUpdateOneWithoutWalletEntriesNestedInput = {
+    create?: XOR<OrderCreateWithoutWalletEntriesInput, OrderUncheckedCreateWithoutWalletEntriesInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutWalletEntriesInput
+    upsert?: OrderUpsertWithoutWalletEntriesInput
+    disconnect?: OrderWhereInput | boolean
+    delete?: OrderWhereInput | boolean
+    connect?: OrderWhereUniqueInput
+    update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutWalletEntriesInput, OrderUpdateWithoutWalletEntriesInput>, OrderUncheckedUpdateWithoutWalletEntriesInput>
+  }
+
+  export type DisputeUpdateOneWithoutWalletEntriesNestedInput = {
+    create?: XOR<DisputeCreateWithoutWalletEntriesInput, DisputeUncheckedCreateWithoutWalletEntriesInput>
+    connectOrCreate?: DisputeCreateOrConnectWithoutWalletEntriesInput
+    upsert?: DisputeUpsertWithoutWalletEntriesInput
+    disconnect?: DisputeWhereInput | boolean
+    delete?: DisputeWhereInput | boolean
+    connect?: DisputeWhereUniqueInput
+    update?: XOR<XOR<DisputeUpdateToOneWithWhereWithoutWalletEntriesInput, DisputeUpdateWithoutWalletEntriesInput>, DisputeUncheckedUpdateWithoutWalletEntriesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -16260,6 +23071,17 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -16348,6 +23170,20 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -16457,6 +23293,13 @@ export namespace Prisma {
     not?: NestedEnumOrderStatusFilter<$PrismaModel> | $Enums.OrderStatus
   }
 
+  export type NestedEnumPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
+  }
+
   export type NestedEnumOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.OrderStatus | EnumOrderStatusFieldRefInput<$PrismaModel>
     in?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
@@ -16465,6 +23308,73 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumOrderStatusFilter<$PrismaModel>
     _max?: NestedEnumOrderStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumDisputeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.DisputeStatus | EnumDisputeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DisputeStatus[] | ListEnumDisputeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DisputeStatus[] | ListEnumDisputeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDisputeStatusFilter<$PrismaModel> | $Enums.DisputeStatus
+  }
+
+  export type NestedEnumDisputeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DisputeStatus | EnumDisputeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DisputeStatus[] | ListEnumDisputeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DisputeStatus[] | ListEnumDisputeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDisputeStatusWithAggregatesFilter<$PrismaModel> | $Enums.DisputeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDisputeStatusFilter<$PrismaModel>
+    _max?: NestedEnumDisputeStatusFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumWalletLedgerTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.WalletLedgerType | EnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WalletLedgerType[] | ListEnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WalletLedgerType[] | ListEnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWalletLedgerTypeFilter<$PrismaModel> | $Enums.WalletLedgerType
+  }
+
+  export type NestedEnumWalletLedgerTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WalletLedgerType | EnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WalletLedgerType[] | ListEnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WalletLedgerType[] | ListEnumWalletLedgerTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWalletLedgerTypeWithAggregatesFilter<$PrismaModel> | $Enums.WalletLedgerType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWalletLedgerTypeFilter<$PrismaModel>
+    _max?: NestedEnumWalletLedgerTypeFilter<$PrismaModel>
   }
 
   export type ProductCreateWithoutSellerInput = {
@@ -16478,6 +23388,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -16485,6 +23396,7 @@ export namespace Prisma {
     accountPassword: Bytes
     accountEmail: Bytes
     accountEmailPassword: Bytes
+    gameCategory?: GameCategoryCreateNestedOneWithoutProductsInput
     items?: OrderItemCreateNestedManyWithoutProductInput
     cartItems?: CartItemCreateNestedManyWithoutProductInput
   }
@@ -16492,6 +23404,7 @@ export namespace Prisma {
   export type ProductUncheckedCreateWithoutSellerInput = {
     id?: string
     gameType: string
+    gameCategoryId?: string | null
     title: string
     description?: string | null
     price: number
@@ -16500,6 +23413,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -16524,23 +23438,29 @@ export namespace Prisma {
   export type OrderCreateWithoutBuyerInput = {
     id?: string
     status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: OrderItemCreateNestedManyWithoutOrderInput
+    disputes?: DisputeCreateNestedManyWithoutOrderInput
+    walletEntries?: WalletLedgerCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutBuyerInput = {
     id?: string
     status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutOrderInput
+    walletEntries?: WalletLedgerUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutBuyerInput = {
@@ -16660,6 +23580,95 @@ export namespace Prisma {
     create: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput>
   }
 
+  export type SellerWalletCreateWithoutUserInput = {
+    pendingBalance?: number
+    availableBalance?: number
+    frozenBalance?: number
+    updatedAt?: Date | string
+    ledgerEntries?: WalletLedgerCreateNestedManyWithoutWalletInput
+  }
+
+  export type SellerWalletUncheckedCreateWithoutUserInput = {
+    pendingBalance?: number
+    availableBalance?: number
+    frozenBalance?: number
+    updatedAt?: Date | string
+    ledgerEntries?: WalletLedgerUncheckedCreateNestedManyWithoutWalletInput
+  }
+
+  export type SellerWalletCreateOrConnectWithoutUserInput = {
+    where: SellerWalletWhereUniqueInput
+    create: XOR<SellerWalletCreateWithoutUserInput, SellerWalletUncheckedCreateWithoutUserInput>
+  }
+
+  export type DisputeCreateWithoutBuyerInput = {
+    id?: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    order: OrderCreateNestedOneWithoutDisputesInput
+    seller: UserCreateNestedOneWithoutDisputesAsSellerInput
+    walletEntries?: WalletLedgerCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeUncheckedCreateWithoutBuyerInput = {
+    id?: string
+    orderId: string
+    sellerId: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    walletEntries?: WalletLedgerUncheckedCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeCreateOrConnectWithoutBuyerInput = {
+    where: DisputeWhereUniqueInput
+    create: XOR<DisputeCreateWithoutBuyerInput, DisputeUncheckedCreateWithoutBuyerInput>
+  }
+
+  export type DisputeCreateManyBuyerInputEnvelope = {
+    data: DisputeCreateManyBuyerInput | DisputeCreateManyBuyerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DisputeCreateWithoutSellerInput = {
+    id?: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    order: OrderCreateNestedOneWithoutDisputesInput
+    buyer: UserCreateNestedOneWithoutDisputesAsBuyerInput
+    walletEntries?: WalletLedgerCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeUncheckedCreateWithoutSellerInput = {
+    id?: string
+    orderId: string
+    buyerId: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    walletEntries?: WalletLedgerUncheckedCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeCreateOrConnectWithoutSellerInput = {
+    where: DisputeWhereUniqueInput
+    create: XOR<DisputeCreateWithoutSellerInput, DisputeUncheckedCreateWithoutSellerInput>
+  }
+
+  export type DisputeCreateManySellerInputEnvelope = {
+    data: DisputeCreateManySellerInput | DisputeCreateManySellerInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ProductUpsertWithWhereUniqueWithoutSellerInput = {
     where: ProductWhereUniqueInput
     update: XOR<ProductUpdateWithoutSellerInput, ProductUncheckedUpdateWithoutSellerInput>
@@ -16682,6 +23691,7 @@ export namespace Prisma {
     NOT?: ProductScalarWhereInput | ProductScalarWhereInput[]
     id?: StringFilter<"Product"> | string
     gameType?: StringFilter<"Product"> | string
+    gameCategoryId?: StringNullableFilter<"Product"> | string | null
     title?: StringFilter<"Product"> | string
     description?: StringNullableFilter<"Product"> | string | null
     price?: FloatFilter<"Product"> | number
@@ -16690,6 +23700,7 @@ export namespace Prisma {
     isAvailable?: BoolFilter<"Product"> | boolean
     specifications?: JsonFilter<"Product">
     transactionBlock?: BoolFilter<"Product"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     imageUrl?: StringNullableFilter<"Product"> | string | null
@@ -16722,6 +23733,7 @@ export namespace Prisma {
     NOT?: OrderScalarWhereInput | OrderScalarWhereInput[]
     id?: StringFilter<"Order"> | string
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
     totalAmount?: FloatFilter<"Order"> | number
     paymentIntent?: StringNullableFilter<"Order"> | string | null
     paymentProvider?: StringNullableFilter<"Order"> | string | null
@@ -16860,6 +23872,80 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SellerWalletUpsertWithoutUserInput = {
+    update: XOR<SellerWalletUpdateWithoutUserInput, SellerWalletUncheckedUpdateWithoutUserInput>
+    create: XOR<SellerWalletCreateWithoutUserInput, SellerWalletUncheckedCreateWithoutUserInput>
+    where?: SellerWalletWhereInput
+  }
+
+  export type SellerWalletUpdateToOneWithWhereWithoutUserInput = {
+    where?: SellerWalletWhereInput
+    data: XOR<SellerWalletUpdateWithoutUserInput, SellerWalletUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SellerWalletUpdateWithoutUserInput = {
+    pendingBalance?: FloatFieldUpdateOperationsInput | number
+    availableBalance?: FloatFieldUpdateOperationsInput | number
+    frozenBalance?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ledgerEntries?: WalletLedgerUpdateManyWithoutWalletNestedInput
+  }
+
+  export type SellerWalletUncheckedUpdateWithoutUserInput = {
+    pendingBalance?: FloatFieldUpdateOperationsInput | number
+    availableBalance?: FloatFieldUpdateOperationsInput | number
+    frozenBalance?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ledgerEntries?: WalletLedgerUncheckedUpdateManyWithoutWalletNestedInput
+  }
+
+  export type DisputeUpsertWithWhereUniqueWithoutBuyerInput = {
+    where: DisputeWhereUniqueInput
+    update: XOR<DisputeUpdateWithoutBuyerInput, DisputeUncheckedUpdateWithoutBuyerInput>
+    create: XOR<DisputeCreateWithoutBuyerInput, DisputeUncheckedCreateWithoutBuyerInput>
+  }
+
+  export type DisputeUpdateWithWhereUniqueWithoutBuyerInput = {
+    where: DisputeWhereUniqueInput
+    data: XOR<DisputeUpdateWithoutBuyerInput, DisputeUncheckedUpdateWithoutBuyerInput>
+  }
+
+  export type DisputeUpdateManyWithWhereWithoutBuyerInput = {
+    where: DisputeScalarWhereInput
+    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyWithoutBuyerInput>
+  }
+
+  export type DisputeScalarWhereInput = {
+    AND?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+    OR?: DisputeScalarWhereInput[]
+    NOT?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+    id?: StringFilter<"Dispute"> | string
+    orderId?: StringFilter<"Dispute"> | string
+    buyerId?: StringFilter<"Dispute"> | string
+    sellerId?: StringFilter<"Dispute"> | string
+    status?: EnumDisputeStatusFilter<"Dispute"> | $Enums.DisputeStatus
+    reason?: StringFilter<"Dispute"> | string
+    details?: JsonNullableFilter<"Dispute">
+    createdAt?: DateTimeFilter<"Dispute"> | Date | string
+    updatedAt?: DateTimeFilter<"Dispute"> | Date | string
+  }
+
+  export type DisputeUpsertWithWhereUniqueWithoutSellerInput = {
+    where: DisputeWhereUniqueInput
+    update: XOR<DisputeUpdateWithoutSellerInput, DisputeUncheckedUpdateWithoutSellerInput>
+    create: XOR<DisputeCreateWithoutSellerInput, DisputeUncheckedCreateWithoutSellerInput>
+  }
+
+  export type DisputeUpdateWithWhereUniqueWithoutSellerInput = {
+    where: DisputeWhereUniqueInput
+    data: XOR<DisputeUpdateWithoutSellerInput, DisputeUncheckedUpdateWithoutSellerInput>
+  }
+
+  export type DisputeUpdateManyWithWhereWithoutSellerInput = {
+    where: DisputeScalarWhereInput
+    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyWithoutSellerInput>
+  }
+
   export type UserCreateWithoutVerificationTokenInput = {
     id?: string
     email: string
@@ -16871,12 +23957,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
     refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
   }
 
   export type UserUncheckedCreateWithoutVerificationTokenInput = {
@@ -16890,12 +23980,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
     refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
   }
 
   export type UserCreateOrConnectWithoutVerificationTokenInput = {
@@ -16925,12 +24019,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
     refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutVerificationTokenInput = {
@@ -16944,12 +24042,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
     refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
   }
 
   export type UserCreateWithoutPasswordResetTokenInput = {
@@ -16963,12 +24065,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
   }
 
   export type UserUncheckedCreateWithoutPasswordResetTokenInput = {
@@ -16982,12 +24088,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
   }
 
   export type UserCreateOrConnectWithoutPasswordResetTokenInput = {
@@ -17017,12 +24127,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPasswordResetTokenInput = {
@@ -17036,12 +24150,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
   }
 
   export type UserCreateWithoutRefreshTokenInput = {
@@ -17055,12 +24173,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
     passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
   }
 
   export type UserUncheckedCreateWithoutRefreshTokenInput = {
@@ -17074,12 +24196,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
     passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
   }
 
   export type UserCreateOrConnectWithoutRefreshTokenInput = {
@@ -17109,12 +24235,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRefreshTokenInput = {
@@ -17128,12 +24258,111 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
+  }
+
+  export type ProductCreateWithoutGameCategoryInput = {
+    id?: string
+    gameType: string
+    title: string
+    description?: string | null
+    price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
+    isAvailable?: boolean
+    specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    imageUrl?: string | null
+    accountUsername: Bytes
+    accountPassword: Bytes
+    accountEmail: Bytes
+    accountEmailPassword: Bytes
+    seller: UserCreateNestedOneWithoutProductsInput
+    items?: OrderItemCreateNestedManyWithoutProductInput
+    cartItems?: CartItemCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductUncheckedCreateWithoutGameCategoryInput = {
+    id?: string
+    gameType: string
+    title: string
+    description?: string | null
+    price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
+    isAvailable?: boolean
+    specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    imageUrl?: string | null
+    accountUsername: Bytes
+    accountPassword: Bytes
+    accountEmail: Bytes
+    accountEmailPassword: Bytes
+    sellerId: string
+    items?: OrderItemUncheckedCreateNestedManyWithoutProductInput
+    cartItems?: CartItemUncheckedCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductCreateOrConnectWithoutGameCategoryInput = {
+    where: ProductWhereUniqueInput
+    create: XOR<ProductCreateWithoutGameCategoryInput, ProductUncheckedCreateWithoutGameCategoryInput>
+  }
+
+  export type ProductCreateManyGameCategoryInputEnvelope = {
+    data: ProductCreateManyGameCategoryInput | ProductCreateManyGameCategoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProductUpsertWithWhereUniqueWithoutGameCategoryInput = {
+    where: ProductWhereUniqueInput
+    update: XOR<ProductUpdateWithoutGameCategoryInput, ProductUncheckedUpdateWithoutGameCategoryInput>
+    create: XOR<ProductCreateWithoutGameCategoryInput, ProductUncheckedCreateWithoutGameCategoryInput>
+  }
+
+  export type ProductUpdateWithWhereUniqueWithoutGameCategoryInput = {
+    where: ProductWhereUniqueInput
+    data: XOR<ProductUpdateWithoutGameCategoryInput, ProductUncheckedUpdateWithoutGameCategoryInput>
+  }
+
+  export type ProductUpdateManyWithWhereWithoutGameCategoryInput = {
+    where: ProductScalarWhereInput
+    data: XOR<ProductUpdateManyMutationInput, ProductUncheckedUpdateManyWithoutGameCategoryInput>
+  }
+
+  export type GameCategoryCreateWithoutProductsInput = {
+    id?: string
+    name: string
+    slug: string
+    isRestricted?: boolean
+    createdAt?: Date | string
+  }
+
+  export type GameCategoryUncheckedCreateWithoutProductsInput = {
+    id?: string
+    name: string
+    slug: string
+    isRestricted?: boolean
+    createdAt?: Date | string
+  }
+
+  export type GameCategoryCreateOrConnectWithoutProductsInput = {
+    where: GameCategoryWhereUniqueInput
+    create: XOR<GameCategoryCreateWithoutProductsInput, GameCategoryUncheckedCreateWithoutProductsInput>
   }
 
   export type UserCreateWithoutProductsInput = {
@@ -17147,12 +24376,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
   }
 
   export type UserUncheckedCreateWithoutProductsInput = {
@@ -17166,12 +24399,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
   }
 
   export type UserCreateOrConnectWithoutProductsInput = {
@@ -17221,6 +24458,33 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type GameCategoryUpsertWithoutProductsInput = {
+    update: XOR<GameCategoryUpdateWithoutProductsInput, GameCategoryUncheckedUpdateWithoutProductsInput>
+    create: XOR<GameCategoryCreateWithoutProductsInput, GameCategoryUncheckedCreateWithoutProductsInput>
+    where?: GameCategoryWhereInput
+  }
+
+  export type GameCategoryUpdateToOneWithWhereWithoutProductsInput = {
+    where?: GameCategoryWhereInput
+    data: XOR<GameCategoryUpdateWithoutProductsInput, GameCategoryUncheckedUpdateWithoutProductsInput>
+  }
+
+  export type GameCategoryUpdateWithoutProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GameCategoryUncheckedUpdateWithoutProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserUpsertWithoutProductsInput = {
     update: XOR<UserUpdateWithoutProductsInput, UserUncheckedUpdateWithoutProductsInput>
     create: XOR<UserCreateWithoutProductsInput, UserUncheckedCreateWithoutProductsInput>
@@ -17243,12 +24507,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProductsInput = {
@@ -17262,12 +24530,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutProductInput = {
@@ -17332,12 +24604,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
   }
 
   export type UserUncheckedCreateWithoutCartInput = {
@@ -17351,12 +24627,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
   }
 
   export type UserCreateOrConnectWithoutCartInput = {
@@ -17406,12 +24686,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCartInput = {
@@ -17425,12 +24709,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
   }
 
   export type CartItemUpsertWithWhereUniqueWithoutCartInput = {
@@ -17479,6 +24767,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -17486,6 +24775,7 @@ export namespace Prisma {
     accountPassword: Bytes
     accountEmail: Bytes
     accountEmailPassword: Bytes
+    gameCategory?: GameCategoryCreateNestedOneWithoutProductsInput
     seller: UserCreateNestedOneWithoutProductsInput
     items?: OrderItemCreateNestedManyWithoutProductInput
   }
@@ -17493,6 +24783,7 @@ export namespace Prisma {
   export type ProductUncheckedCreateWithoutCartItemsInput = {
     id?: string
     gameType: string
+    gameCategoryId?: string | null
     title: string
     description?: string | null
     price: number
@@ -17501,6 +24792,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -17564,6 +24856,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17571,6 +24864,7 @@ export namespace Prisma {
     accountPassword?: BytesFieldUpdateOperationsInput | Bytes
     accountEmail?: BytesFieldUpdateOperationsInput | Bytes
     accountEmailPassword?: BytesFieldUpdateOperationsInput | Bytes
+    gameCategory?: GameCategoryUpdateOneWithoutProductsNestedInput
     seller?: UserUpdateOneRequiredWithoutProductsNestedInput
     items?: OrderItemUpdateManyWithoutProductNestedInput
   }
@@ -17578,6 +24872,7 @@ export namespace Prisma {
   export type ProductUncheckedUpdateWithoutCartItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     gameType?: StringFieldUpdateOperationsInput | string
+    gameCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
@@ -17586,6 +24881,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17608,12 +24904,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductCreateNestedManyWithoutSellerInput
     cart?: CartCreateNestedOneWithoutUserInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
   }
 
   export type UserUncheckedCreateWithoutOrdersInput = {
@@ -17627,12 +24927,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
     verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
   }
 
   export type UserCreateOrConnectWithoutOrdersInput = {
@@ -17662,6 +24966,70 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DisputeCreateWithoutOrderInput = {
+    id?: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    buyer: UserCreateNestedOneWithoutDisputesAsBuyerInput
+    seller: UserCreateNestedOneWithoutDisputesAsSellerInput
+    walletEntries?: WalletLedgerCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeUncheckedCreateWithoutOrderInput = {
+    id?: string
+    buyerId: string
+    sellerId: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    walletEntries?: WalletLedgerUncheckedCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeCreateOrConnectWithoutOrderInput = {
+    where: DisputeWhereUniqueInput
+    create: XOR<DisputeCreateWithoutOrderInput, DisputeUncheckedCreateWithoutOrderInput>
+  }
+
+  export type DisputeCreateManyOrderInputEnvelope = {
+    data: DisputeCreateManyOrderInput | DisputeCreateManyOrderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WalletLedgerCreateWithoutOrderInput = {
+    id?: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    note?: string | null
+    createdAt?: Date | string
+    wallet: SellerWalletCreateNestedOneWithoutLedgerEntriesInput
+    dispute?: DisputeCreateNestedOneWithoutWalletEntriesInput
+  }
+
+  export type WalletLedgerUncheckedCreateWithoutOrderInput = {
+    id?: string
+    walletUserId: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    disputeId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WalletLedgerCreateOrConnectWithoutOrderInput = {
+    where: WalletLedgerWhereUniqueInput
+    create: XOR<WalletLedgerCreateWithoutOrderInput, WalletLedgerUncheckedCreateWithoutOrderInput>
+  }
+
+  export type WalletLedgerCreateManyOrderInputEnvelope = {
+    data: WalletLedgerCreateManyOrderInput | WalletLedgerCreateManyOrderInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutOrdersInput = {
     update: XOR<UserUpdateWithoutOrdersInput, UserUncheckedUpdateWithoutOrdersInput>
     create: XOR<UserCreateWithoutOrdersInput, UserUncheckedCreateWithoutOrdersInput>
@@ -17684,12 +25052,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUpdateManyWithoutSellerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrdersInput = {
@@ -17703,12 +25075,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
     verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutOrderInput = {
@@ -17727,26 +25103,78 @@ export namespace Prisma {
     data: XOR<OrderItemUpdateManyMutationInput, OrderItemUncheckedUpdateManyWithoutOrderInput>
   }
 
+  export type DisputeUpsertWithWhereUniqueWithoutOrderInput = {
+    where: DisputeWhereUniqueInput
+    update: XOR<DisputeUpdateWithoutOrderInput, DisputeUncheckedUpdateWithoutOrderInput>
+    create: XOR<DisputeCreateWithoutOrderInput, DisputeUncheckedCreateWithoutOrderInput>
+  }
+
+  export type DisputeUpdateWithWhereUniqueWithoutOrderInput = {
+    where: DisputeWhereUniqueInput
+    data: XOR<DisputeUpdateWithoutOrderInput, DisputeUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type DisputeUpdateManyWithWhereWithoutOrderInput = {
+    where: DisputeScalarWhereInput
+    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyWithoutOrderInput>
+  }
+
+  export type WalletLedgerUpsertWithWhereUniqueWithoutOrderInput = {
+    where: WalletLedgerWhereUniqueInput
+    update: XOR<WalletLedgerUpdateWithoutOrderInput, WalletLedgerUncheckedUpdateWithoutOrderInput>
+    create: XOR<WalletLedgerCreateWithoutOrderInput, WalletLedgerUncheckedCreateWithoutOrderInput>
+  }
+
+  export type WalletLedgerUpdateWithWhereUniqueWithoutOrderInput = {
+    where: WalletLedgerWhereUniqueInput
+    data: XOR<WalletLedgerUpdateWithoutOrderInput, WalletLedgerUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type WalletLedgerUpdateManyWithWhereWithoutOrderInput = {
+    where: WalletLedgerScalarWhereInput
+    data: XOR<WalletLedgerUpdateManyMutationInput, WalletLedgerUncheckedUpdateManyWithoutOrderInput>
+  }
+
+  export type WalletLedgerScalarWhereInput = {
+    AND?: WalletLedgerScalarWhereInput | WalletLedgerScalarWhereInput[]
+    OR?: WalletLedgerScalarWhereInput[]
+    NOT?: WalletLedgerScalarWhereInput | WalletLedgerScalarWhereInput[]
+    id?: StringFilter<"WalletLedger"> | string
+    walletUserId?: StringFilter<"WalletLedger"> | string
+    type?: EnumWalletLedgerTypeFilter<"WalletLedger"> | $Enums.WalletLedgerType
+    amount?: FloatFilter<"WalletLedger"> | number
+    orderId?: StringNullableFilter<"WalletLedger"> | string | null
+    disputeId?: StringNullableFilter<"WalletLedger"> | string | null
+    note?: StringNullableFilter<"WalletLedger"> | string | null
+    createdAt?: DateTimeFilter<"WalletLedger"> | Date | string
+  }
+
   export type OrderCreateWithoutItemsInput = {
     id?: string
     status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     buyer: UserCreateNestedOneWithoutOrdersInput
+    disputes?: DisputeCreateNestedManyWithoutOrderInput
+    walletEntries?: WalletLedgerCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutItemsInput = {
     id?: string
     status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     buyerId: string
+    disputes?: DisputeUncheckedCreateNestedManyWithoutOrderInput
+    walletEntries?: WalletLedgerUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutItemsInput = {
@@ -17765,6 +25193,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -17772,6 +25201,7 @@ export namespace Prisma {
     accountPassword: Bytes
     accountEmail: Bytes
     accountEmailPassword: Bytes
+    gameCategory?: GameCategoryCreateNestedOneWithoutProductsInput
     seller: UserCreateNestedOneWithoutProductsInput
     cartItems?: CartItemCreateNestedManyWithoutProductInput
   }
@@ -17779,6 +25209,7 @@ export namespace Prisma {
   export type ProductUncheckedCreateWithoutItemsInput = {
     id?: string
     gameType: string
+    gameCategoryId?: string | null
     title: string
     description?: string | null
     price: number
@@ -17787,6 +25218,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -17817,23 +25249,29 @@ export namespace Prisma {
   export type OrderUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     buyer?: UserUpdateOneRequiredWithoutOrdersNestedInput
+    disputes?: DisputeUpdateManyWithoutOrderNestedInput
+    walletEntries?: WalletLedgerUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     buyerId?: StringFieldUpdateOperationsInput | string
+    disputes?: DisputeUncheckedUpdateManyWithoutOrderNestedInput
+    walletEntries?: WalletLedgerUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type ProductUpsertWithoutItemsInput = {
@@ -17858,6 +25296,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17865,6 +25304,7 @@ export namespace Prisma {
     accountPassword?: BytesFieldUpdateOperationsInput | Bytes
     accountEmail?: BytesFieldUpdateOperationsInput | Bytes
     accountEmailPassword?: BytesFieldUpdateOperationsInput | Bytes
+    gameCategory?: GameCategoryUpdateOneWithoutProductsNestedInput
     seller?: UserUpdateOneRequiredWithoutProductsNestedInput
     cartItems?: CartItemUpdateManyWithoutProductNestedInput
   }
@@ -17872,6 +25312,7 @@ export namespace Prisma {
   export type ProductUncheckedUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     gameType?: StringFieldUpdateOperationsInput | string
+    gameCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
@@ -17880,6 +25321,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17902,12 +25344,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
     verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
   }
 
   export type UserUncheckedCreateWithoutEnquiriesInput = {
@@ -17921,12 +25367,16 @@ export namespace Prisma {
     isVerified?: boolean
     googleId?: string | null
     googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
     refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
   }
 
   export type UserCreateOrConnectWithoutEnquiriesInput = {
@@ -17956,12 +25406,16 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEnquiriesInput = {
@@ -17975,17 +25429,694 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
     refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
+  }
+
+  export type OrderCreateWithoutDisputesInput = {
+    id?: string
+    status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
+    totalAmount: number
+    paymentIntent?: string | null
+    paymentProvider?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    buyer: UserCreateNestedOneWithoutOrdersInput
+    items?: OrderItemCreateNestedManyWithoutOrderInput
+    walletEntries?: WalletLedgerCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderUncheckedCreateWithoutDisputesInput = {
+    id?: string
+    status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
+    totalAmount: number
+    paymentIntent?: string | null
+    paymentProvider?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    buyerId: string
+    items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
+    walletEntries?: WalletLedgerUncheckedCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderCreateOrConnectWithoutDisputesInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutDisputesInput, OrderUncheckedCreateWithoutDisputesInput>
+  }
+
+  export type UserCreateWithoutDisputesAsBuyerInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    products?: ProductCreateNestedManyWithoutSellerInput
+    orders?: OrderCreateNestedManyWithoutBuyerInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
+  }
+
+  export type UserUncheckedCreateWithoutDisputesAsBuyerInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    products?: ProductUncheckedCreateNestedManyWithoutSellerInput
+    orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
+  }
+
+  export type UserCreateOrConnectWithoutDisputesAsBuyerInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDisputesAsBuyerInput, UserUncheckedCreateWithoutDisputesAsBuyerInput>
+  }
+
+  export type UserCreateWithoutDisputesAsSellerInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    products?: ProductCreateNestedManyWithoutSellerInput
+    orders?: OrderCreateNestedManyWithoutBuyerInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+  }
+
+  export type UserUncheckedCreateWithoutDisputesAsSellerInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    products?: ProductUncheckedCreateNestedManyWithoutSellerInput
+    orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+  }
+
+  export type UserCreateOrConnectWithoutDisputesAsSellerInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDisputesAsSellerInput, UserUncheckedCreateWithoutDisputesAsSellerInput>
+  }
+
+  export type WalletLedgerCreateWithoutDisputeInput = {
+    id?: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    note?: string | null
+    createdAt?: Date | string
+    wallet: SellerWalletCreateNestedOneWithoutLedgerEntriesInput
+    order?: OrderCreateNestedOneWithoutWalletEntriesInput
+  }
+
+  export type WalletLedgerUncheckedCreateWithoutDisputeInput = {
+    id?: string
+    walletUserId: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    orderId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WalletLedgerCreateOrConnectWithoutDisputeInput = {
+    where: WalletLedgerWhereUniqueInput
+    create: XOR<WalletLedgerCreateWithoutDisputeInput, WalletLedgerUncheckedCreateWithoutDisputeInput>
+  }
+
+  export type WalletLedgerCreateManyDisputeInputEnvelope = {
+    data: WalletLedgerCreateManyDisputeInput | WalletLedgerCreateManyDisputeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrderUpsertWithoutDisputesInput = {
+    update: XOR<OrderUpdateWithoutDisputesInput, OrderUncheckedUpdateWithoutDisputesInput>
+    create: XOR<OrderCreateWithoutDisputesInput, OrderUncheckedCreateWithoutDisputesInput>
+    where?: OrderWhereInput
+  }
+
+  export type OrderUpdateToOneWithWhereWithoutDisputesInput = {
+    where?: OrderWhereInput
+    data: XOR<OrderUpdateWithoutDisputesInput, OrderUncheckedUpdateWithoutDisputesInput>
+  }
+
+  export type OrderUpdateWithoutDisputesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    buyer?: UserUpdateOneRequiredWithoutOrdersNestedInput
+    items?: OrderItemUpdateManyWithoutOrderNestedInput
+    walletEntries?: WalletLedgerUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutDisputesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    buyerId?: StringFieldUpdateOperationsInput | string
+    items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+    walletEntries?: WalletLedgerUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
+  export type UserUpsertWithoutDisputesAsBuyerInput = {
+    update: XOR<UserUpdateWithoutDisputesAsBuyerInput, UserUncheckedUpdateWithoutDisputesAsBuyerInput>
+    create: XOR<UserCreateWithoutDisputesAsBuyerInput, UserUncheckedCreateWithoutDisputesAsBuyerInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDisputesAsBuyerInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDisputesAsBuyerInput, UserUncheckedUpdateWithoutDisputesAsBuyerInput>
+  }
+
+  export type UserUpdateWithoutDisputesAsBuyerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    products?: ProductUpdateManyWithoutSellerNestedInput
+    orders?: OrderUpdateManyWithoutBuyerNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDisputesAsBuyerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
+  }
+
+  export type UserUpsertWithoutDisputesAsSellerInput = {
+    update: XOR<UserUpdateWithoutDisputesAsSellerInput, UserUncheckedUpdateWithoutDisputesAsSellerInput>
+    create: XOR<UserCreateWithoutDisputesAsSellerInput, UserUncheckedCreateWithoutDisputesAsSellerInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDisputesAsSellerInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDisputesAsSellerInput, UserUncheckedUpdateWithoutDisputesAsSellerInput>
+  }
+
+  export type UserUpdateWithoutDisputesAsSellerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    products?: ProductUpdateManyWithoutSellerNestedInput
+    orders?: OrderUpdateManyWithoutBuyerNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDisputesAsSellerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+  }
+
+  export type WalletLedgerUpsertWithWhereUniqueWithoutDisputeInput = {
+    where: WalletLedgerWhereUniqueInput
+    update: XOR<WalletLedgerUpdateWithoutDisputeInput, WalletLedgerUncheckedUpdateWithoutDisputeInput>
+    create: XOR<WalletLedgerCreateWithoutDisputeInput, WalletLedgerUncheckedCreateWithoutDisputeInput>
+  }
+
+  export type WalletLedgerUpdateWithWhereUniqueWithoutDisputeInput = {
+    where: WalletLedgerWhereUniqueInput
+    data: XOR<WalletLedgerUpdateWithoutDisputeInput, WalletLedgerUncheckedUpdateWithoutDisputeInput>
+  }
+
+  export type WalletLedgerUpdateManyWithWhereWithoutDisputeInput = {
+    where: WalletLedgerScalarWhereInput
+    data: XOR<WalletLedgerUpdateManyMutationInput, WalletLedgerUncheckedUpdateManyWithoutDisputeInput>
+  }
+
+  export type UserCreateWithoutSellerWalletInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    products?: ProductCreateNestedManyWithoutSellerInput
+    orders?: OrderCreateNestedManyWithoutBuyerInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
+  }
+
+  export type UserUncheckedCreateWithoutSellerWalletInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    products?: ProductUncheckedCreateNestedManyWithoutSellerInput
+    orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
+  }
+
+  export type UserCreateOrConnectWithoutSellerWalletInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSellerWalletInput, UserUncheckedCreateWithoutSellerWalletInput>
+  }
+
+  export type WalletLedgerCreateWithoutWalletInput = {
+    id?: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    note?: string | null
+    createdAt?: Date | string
+    order?: OrderCreateNestedOneWithoutWalletEntriesInput
+    dispute?: DisputeCreateNestedOneWithoutWalletEntriesInput
+  }
+
+  export type WalletLedgerUncheckedCreateWithoutWalletInput = {
+    id?: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    orderId?: string | null
+    disputeId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WalletLedgerCreateOrConnectWithoutWalletInput = {
+    where: WalletLedgerWhereUniqueInput
+    create: XOR<WalletLedgerCreateWithoutWalletInput, WalletLedgerUncheckedCreateWithoutWalletInput>
+  }
+
+  export type WalletLedgerCreateManyWalletInputEnvelope = {
+    data: WalletLedgerCreateManyWalletInput | WalletLedgerCreateManyWalletInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutSellerWalletInput = {
+    update: XOR<UserUpdateWithoutSellerWalletInput, UserUncheckedUpdateWithoutSellerWalletInput>
+    create: XOR<UserCreateWithoutSellerWalletInput, UserUncheckedCreateWithoutSellerWalletInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSellerWalletInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSellerWalletInput, UserUncheckedUpdateWithoutSellerWalletInput>
+  }
+
+  export type UserUpdateWithoutSellerWalletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    products?: ProductUpdateManyWithoutSellerNestedInput
+    orders?: OrderUpdateManyWithoutBuyerNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSellerWalletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
+  }
+
+  export type WalletLedgerUpsertWithWhereUniqueWithoutWalletInput = {
+    where: WalletLedgerWhereUniqueInput
+    update: XOR<WalletLedgerUpdateWithoutWalletInput, WalletLedgerUncheckedUpdateWithoutWalletInput>
+    create: XOR<WalletLedgerCreateWithoutWalletInput, WalletLedgerUncheckedCreateWithoutWalletInput>
+  }
+
+  export type WalletLedgerUpdateWithWhereUniqueWithoutWalletInput = {
+    where: WalletLedgerWhereUniqueInput
+    data: XOR<WalletLedgerUpdateWithoutWalletInput, WalletLedgerUncheckedUpdateWithoutWalletInput>
+  }
+
+  export type WalletLedgerUpdateManyWithWhereWithoutWalletInput = {
+    where: WalletLedgerScalarWhereInput
+    data: XOR<WalletLedgerUpdateManyMutationInput, WalletLedgerUncheckedUpdateManyWithoutWalletInput>
+  }
+
+  export type SellerWalletCreateWithoutLedgerEntriesInput = {
+    pendingBalance?: number
+    availableBalance?: number
+    frozenBalance?: number
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutSellerWalletInput
+  }
+
+  export type SellerWalletUncheckedCreateWithoutLedgerEntriesInput = {
+    userId: string
+    pendingBalance?: number
+    availableBalance?: number
+    frozenBalance?: number
+    updatedAt?: Date | string
+  }
+
+  export type SellerWalletCreateOrConnectWithoutLedgerEntriesInput = {
+    where: SellerWalletWhereUniqueInput
+    create: XOR<SellerWalletCreateWithoutLedgerEntriesInput, SellerWalletUncheckedCreateWithoutLedgerEntriesInput>
+  }
+
+  export type OrderCreateWithoutWalletEntriesInput = {
+    id?: string
+    status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
+    totalAmount: number
+    paymentIntent?: string | null
+    paymentProvider?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    buyer: UserCreateNestedOneWithoutOrdersInput
+    items?: OrderItemCreateNestedManyWithoutOrderInput
+    disputes?: DisputeCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderUncheckedCreateWithoutWalletEntriesInput = {
+    id?: string
+    status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
+    totalAmount: number
+    paymentIntent?: string | null
+    paymentProvider?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    buyerId: string
+    items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderCreateOrConnectWithoutWalletEntriesInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutWalletEntriesInput, OrderUncheckedCreateWithoutWalletEntriesInput>
+  }
+
+  export type DisputeCreateWithoutWalletEntriesInput = {
+    id?: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    order: OrderCreateNestedOneWithoutDisputesInput
+    buyer: UserCreateNestedOneWithoutDisputesAsBuyerInput
+    seller: UserCreateNestedOneWithoutDisputesAsSellerInput
+  }
+
+  export type DisputeUncheckedCreateWithoutWalletEntriesInput = {
+    id?: string
+    orderId: string
+    buyerId: string
+    sellerId: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DisputeCreateOrConnectWithoutWalletEntriesInput = {
+    where: DisputeWhereUniqueInput
+    create: XOR<DisputeCreateWithoutWalletEntriesInput, DisputeUncheckedCreateWithoutWalletEntriesInput>
+  }
+
+  export type SellerWalletUpsertWithoutLedgerEntriesInput = {
+    update: XOR<SellerWalletUpdateWithoutLedgerEntriesInput, SellerWalletUncheckedUpdateWithoutLedgerEntriesInput>
+    create: XOR<SellerWalletCreateWithoutLedgerEntriesInput, SellerWalletUncheckedCreateWithoutLedgerEntriesInput>
+    where?: SellerWalletWhereInput
+  }
+
+  export type SellerWalletUpdateToOneWithWhereWithoutLedgerEntriesInput = {
+    where?: SellerWalletWhereInput
+    data: XOR<SellerWalletUpdateWithoutLedgerEntriesInput, SellerWalletUncheckedUpdateWithoutLedgerEntriesInput>
+  }
+
+  export type SellerWalletUpdateWithoutLedgerEntriesInput = {
+    pendingBalance?: FloatFieldUpdateOperationsInput | number
+    availableBalance?: FloatFieldUpdateOperationsInput | number
+    frozenBalance?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSellerWalletNestedInput
+  }
+
+  export type SellerWalletUncheckedUpdateWithoutLedgerEntriesInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    pendingBalance?: FloatFieldUpdateOperationsInput | number
+    availableBalance?: FloatFieldUpdateOperationsInput | number
+    frozenBalance?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderUpsertWithoutWalletEntriesInput = {
+    update: XOR<OrderUpdateWithoutWalletEntriesInput, OrderUncheckedUpdateWithoutWalletEntriesInput>
+    create: XOR<OrderCreateWithoutWalletEntriesInput, OrderUncheckedCreateWithoutWalletEntriesInput>
+    where?: OrderWhereInput
+  }
+
+  export type OrderUpdateToOneWithWhereWithoutWalletEntriesInput = {
+    where?: OrderWhereInput
+    data: XOR<OrderUpdateWithoutWalletEntriesInput, OrderUncheckedUpdateWithoutWalletEntriesInput>
+  }
+
+  export type OrderUpdateWithoutWalletEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    buyer?: UserUpdateOneRequiredWithoutOrdersNestedInput
+    items?: OrderItemUpdateManyWithoutOrderNestedInput
+    disputes?: DisputeUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutWalletEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    buyerId?: StringFieldUpdateOperationsInput | string
+    items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
+  export type DisputeUpsertWithoutWalletEntriesInput = {
+    update: XOR<DisputeUpdateWithoutWalletEntriesInput, DisputeUncheckedUpdateWithoutWalletEntriesInput>
+    create: XOR<DisputeCreateWithoutWalletEntriesInput, DisputeUncheckedCreateWithoutWalletEntriesInput>
+    where?: DisputeWhereInput
+  }
+
+  export type DisputeUpdateToOneWithWhereWithoutWalletEntriesInput = {
+    where?: DisputeWhereInput
+    data: XOR<DisputeUpdateWithoutWalletEntriesInput, DisputeUncheckedUpdateWithoutWalletEntriesInput>
+  }
+
+  export type DisputeUpdateWithoutWalletEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneRequiredWithoutDisputesNestedInput
+    buyer?: UserUpdateOneRequiredWithoutDisputesAsBuyerNestedInput
+    seller?: UserUpdateOneRequiredWithoutDisputesAsSellerNestedInput
+  }
+
+  export type DisputeUncheckedUpdateWithoutWalletEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    buyerId?: StringFieldUpdateOperationsInput | string
+    sellerId?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProductCreateManySellerInput = {
     id?: string
     gameType: string
+    gameCategoryId?: string | null
     title: string
     description?: string | null
     price: number
@@ -17994,6 +26125,7 @@ export namespace Prisma {
     isAvailable?: boolean
     specifications: JsonNullValueInput | InputJsonValue
     transactionBlock?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     imageUrl?: string | null
@@ -18006,6 +26138,7 @@ export namespace Prisma {
   export type OrderCreateManyBuyerInput = {
     id?: string
     status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
     paymentProvider?: string | null
@@ -18028,6 +26161,28 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type DisputeCreateManyBuyerInput = {
+    id?: string
+    orderId: string
+    sellerId: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DisputeCreateManySellerInput = {
+    id?: string
+    orderId: string
+    buyerId: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ProductUpdateWithoutSellerInput = {
     id?: StringFieldUpdateOperationsInput | string
     gameType?: StringFieldUpdateOperationsInput | string
@@ -18039,6 +26194,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18046,6 +26202,7 @@ export namespace Prisma {
     accountPassword?: BytesFieldUpdateOperationsInput | Bytes
     accountEmail?: BytesFieldUpdateOperationsInput | Bytes
     accountEmailPassword?: BytesFieldUpdateOperationsInput | Bytes
+    gameCategory?: GameCategoryUpdateOneWithoutProductsNestedInput
     items?: OrderItemUpdateManyWithoutProductNestedInput
     cartItems?: CartItemUpdateManyWithoutProductNestedInput
   }
@@ -18053,6 +26210,7 @@ export namespace Prisma {
   export type ProductUncheckedUpdateWithoutSellerInput = {
     id?: StringFieldUpdateOperationsInput | string
     gameType?: StringFieldUpdateOperationsInput | string
+    gameCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
@@ -18061,6 +26219,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18075,6 +26234,7 @@ export namespace Prisma {
   export type ProductUncheckedUpdateManyWithoutSellerInput = {
     id?: StringFieldUpdateOperationsInput | string
     gameType?: StringFieldUpdateOperationsInput | string
+    gameCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
@@ -18083,6 +26243,7 @@ export namespace Prisma {
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     specifications?: JsonNullValueInput | InputJsonValue
     transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18095,28 +26256,35 @@ export namespace Prisma {
   export type OrderUpdateWithoutBuyerInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: OrderItemUpdateManyWithoutOrderNestedInput
+    disputes?: DisputeUpdateManyWithoutOrderNestedInput
+    walletEntries?: WalletLedgerUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutBuyerInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutOrderNestedInput
+    walletEntries?: WalletLedgerUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutBuyerInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18167,6 +26335,168 @@ export namespace Prisma {
     token?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DisputeUpdateWithoutBuyerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneRequiredWithoutDisputesNestedInput
+    seller?: UserUpdateOneRequiredWithoutDisputesAsSellerNestedInput
+    walletEntries?: WalletLedgerUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateWithoutBuyerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    sellerId?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    walletEntries?: WalletLedgerUncheckedUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutBuyerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    sellerId?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DisputeUpdateWithoutSellerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneRequiredWithoutDisputesNestedInput
+    buyer?: UserUpdateOneRequiredWithoutDisputesAsBuyerNestedInput
+    walletEntries?: WalletLedgerUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateWithoutSellerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    buyerId?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    walletEntries?: WalletLedgerUncheckedUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutSellerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    buyerId?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductCreateManyGameCategoryInput = {
+    id?: string
+    gameType: string
+    title: string
+    description?: string | null
+    price: number
+    status?: $Enums.ProductStatus
+    sellerDelisted?: boolean
+    isAvailable?: boolean
+    specifications: JsonNullValueInput | InputJsonValue
+    transactionBlock?: boolean
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    imageUrl?: string | null
+    accountUsername: Bytes
+    accountPassword: Bytes
+    accountEmail: Bytes
+    accountEmailPassword: Bytes
+    sellerId: string
+  }
+
+  export type ProductUpdateWithoutGameCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gameType?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    accountUsername?: BytesFieldUpdateOperationsInput | Bytes
+    accountPassword?: BytesFieldUpdateOperationsInput | Bytes
+    accountEmail?: BytesFieldUpdateOperationsInput | Bytes
+    accountEmailPassword?: BytesFieldUpdateOperationsInput | Bytes
+    seller?: UserUpdateOneRequiredWithoutProductsNestedInput
+    items?: OrderItemUpdateManyWithoutProductNestedInput
+    cartItems?: CartItemUpdateManyWithoutProductNestedInput
+  }
+
+  export type ProductUncheckedUpdateWithoutGameCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gameType?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    accountUsername?: BytesFieldUpdateOperationsInput | Bytes
+    accountPassword?: BytesFieldUpdateOperationsInput | Bytes
+    accountEmail?: BytesFieldUpdateOperationsInput | Bytes
+    accountEmailPassword?: BytesFieldUpdateOperationsInput | Bytes
+    sellerId?: StringFieldUpdateOperationsInput | string
+    items?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
+    cartItems?: CartItemUncheckedUpdateManyWithoutProductNestedInput
+  }
+
+  export type ProductUncheckedUpdateManyWithoutGameCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gameType?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    specifications?: JsonNullValueInput | InputJsonValue
+    transactionBlock?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    accountUsername?: BytesFieldUpdateOperationsInput | Bytes
+    accountPassword?: BytesFieldUpdateOperationsInput | Bytes
+    accountEmail?: BytesFieldUpdateOperationsInput | Bytes
+    accountEmailPassword?: BytesFieldUpdateOperationsInput | Bytes
+    sellerId?: StringFieldUpdateOperationsInput | string
   }
 
   export type OrderItemCreateManyProductInput = {
@@ -18239,6 +26569,27 @@ export namespace Prisma {
     quantity: number
   }
 
+  export type DisputeCreateManyOrderInput = {
+    id?: string
+    buyerId: string
+    sellerId: string
+    status?: $Enums.DisputeStatus
+    reason: string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WalletLedgerCreateManyOrderInput = {
+    id?: string
+    walletUserId: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    disputeId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
   export type OrderItemUpdateWithoutOrderInput = {
     priceAtPurchase?: FloatFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
@@ -18255,6 +26606,151 @@ export namespace Prisma {
     productId?: StringFieldUpdateOperationsInput | string
     priceAtPurchase?: FloatFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type DisputeUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    buyer?: UserUpdateOneRequiredWithoutDisputesAsBuyerNestedInput
+    seller?: UserUpdateOneRequiredWithoutDisputesAsSellerNestedInput
+    walletEntries?: WalletLedgerUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    buyerId?: StringFieldUpdateOperationsInput | string
+    sellerId?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    walletEntries?: WalletLedgerUncheckedUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    buyerId?: StringFieldUpdateOperationsInput | string
+    sellerId?: StringFieldUpdateOperationsInput | string
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletLedgerUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    wallet?: SellerWalletUpdateOneRequiredWithoutLedgerEntriesNestedInput
+    dispute?: DisputeUpdateOneWithoutWalletEntriesNestedInput
+  }
+
+  export type WalletLedgerUncheckedUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    walletUserId?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    disputeId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletLedgerUncheckedUpdateManyWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    walletUserId?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    disputeId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletLedgerCreateManyDisputeInput = {
+    id?: string
+    walletUserId: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    orderId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WalletLedgerUpdateWithoutDisputeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    wallet?: SellerWalletUpdateOneRequiredWithoutLedgerEntriesNestedInput
+    order?: OrderUpdateOneWithoutWalletEntriesNestedInput
+  }
+
+  export type WalletLedgerUncheckedUpdateWithoutDisputeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    walletUserId?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletLedgerUncheckedUpdateManyWithoutDisputeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    walletUserId?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletLedgerCreateManyWalletInput = {
+    id?: string
+    type: $Enums.WalletLedgerType
+    amount: number
+    orderId?: string | null
+    disputeId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WalletLedgerUpdateWithoutWalletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneWithoutWalletEntriesNestedInput
+    dispute?: DisputeUpdateOneWithoutWalletEntriesNestedInput
+  }
+
+  export type WalletLedgerUncheckedUpdateWithoutWalletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    disputeId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletLedgerUncheckedUpdateManyWithoutWalletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumWalletLedgerTypeFieldUpdateOperationsInput | $Enums.WalletLedgerType
+    amount?: FloatFieldUpdateOperationsInput | number
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    disputeId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

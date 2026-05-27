@@ -1,28 +1,35 @@
 // apps/express-server/prisma/schema.prisma
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../../../packages/shared-types/src/generated/prisma" 
-  engineType= "binary" 
+  provider   = "prisma-client-js"
+  output     = "../../../packages/shared-types/src/generated/prisma"
+  engineType = "binary"
 }
 
 datasource db {
-provider = "postgresql"
+  provider = "postgresql"
 }
 
 // Initial Models for SmurfElite
 
 enum Role {
-  ADMIN   // Can manage users, products, orders, settings
-  SELLER  // Can only list and manage their own products
-  BUYER   // Standard customer
+  ADMIN // Can manage users, products, orders, settings
+  SELLER // Can only list and manage their own products
+  BUYER // Standard customer
 }
 
 enum OrderStatus {
-  PENDING     // Order placed, waiting for payment/confirmation
-  PROCESSING  // Payment confirmed, processing account transfer
-  COMPLETED   // Account delivered to buyer
-  CANCELLED   // Order cancelled by user or admin
+  PENDING // Order placed, waiting for payment/confirmation
+  PROCESSING // Payment confirmed, processing account transfer
+  COMPLETED // Account delivered to buyer
+  CANCELLED // Order cancelled by user or admin
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
   REFUNDED
 }
 
@@ -34,26 +41,48 @@ enum ProductStatus {
   DELISTED_BY_SELLER
   BANNED_BY_ADMIN
 }
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED_BUYER
+  RESOLVED_SELLER
+  CLOSED
+}
+
+enum WalletLedgerType {
+  SALE_CREDIT
+  HOLD_RELEASED
+  PAYOUT
+  DISPUTE_FREEZE
+  DISPUTE_RELEASE
+  ADJUSTMENT
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String   // Hashed password for login
-  role      Role     @default(BUYER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  isVerified Boolean  @default(false)
-  googleId  String?   @unique
-  googleProfilePicture String? @default("")
+  id                   String    @id @default(uuid())
+  email                String    @unique
+  password             String // Hashed password for login
+  role                 Role      @default(BUYER)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  name                 String
+  isVerified           Boolean   @default(false)
+  googleId             String?   @unique
+  googleProfilePicture String?   @default("")
+  lastLoginAt          DateTime?
 
   // Relations
-  products  Product[]    // Products listed by this Seller
-  orders    Order[]      // Orders placed by this Buyer
-  cart      Cart?        // One-to-one relation to the Cart model
-  enquiries Enquiry[]
-  verificationToken VerificationToken?
-  refreshToken      RefreshToken[]
+  products           Product[]
+  orders             Order[]
+  cart               Cart?
+  enquiries          Enquiry[]
+  verificationToken  VerificationToken?
+  refreshToken       RefreshToken[]
   passwordResetToken PasswordResetToken?
+  sellerWallet       SellerWallet?
+  disputesAsBuyer    Dispute[]          @relation("DisputeBuyer")
+  disputesAsSeller   Dispute[]          @relation("DisputeSeller")
 }
 
 // --- Email Verification Token ---
@@ -86,37 +115,48 @@ model RefreshToken {
   createdAt DateTime @default(now())
 }
 
+model GameCategory {
+  id           String    @id @default(uuid())
+  name         String
+  slug         String    @unique
+  isRestricted Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  products     Product[]
+}
+
 model Product {
-  id             String   @id @default(uuid())
-  gameType       String   // e.g., "League of Legends", "Valorant"
-  title          String
-  description    String?
-  price          Float
-  status         ProductStatus @default(DRAFT)
-  sellerDelisted Boolean  @default(false)
-  isAvailable    Boolean  @default(true)
-  specifications Json     // Stores JSON key/value pairs for account specs (e.g., "Rank": "Diamond")
-  transactionBlock Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  
-  imageUrl       String?  // Optional product image URL
+  id               String        @id @default(uuid())
+  gameType         String // Denormalized display name; synced from GameCategory.name when linked
+  gameCategoryId   String?
+  gameCategory     GameCategory? @relation(fields: [gameCategoryId], references: [id])
+  title            String
+  description      String?
+  price            Float
+  status           ProductStatus @default(DRAFT)
+  sellerDelisted   Boolean       @default(false)
+  isAvailable      Boolean       @default(true)
+  specifications   Json // Stores JSON key/value pairs for account specs (e.g., "Rank": "Diamond")
+  transactionBlock Boolean       @default(false)
+  deletedAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  imageUrl String? // Optional product image URL
 
   // Account Credentials - STORED ENCRYPTED
-  accountUsername Bytes   // Encrypted 'username' (Maps to BYTEA in Postgres)
-  accountPassword Bytes
-  accountEmail    Bytes
+  accountUsername      Bytes // Encrypted 'username' (Maps to BYTEA in Postgres)
+  accountPassword      Bytes
+  accountEmail         Bytes
   accountEmailPassword Bytes
 
   // Foreign Key for Seller (User)
-  sellerId       String
-  seller         User     @relation(fields: [sellerId], references: [id])
-  
-  // Relations
-  items          OrderItem[]
-  cartItems      CartItem[]
-}
+  sellerId String
+  seller   User   @relation(fields: [sellerId], references: [id])
 
+  // Relations
+  items     OrderItem[]
+  cartItems CartItem[]
+}
 
 // ----------------------------------------------------
 // 4. E-COMMERCE MODELS (Cart, Order, Enquiry)
@@ -130,9 +170,9 @@ model Cart {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relations
-  items     CartItem[] // Items currently in the cart
+  items CartItem[] // Items currently in the cart
 }
 
 // Junction table for Cart <-> Product (Explicit Many-to-Many)
@@ -140,50 +180,51 @@ model CartItem {
   // Composite ID: A cart item is unique by the Cart and the Product it contains
   cartId    String
   productId String
-  
-  quantity  Int      @default(1)
-  
-  cart      Cart     @relation(fields: [cartId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
-  
+
+  quantity Int @default(1)
+
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
   @@id([cartId, productId])
 }
 
-
 // 4b. Order (Completed purchase)
 model Order {
-  id            String      @id @default(uuid())
-  status        OrderStatus @default(PENDING)
-  totalAmount   Float
-  paymentIntent   String?     @unique // Stripe/PayPal Payment Intent ID
-  paymentProvider String?             // e.g., "paypal", "stripe"
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  
+  id              String        @id @default(uuid())
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+  totalAmount     Float
+  paymentIntent   String?       @unique // Stripe/PayPal Payment Intent ID
+  paymentProvider String? // e.g., "paypal", "stripe"
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
   // Foreign Key for Buyer (User)
-  buyerId       String
-  buyer         User        @relation(fields: [buyerId], references: [id])
+  buyerId String
+  buyer   User   @relation(fields: [buyerId], references: [id])
 
   // Relations
-  items         OrderItem[] // Items included in the order
+  items         OrderItem[]
+  disputes      Dispute[]
+  walletEntries WalletLedger[]
 }
 
 // Junction table for Order <-> Product (Explicit Many-to-Many)
 model OrderItem {
   // Composite ID: An order item is unique by the Order and the Product it contains
-  orderId    String
-  productId  String
-  
+  orderId   String
+  productId String
+
   // NOTE: We denormalize price here to capture the price *at the time of purchase*
   priceAtPurchase Float // The price when the order was placed
   quantity        Int
-  
-  order           Order    @relation(fields: [orderId], references: [id])
-  product         Product  @relation(fields: [productId], references: [id])
-  
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
   @@id([orderId, productId])
 }
-
 
 // 4c. Enquiry (Customer service requests/questions)
 model Enquiry {
@@ -192,8 +233,54 @@ model Enquiry {
   message   String
   isClosed  Boolean  @default(false)
   createdAt DateTime @default(now())
-  
+
   // Foreign Key for User (Customer)
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+// ----------------------------------------------------
+// 5. DISPUTES & WALLETS
+// ----------------------------------------------------
+
+model Dispute {
+  id        String        @id @default(uuid())
+  orderId   String
+  order     Order         @relation(fields: [orderId], references: [id])
+  buyerId   String
+  buyer     User          @relation("DisputeBuyer", fields: [buyerId], references: [id])
+  sellerId  String
+  seller    User          @relation("DisputeSeller", fields: [sellerId], references: [id])
+  status    DisputeStatus @default(OPEN)
+  reason    String
+  details   Json?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  walletEntries WalletLedger[]
+}
+
+model SellerWallet {
+  userId           String   @id
+  user             User     @relation(fields: [userId], references: [id])
+  pendingBalance   Float    @default(0)
+  availableBalance Float    @default(0)
+  frozenBalance    Float    @default(0)
+  updatedAt        DateTime @updatedAt
+
+  ledgerEntries WalletLedger[]
+}
+
+model WalletLedger {
+  id           String           @id @default(uuid())
+  walletUserId String
+  wallet       SellerWallet     @relation(fields: [walletUserId], references: [userId])
+  type         WalletLedgerType
+  amount       Float
+  orderId      String?
+  order        Order?           @relation(fields: [orderId], references: [id])
+  disputeId    String?
+  dispute      Dispute?         @relation(fields: [disputeId], references: [id])
+  note         String?
+  createdAt    DateTime         @default(now())
 }

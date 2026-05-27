@@ -26,6 +26,13 @@ enum OrderStatus {
   REFUNDED
 }
 
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
 enum ProductStatus {
   DRAFT
   ACTIVE
@@ -35,26 +42,47 @@ enum ProductStatus {
   BANNED_BY_ADMIN
 }
 
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED_BUYER
+  RESOLVED_SELLER
+  CLOSED
+}
+
+enum WalletLedgerType {
+  SALE_CREDIT
+  HOLD_RELEASED
+  PAYOUT
+  DISPUTE_FREEZE
+  DISPUTE_RELEASE
+  ADJUSTMENT
+}
+
 model User {
-  id                   String   @id @default(uuid())
-  email                String   @unique
+  id                   String    @id @default(uuid())
+  email                String    @unique
   password             String // Hashed password for login
-  role                 Role     @default(BUYER)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  role                 Role      @default(BUYER)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
   name                 String
-  isVerified           Boolean  @default(false)
-  googleId             String?  @unique
-  googleProfilePicture String?  @default("")
+  isVerified           Boolean   @default(false)
+  googleId             String?   @unique
+  googleProfilePicture String?   @default("")
+  lastLoginAt          DateTime?
 
   // Relations
-  products           Product[] // Products listed by this Seller
-  orders             Order[] // Orders placed by this Buyer
-  cart               Cart? // One-to-one relation to the Cart model
+  products           Product[]
+  orders             Order[]
+  cart               Cart?
   enquiries          Enquiry[]
   verificationToken  VerificationToken?
   refreshToken       RefreshToken[]
   passwordResetToken PasswordResetToken?
+  sellerWallet       SellerWallet?
+  disputesAsBuyer    Dispute[]           @relation("DisputeBuyer")
+  disputesAsSeller   Dispute[]           @relation("DisputeSeller")
 }
 
 // --- Email Verification Token ---
@@ -87,9 +115,20 @@ model RefreshToken {
   createdAt DateTime @default(now())
 }
 
+model GameCategory {
+  id           String    @id @default(uuid())
+  name         String
+  slug         String    @unique
+  isRestricted Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  products     Product[]
+}
+
 model Product {
   id               String        @id @default(uuid())
-  gameType         String // e.g., "League of Legends", "Valorant"
+  gameType         String // Denormalized display name; synced from GameCategory.name when linked
+  gameCategoryId   String?
+  gameCategory     GameCategory? @relation(fields: [gameCategoryId], references: [id])
   title            String
   description      String?
   price            Float
@@ -98,6 +137,7 @@ model Product {
   isAvailable      Boolean       @default(true)
   specifications   Json // Stores JSON key/value pairs for account specs (e.g., "Rank": "Diamond")
   transactionBlock Boolean       @default(false)
+  deletedAt        DateTime?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
@@ -151,20 +191,23 @@ model CartItem {
 
 // 4b. Order (Completed purchase)
 model Order {
-  id              String      @id @default(uuid())
-  status          OrderStatus @default(PENDING)
+  id              String        @id @default(uuid())
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
   totalAmount     Float
-  paymentIntent   String?     @unique // Stripe/PayPal Payment Intent ID
+  paymentIntent   String?       @unique // Stripe/PayPal Payment Intent ID
   paymentProvider String? // e.g., "paypal", "stripe"
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   // Foreign Key for Buyer (User)
   buyerId String
   buyer   User   @relation(fields: [buyerId], references: [id])
 
   // Relations
-  items OrderItem[] // Items included in the order
+  items         OrderItem[]
+  disputes      Dispute[]
+  walletEntries WalletLedger[]
 }
 
 // Junction table for Order <-> Product (Explicit Many-to-Many)
@@ -194,4 +237,50 @@ model Enquiry {
   // Foreign Key for User (Customer)
   userId String
   user   User   @relation(fields: [userId], references: [id])
+}
+
+// ----------------------------------------------------
+// 5. DISPUTES & WALLETS
+// ----------------------------------------------------
+
+model Dispute {
+  id        String        @id @default(uuid())
+  orderId   String
+  order     Order         @relation(fields: [orderId], references: [id])
+  buyerId   String
+  buyer     User          @relation("DisputeBuyer", fields: [buyerId], references: [id])
+  sellerId  String
+  seller    User          @relation("DisputeSeller", fields: [sellerId], references: [id])
+  status    DisputeStatus @default(OPEN)
+  reason    String
+  details   Json?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  walletEntries WalletLedger[]
+}
+
+model SellerWallet {
+  userId           String   @id
+  user             User     @relation(fields: [userId], references: [id])
+  pendingBalance   Float    @default(0)
+  availableBalance Float    @default(0)
+  frozenBalance    Float    @default(0)
+  updatedAt        DateTime @updatedAt
+
+  ledgerEntries WalletLedger[]
+}
+
+model WalletLedger {
+  id           String           @id @default(uuid())
+  walletUserId String
+  wallet       SellerWallet     @relation(fields: [walletUserId], references: [userId])
+  type         WalletLedgerType
+  amount       Float
+  orderId      String?
+  order        Order?           @relation(fields: [orderId], references: [id])
+  disputeId    String?
+  dispute      Dispute?         @relation(fields: [disputeId], references: [id])
+  note         String?
+  createdAt    DateTime         @default(now())
 }

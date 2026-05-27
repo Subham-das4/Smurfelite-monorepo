@@ -80,18 +80,23 @@ export const loginUser = async (
     throw new ApiError(AuthErrorMessages.INVALID_CREDENTIALS, 401);
   }
 
+  const updatedUser = await prisma.user.update({
+    where: { id: user.id },
+    data: { lastLoginAt: new Date() },
+  });
+
   // Create JWT Payload
   const payload: JwtPayload = {
-    id: user.id,
-    email: user.email,
-    role: user.role,
+    id: updatedUser.id,
+    email: updatedUser.email,
+    role: updatedUser.role,
   };
 
   // Generate Token (expires in 24 hours)
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
 
   // Remove password before returning
-  const { password: _, ...userWithoutPassword } = user;
+  const { password: _, ...userWithoutPassword } = updatedUser;
 
   return userWithoutPassword;
 };

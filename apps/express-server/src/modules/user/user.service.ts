@@ -15,6 +15,7 @@ export const getMe = async (userId: string) => {
       role: true,
       isVerified: true,
       googleProfilePicture: true,
+      lastLoginAt: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -46,6 +47,7 @@ export const updateMe = async (
       role: true,
       isVerified: true,
       googleProfilePicture: true,
+      lastLoginAt: true,
       updatedAt: true,
     },
   });

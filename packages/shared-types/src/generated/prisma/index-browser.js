@@ -130,7 +130,8 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   isVerified: 'isVerified',
   googleId: 'googleId',
-  googleProfilePicture: 'googleProfilePicture'
+  googleProfilePicture: 'googleProfilePicture',
+  lastLoginAt: 'lastLoginAt'
 };
 
 exports.Prisma.VerificationTokenScalarFieldEnum = {
@@ -157,9 +158,18 @@ exports.Prisma.RefreshTokenScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.GameCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  isRestricted: 'isRestricted',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   gameType: 'gameType',
+  gameCategoryId: 'gameCategoryId',
   title: 'title',
   description: 'description',
   price: 'price',
@@ -168,6 +178,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   isAvailable: 'isAvailable',
   specifications: 'specifications',
   transactionBlock: 'transactionBlock',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   imageUrl: 'imageUrl',
@@ -194,6 +205,7 @@ exports.Prisma.CartItemScalarFieldEnum = {
 exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
   status: 'status',
+  paymentStatus: 'paymentStatus',
   totalAmount: 'totalAmount',
   paymentIntent: 'paymentIntent',
   paymentProvider: 'paymentProvider',
@@ -218,12 +230,48 @@ exports.Prisma.EnquiryScalarFieldEnum = {
   userId: 'userId'
 };
 
+exports.Prisma.DisputeScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  buyerId: 'buyerId',
+  sellerId: 'sellerId',
+  status: 'status',
+  reason: 'reason',
+  details: 'details',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SellerWalletScalarFieldEnum = {
+  userId: 'userId',
+  pendingBalance: 'pendingBalance',
+  availableBalance: 'availableBalance',
+  frozenBalance: 'frozenBalance',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WalletLedgerScalarFieldEnum = {
+  id: 'id',
+  walletUserId: 'walletUserId',
+  type: 'type',
+  amount: 'amount',
+  orderId: 'orderId',
+  disputeId: 'disputeId',
+  note: 'note',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
 exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
@@ -265,17 +313,45 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
   REFUNDED: 'REFUNDED'
 };
 
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED'
+};
+
+exports.DisputeStatus = exports.$Enums.DisputeStatus = {
+  OPEN: 'OPEN',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  RESOLVED_BUYER: 'RESOLVED_BUYER',
+  RESOLVED_SELLER: 'RESOLVED_SELLER',
+  CLOSED: 'CLOSED'
+};
+
+exports.WalletLedgerType = exports.$Enums.WalletLedgerType = {
+  SALE_CREDIT: 'SALE_CREDIT',
+  HOLD_RELEASED: 'HOLD_RELEASED',
+  PAYOUT: 'PAYOUT',
+  DISPUTE_FREEZE: 'DISPUTE_FREEZE',
+  DISPUTE_RELEASE: 'DISPUTE_RELEASE',
+  ADJUSTMENT: 'ADJUSTMENT'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   VerificationToken: 'VerificationToken',
   PasswordResetToken: 'PasswordResetToken',
   RefreshToken: 'RefreshToken',
+  GameCategory: 'GameCategory',
   Product: 'Product',
   Cart: 'Cart',
   CartItem: 'CartItem',
   Order: 'Order',
   OrderItem: 'OrderItem',
-  Enquiry: 'Enquiry'
+  Enquiry: 'Enquiry',
+  Dispute: 'Dispute',
+  SellerWallet: 'SellerWallet',
+  WalletLedger: 'WalletLedger'
 };
 
 /**

@@ -96,6 +96,19 @@ Duplicated constant also in `apps/express-server/src/constants/order-pricing.ts`
 
 ---
 
+## Phase 1 breaking changes (2026-05-27)
+
+| Change | Impact |
+| ------ | ------ |
+| `ProductListItem.status`, `sellerDelisted`, `gameCategoryId` | API list/detail responses include new fields |
+| `OrderResponse.paymentStatus` | All order responses include payment status (default `PENDING`) |
+| `UserProfileResponse.lastLoginAt` | Set on email/password login |
+| New Prisma models | `GameCategory`, `Dispute`, `SellerWallet`, `WalletLedger` — no public CRUD yet (501 placeholders) |
+
+Regenerate client after schema changes: `pnpm --filter=@smurfelite/express-server prisma:generate`
+
+---
+
 ## Consumers
 
 | App | Import examples |
@@ -116,15 +129,20 @@ Duplicated constant also in `apps/express-server/src/constants/order-pricing.ts`
 
 ## Types to add (Phase 1+)
 
-### Phase 1 — Schema alignment
+### Phase 1 — Schema alignment (done)
 
-- [ ] `ProductStatus` enum (re-export from Prisma after migration)
-- [ ] `DisputeStatus` enum
-- [ ] `PaymentStatus` enum
-- [ ] `GameCategoryResponse`, `CreateGameCategoryRequest`
-- [ ] `DisputeResponse`, `CreateDisputeRequest`
-- [ ] `WalletResponse`, `WalletLedgerEntry`
-- [ ] Update `ProductListItem` with `status`, `sellerDelisted`
+- [x] `ProductStatus` enum (re-export from Prisma)
+- [x] `DisputeStatus`, `PaymentStatus`, `WalletLedgerType` enums
+- [x] `GameCategoryResponse`, `CreateGameCategoryRequest`
+- [x] `DisputeResponse`, `CreateDisputeRequest`
+- [x] `WalletResponse`, `WalletLedgerEntry`
+- [x] `ProductListItem` includes `status`, `sellerDelisted`, `gameCategoryId`
+- [x] `OrderResponse` includes `paymentStatus`
+- [x] `UserProfileResponse` includes `lastLoginAt`
+
+### pgvector (deferred)
+
+- [ ] `embedding vector(1536)` on Product — run `prisma/migrations/optional_pgvector_embedding.sql` when PostgreSQL has pgvector installed
 
 ### Phase 2 — Payment bypass
 
