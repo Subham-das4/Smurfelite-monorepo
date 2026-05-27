@@ -4,6 +4,7 @@ import { ProductStatus } from "../../../src/types/prisma.js";
 import { SmokeRunner } from "../lib/runner.mts";
 import type { SmokeContext } from "../lib/runner.mts";
 import { apiRequest, loginAdmin, loginSeller } from "../lib/http.mts";
+import { getSmokeGameAndPlatformIds } from "../lib/product-fixtures.mts";
 
 const SMOKE_TITLE_PREFIX = "smoke-phase-5.3-";
 
@@ -23,6 +24,7 @@ export async function runPhase5_3(ctx: SmokeContext): Promise<boolean> {
 
   const admin = await loginAdmin(ctx.apiBase);
   const seller = await loginSeller(ctx.apiBase);
+  const { gameId, platformId } = await getSmokeGameAndPlatformIds(ctx);
 
   let productId: string | undefined;
   let selfDelistedProductId: string | undefined;
@@ -34,7 +36,8 @@ export async function runPhase5_3(ctx: SmokeContext): Promise<boolean> {
       method: "POST",
       token: seller.accessToken,
       body: {
-        gameType: "Valorant",
+        gameId,
+        platformId,
         title: `${SMOKE_TITLE_PREFIX}cascade-${Date.now()}`,
         price: 12,
         specifications: {},
@@ -57,7 +60,8 @@ export async function runPhase5_3(ctx: SmokeContext): Promise<boolean> {
       method: "POST",
       token: seller.accessToken,
       body: {
-        gameType: "Valorant",
+        gameId,
+        platformId,
         title: `${SMOKE_TITLE_PREFIX}self-${Date.now()}`,
         price: 11,
         specifications: {},
@@ -118,7 +122,8 @@ export async function runPhase5_3(ctx: SmokeContext): Promise<boolean> {
       method: "POST",
       token: seller.accessToken,
       body: {
-        gameType: "Valorant",
+        gameId,
+        platformId,
         title: `${SMOKE_TITLE_PREFIX}blocked-${Date.now()}`,
         price: 8,
         specifications: {},

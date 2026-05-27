@@ -113,7 +113,7 @@ Phases:
   4.3  Product detail API contract (no mock reviews)
   4.4  Checkout UX — unavailable products + bypass status
   5.1  Product lifecycle — draft, publish, delist, ban, soft delete
-  5.2  Game categories — admin CRUD + restrict listings
+  5.2  Games & platforms — admin CRUD + restrict listings
   5.3  Admin seller delist / reactivate cascade
   5.4  Users — admin search, detail, seller products
   5.5  Disputes — admin list, resolve, wallet freeze

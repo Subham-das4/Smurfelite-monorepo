@@ -4,6 +4,7 @@ import { ProductStatus } from "../../../src/types/prisma.js";
 import { SmokeRunner } from "../lib/runner.mts";
 import type { SmokeContext } from "../lib/runner.mts";
 import { apiRequest, loginAdmin, loginSeller } from "../lib/http.mts";
+import { getSmokeGameAndPlatformIds } from "../lib/product-fixtures.mts";
 
 const SMOKE_TITLE_PREFIX = "smoke-phase-5.1-";
 
@@ -14,9 +15,14 @@ interface ProductResponse {
   isAvailable?: boolean;
 }
 
-function smokeProductPayload(title: string) {
+function smokeProductPayload(
+  title: string,
+  gameId: string,
+  platformId: string
+) {
   return {
-    gameType: "Valorant",
+    gameId,
+    platformId,
     title,
     description: "Phase 5.1 lifecycle smoke product",
     price: 9.99,
@@ -49,6 +55,7 @@ export async function runPhase5_1(ctx: SmokeContext): Promise<boolean> {
 
   const seller = await loginSeller(ctx.apiBase);
   const admin = await loginAdmin(ctx.apiBase);
+  const { gameId, platformId } = await getSmokeGameAndPlatformIds(ctx);
 
   const uniqueTitle = `${SMOKE_TITLE_PREFIX}${Date.now()}`;
   let productId: string | undefined;
@@ -59,7 +66,7 @@ export async function runPhase5_1(ctx: SmokeContext): Promise<boolean> {
     const { data } = await apiRequest<ProductResponse>(ctx, "/products", {
       method: "POST",
       token: seller.accessToken,
-      body: smokeProductPayload(uniqueTitle),
+      body: smokeProductPayload(uniqueTitle, gameId, platformId),
       expectStatus: 201,
     });
     runner.assert(data.status === "DRAFT", `expected DRAFT, got ${data.status}`);
@@ -195,7 +202,7 @@ export async function runPhase5_1(ctx: SmokeContext): Promise<boolean> {
     const { data } = await apiRequest<ProductResponse>(ctx, "/products", {
       method: "POST",
       token: seller.accessToken,
-      body: { ...smokeProductPayload(title), publish: true },
+      body: { ...smokeProductPayload(title, gameId, platformId), publish: true },
       expectStatus: 201,
     });
     runner.assert(data.status === "ACTIVE", "publish:true should create ACTIVE");
