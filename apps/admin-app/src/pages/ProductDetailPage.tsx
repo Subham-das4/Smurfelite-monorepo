@@ -32,7 +32,7 @@ export function ProductDetailPage() {
         </p>
         <p className="mt-2">Game: {product.gameType}</p>
         <p className="mt-2">Price: ${product.price.toFixed(2)}</p>
-        <p className="mt-2">Seller ID: {product.sellerId}</p>
+        <p className="mt-2">Seller: {product.sellerName} ({product.sellerEmail})</p>
         <p className="mt-4 text-[var(--color-text-muted)]">
           Credentials are not shown here. View decrypted credentials on the completed order.
         </p>

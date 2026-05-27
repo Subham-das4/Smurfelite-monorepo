@@ -7,6 +7,7 @@ import {
   getAllProductsController,
   getMyProductsController,
   getAdminProductsController,
+  getAdminProductController,
   publishProductController,
   delistProductController,
   reactivateProductController,
@@ -36,6 +37,12 @@ router.get(
   authenticate,
   authorize([Role.ADMIN]),
   getAdminProductsController
+);
+router.get(
+  "/admin/:productId",
+  authenticate,
+  authorize([Role.ADMIN]),
+  getAdminProductController
 );
 router.get("/:productId", getProductDetailsController);
 

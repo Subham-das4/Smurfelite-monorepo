@@ -1,6 +1,6 @@
 import type {
+  AdminProductListItem,
   AdminProductListResponse,
-  ProductListItem,
 } from "@smurfelite/types";
 import { baseApi } from "./baseApi";
 
@@ -13,8 +13,8 @@ export const productsApi = baseApi.injectEndpoints({
       query: (params) => ({ url: "/products/admin", params }),
       providesTags: ["Products"],
     }),
-    getProduct: builder.query<ProductListItem, string>({
-      query: (id) => `/products/${id}`,
+    getProduct: builder.query<AdminProductListItem, string>({
+      query: (id) => `/products/admin/${id}`,
       providesTags: (_r, _e, id) => [{ type: "Product", id }],
     }),
     banProduct: builder.mutation<ProductListItem, string>({

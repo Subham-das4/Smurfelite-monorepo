@@ -611,3 +611,25 @@ export async function getAdminProducts(filters: ProductFilters) {
     },
   };
 }
+
+export async function getAdminProductById(productId: string) {
+  const row = await prisma.product.findUnique({
+    where: { id: productId },
+    select: {
+      ...productListSelect,
+      deletedAt: true,
+      seller: { select: { email: true, name: true } },
+    },
+  });
+
+  if (!row) {
+    throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
+  }
+
+  const { seller, ...product } = row;
+  return {
+    ...product,
+    sellerEmail: seller.email,
+    sellerName: seller.name,
+  };
+}

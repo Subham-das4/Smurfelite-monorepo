@@ -5,6 +5,7 @@ import { apiRequest, loginAdmin, loginSeller } from "../lib/http.mts";
 import { fulfillOrder } from "../../../src/modules/orders/fulfillment.service.js";
 import { createOrder } from "../../../src/modules/orders/orders.services.js";
 import { findPurchasableProduct } from "../lib/helpers.mts";
+import { getSmokeGameAndPlatformIds } from "../lib/product-fixtures.mts";
 
 export async function runPhase5_10(ctx: SmokeContext): Promise<boolean> {
   const runner = new SmokeRunner("Phase 5.10 — Portal API");
@@ -45,7 +46,7 @@ export async function runPhase5_10(ctx: SmokeContext): Promise<boolean> {
 
   await runner.test("GET /products/admin returns products with seller email", async () => {
     const { data } = await apiRequest<{
-      products: { sellerEmail?: string }[];
+      products: { id: string; status: string; sellerEmail?: string }[];
     }>(ctx, "/products/admin?page=1&pageSize=5", {
       token: admin.accessToken,
       expectStatus: 200,
@@ -57,6 +58,40 @@ export async function runPhase5_10(ctx: SmokeContext): Promise<boolean> {
         "sellerEmail present"
       );
     }
+  });
+
+  await runner.test("GET /products/admin/:id returns non-ACTIVE product", async () => {
+    const { gameId, platformId } = await getSmokeGameAndPlatformIds(ctx);
+    const { data: created } = await apiRequest<{ id: string; status: string }>(
+      ctx,
+      "/products",
+      {
+        method: "POST",
+        token: seller.accessToken,
+        body: {
+          gameId,
+          platformId,
+          title: `smoke-5.10-admin-detail-${Date.now()}`,
+          price: 5,
+          specifications: {},
+          accountUsername: "u",
+          accountPassword: "p",
+          accountEmail: "e",
+          accountEmailPassword: "ep",
+        },
+        expectStatus: 201,
+      }
+    );
+    runner.assert(created.status === "DRAFT", "expected DRAFT product");
+    const { data } = await apiRequest<{ id: string; status: string }>(
+      ctx,
+      `/products/admin/${created.id}`,
+      { token: admin.accessToken, expectStatus: 200 }
+    );
+    runner.assert(data.id === created.id, "admin detail id mismatch");
+    runner.assert(data.status === "DRAFT", "admin detail should include DRAFT status");
+    await apiRequest(ctx, `/products/${created.id}`, { expectStatus: 404 });
+    await prisma.product.delete({ where: { id: created.id } });
   });
 
   runner.section("Seller sales");

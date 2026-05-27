@@ -7,6 +7,7 @@ import {
   getAllProducts,
   getMyProducts,
   getAdminProducts,
+  getAdminProductById,
   publishProduct,
   delistProductBySeller,
   reactivateProductBySeller,
@@ -212,6 +213,20 @@ export async function getAdminProductsController(
     } as ProductFilters;
     const result = await getAdminProducts(filters);
     res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAdminProductController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { productId } = req.params;
+    const product = await getAdminProductById(productId);
+    res.status(200).json(product);
   } catch (error) {
     next(error);
   }
