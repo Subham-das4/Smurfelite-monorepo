@@ -97,12 +97,11 @@ export async function runPhase1(ctx: SmokeContext): Promise<boolean> {
     runner.assert(data.phase === 5, "Expected phase 5 in placeholder response");
   });
 
-  await runner.test("GET /disputes returns 501 placeholder (auth required)", async () => {
-    const { data } = await apiRequest<{ phase?: number }>(ctx, "/disputes", {
+  await runner.test("GET /disputes forbidden for buyer (admin only)", async () => {
+    await apiRequest(ctx, "/disputes", {
       token: ctx.buyerToken,
-      expectStatus: 501,
+      expectStatus: 403,
     });
-    runner.assert(data.phase === 5, "Expected phase 5 in disputes placeholder");
   });
 
   await runner.test("GET /wallets/me returns 501 placeholder (auth required)", async () => {

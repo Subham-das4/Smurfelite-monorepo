@@ -22,7 +22,11 @@ interface MenuItem {
   variant?: "default" | "danger";
 }
 
-function getMenuItems(orderId: string, status: OrderStatus): MenuItem[] {
+function getMenuItems(
+  orderId: string,
+  productId: string,
+  status: OrderStatus,
+): MenuItem[] {
   const items: MenuItem[] = [
     {
       label: "View Order Details",
@@ -51,21 +55,19 @@ function getMenuItems(orderId: string, status: OrderStatus): MenuItem[] {
         icon: <MdDownload className="text-base shrink-0" />,
         href: `/orders/${orderId}/receipt`,
       },
+      {
+        label: "Open Dispute",
+        icon: <MdReportProblem className="text-base shrink-0" />,
+        href: `/orders/${orderId}/dispute?productId=${productId}`,
+      },
     );
   }
 
-  items.push(
-    {
-      label: "Get Help with Order",
-      icon: <MdHelpOutline className="text-base shrink-0" />,
-      href: `/support?order=${orderId}`,
-    },
-    {
-      label: "Report an Issue",
-      icon: <MdReportProblem className="text-base shrink-0" />,
-      href: `/support/report?order=${orderId}`,
-    },
-  );
+  items.push({
+    label: "Get Help with Order",
+    icon: <MdHelpOutline className="text-base shrink-0" />,
+    href: `/#contact_us`,
+  });
 
   if (status === "processing") {
     items.push({
@@ -81,11 +83,13 @@ function getMenuItems(orderId: string, status: OrderStatus): MenuItem[] {
 
 interface OrderActionMenuProps {
   orderId: string;
+  productId: string;
   status: OrderStatus;
 }
 
 export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
   orderId,
+  productId,
   status,
 }) => {
   const [open, setOpen] = useState(false);
@@ -105,7 +109,7 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
-  const menuItems = getMenuItems(orderId, status);
+  const menuItems = getMenuItems(orderId, productId, status);
 
   return (
     <div ref={containerRef} className="relative flex justify-end">

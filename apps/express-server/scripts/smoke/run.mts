@@ -11,10 +11,11 @@ import { runPhase2_5 } from "./phases/phase-2_5.mts";
 import { runPhase3_1 } from "./phases/phase-3_1.mts";
 import { runPhase3_2 } from "./phases/phase-3_2.mts";
 import { runPhase3_3 } from "./phases/phase-3_3.mts";
+import { runPhase4_2 } from "./phases/phase-4_2.mts";
 
-export type SmokePhase = "1" | "2.1" | "2.2" | "2.3" | "2.5" | "3.1" | "3.2" | "3.3";
+export type SmokePhase = "1" | "2.1" | "2.2" | "2.3" | "2.5" | "3.1" | "3.2" | "3.3" | "4.2";
 
-const PHASE_ORDER: SmokePhase[] = ["1", "2.1", "2.2", "2.3", "2.5", "3.1", "3.2", "3.3"];
+const PHASE_ORDER: SmokePhase[] = ["1", "2.1", "2.2", "2.3", "2.5", "3.1", "3.2", "3.3", "4.2"];
 
 const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
   "1": runPhase1,
@@ -25,6 +26,7 @@ const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
   "3.1": runPhase3_1,
   "3.2": runPhase3_2,
   "3.3": runPhase3_3,
+  "4.2": runPhase4_2,
 };
 
 function printUsage(): void {
@@ -44,6 +46,7 @@ Phases:
   3.1  SMTP email module
   3.2  Transactional emails (verify, reset, purchase)
   3.3  Enquiry fix (guest contact form + help@ notification)
+  4.2  Buyer disputes (POST /disputes + /disputes/mine)
 
 Examples:
   pnpm smoke:through-1      # Phase 1 only
@@ -53,10 +56,12 @@ Examples:
   pnpm smoke:through-3.1    # Phase 1 through 3.1
   pnpm smoke:through-3.2    # Phase 1 through 3.2
   pnpm smoke:through-3.3    # Phase 1 through 3.3
+  pnpm smoke:through-4.2    # Phase 1 through 4.2
   pnpm smoke:phase-2.5      # Phase 2.5 only (no prior phases)
   pnpm smoke:phase-3.1      # Phase 3.1 only
   pnpm smoke:phase-3.2      # Phase 3.2 only
   pnpm smoke:phase-3.3      # Phase 3.3 only
+  pnpm smoke:phase-4.2      # Phase 4.2 only
 
 Environment:
   SMOKE_API_BASE     API base URL (default: http://localhost:\${PORT}/api)

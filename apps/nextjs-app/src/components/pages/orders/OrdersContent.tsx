@@ -10,20 +10,24 @@ import { OrderStatusBadge } from "./OrderStatusBadge";
 import { OrderActionMenu } from "./OrderActionMenu";
 import { OrdersFilters } from "./OrdersFilters";
 import { OrdersHelpSection } from "./OrdersHelpSection";
-import type { OrderStatus, OrderStatusFilter, OrderSortOption } from "./types";
-import { OrderItemResponse } from "@smurfelite/types";
+import type { OrderStatusFilter, OrderSortOption } from "./types";
+import { useGetMyOrdersQuery } from "@/api";
+import {
+  flattenOrdersForTable,
+  type OrderTableRow,
+} from "@/lib/orderTableRows";
 
 const PAGE_SIZE = 5;
 
-const columnHelper = createColumnHelper<OrderItemResponse>();
+const columnHelper = createColumnHelper<OrderTableRow>();
 
-const columns: ColumnDef<OrderItemResponse>[] = [
+const columns: ColumnDef<OrderTableRow>[] = [
   {
     accessorKey: "orderId",
     header: "Order ID",
     cell: ({ row }) => (
       <span className="text-[#141118] dark:text-white font-bold text-sm bg-[#f2f0f4] dark:bg-white/10 px-2 py-1 rounded-md">
-        #{row.original.orderId}
+        #{row.original.orderId.slice(0, 8)}
       </span>
     ),
   },
@@ -31,16 +35,21 @@ const columns: ColumnDef<OrderItemResponse>[] = [
     accessorKey: "product.title",
     header: "Game Account",
     cell: ({ row }) => {
-      const { title, imageUrl } = row.original.product!;
+      const product = row.original.product;
+      const title = product?.title ?? "Unknown product";
+      const imageUrl = product?.imageUrl;
       return (
         <div className="flex items-center gap-3">
           <div className="size-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0 relative">
-            <Image
-              src={imageUrl ?? ""}
-              alt={title}
-              fill
-              className="object-cover"
-            />
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={title}
+                fill
+                className="object-cover"
+                unoptimized={imageUrl.startsWith("http")}
+              />
+            ) : null}
           </div>
           <span className="text-[#141118] dark:text-white text-sm font-medium">
             {title}
@@ -49,19 +58,18 @@ const columns: ColumnDef<OrderItemResponse>[] = [
       );
     },
   },
-  // {
-  //   accessorKey: "createdAt",
-  //   header: "Date Placed",
-  //   cell: ({row}) => (
-  //     <span className="text-[#756189] dark:text-gray-400 text-sm">
-  //       {new Date(row.original.).toLocaleDateString("en-US", {
-  //         month: "short",
-  //         day: "numeric",
-  //         year: "numeric",
-  //       })}
-  //     </span>
-  //   ),
-  // }),
+  columnHelper.accessor("createdAt", {
+    header: "Date Placed",
+    cell: (info) => (
+      <span className="text-[#756189] dark:text-gray-400 text-sm">
+        {new Date(info.getValue()).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })}
+      </span>
+    ),
+  }),
   columnHelper.accessor("priceAtPurchase", {
     header: "Total",
     cell: (info) => (
@@ -70,43 +78,66 @@ const columns: ColumnDef<OrderItemResponse>[] = [
       </span>
     ),
   }),
-  // columnHelper.accessor("status", {
-  //   header: "Status",
-  //   cell: (info) => <OrderStatusBadge status={info.getValue()} />,
-  // }),
+  columnHelper.accessor("orderStatus", {
+    header: "Status",
+    cell: (info) => <OrderStatusBadge status={info.getValue()} />,
+  }),
   columnHelper.display({
     id: "action",
     header: "Action",
     cell: (info) => (
       <OrderActionMenu
         orderId={info.row.original.orderId}
-        status={"completed"}
+        productId={info.row.original.productId}
+        status={info.row.original.orderStatus}
       />
     ),
   }),
 ];
 
-function sortOrders(
-  orders: OrderItemResponse[],
+function sortRows(
+  rows: OrderTableRow[],
   sort: OrderSortOption,
-): OrderItemResponse[] {
-  return [...orders];
+): OrderTableRow[] {
+  const copy = [...rows];
+  switch (sort) {
+    case "oldest":
+      return copy.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      );
+    case "price-high":
+      return copy.sort((a, b) => b.priceAtPurchase - a.priceAtPurchase);
+    case "price-low":
+      return copy.sort((a, b) => a.priceAtPurchase - b.priceAtPurchase);
+    case "newest":
+    default:
+      return copy.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+  }
 }
 
-interface OrdersContentProps {
-  initialOrders: OrderItemResponse[];
+function filterRows(
+  rows: OrderTableRow[],
+  statusFilter: OrderStatusFilter,
+): OrderTableRow[] {
+  if (statusFilter === "all") return rows;
+  return rows.filter((row) => row.orderStatus === statusFilter);
 }
 
-export const OrdersContent: React.FC<OrdersContentProps> = ({
-  initialOrders,
-}) => {
+export const OrdersContent: React.FC = () => {
+  const { data: orders = [], isLoading, isError } = useGetMyOrdersQuery();
   const [statusFilter, setStatusFilter] = useState<OrderStatusFilter>("all");
   const [sort, setSort] = useState<OrderSortOption>("newest");
   const [pageIndex, setPageIndex] = useState(0);
 
+  const tableRows = useMemo(() => flattenOrdersForTable(orders), [orders]);
+
   const filteredAndSorted = useMemo(() => {
-    return sortOrders(initialOrders, sort);
-  }, [initialOrders, statusFilter, sort]);
+    return sortRows(filterRows(tableRows, statusFilter), sort);
+  }, [tableRows, statusFilter, sort]);
 
   const paginatedData = useMemo(
     () =>
@@ -130,7 +161,6 @@ export const OrdersContent: React.FC<OrdersContentProps> = ({
   return (
     <main className="flex-1 flex flex-col items-center w-full px-4 py-8 md:px-10 lg:px-40">
       <div className="flex flex-col w-full max-w-[1200px] gap-6">
-        {/* Breadcrumbs */}
         <nav
           className="flex flex-wrap gap-2 items-center text-sm"
           aria-label="Breadcrumb"
@@ -147,15 +177,14 @@ export const OrdersContent: React.FC<OrdersContentProps> = ({
           </span>
         </nav>
 
-        {/* Page header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-[#e0dbe6] dark:border-border-dark pb-6">
           <div className="flex flex-col gap-2">
             <h1 className="text-[#141118] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">
               Order History
             </h1>
             <p className="text-[#756189] dark:text-gray-400 text-base max-w-2xl">
-              View and manage your past game account purchases. Credentials for
-              completed orders can be accessed via details.
+              View and manage your past game account purchases. Open a dispute on
+              completed orders if something went wrong.
             </p>
           </div>
           <Link
@@ -167,7 +196,6 @@ export const OrdersContent: React.FC<OrdersContentProps> = ({
           </Link>
         </div>
 
-        {/* Filters */}
         <OrdersFilters
           activeFilter={statusFilter}
           sort={sort}
@@ -175,19 +203,31 @@ export const OrdersContent: React.FC<OrdersContentProps> = ({
           onSortChange={handleSortChange}
         />
 
-        {/* Table */}
-        <TanstackTable
-          data={paginatedData}
-          columns={columns}
-          pagination={{
-            pageIndex,
-            pageSize: PAGE_SIZE,
-            total: filteredAndSorted.length,
-            onPageChange: setPageIndex,
-          }}
-        />
+        {isLoading ? (
+          <div className="py-16 text-center text-[#756189] dark:text-gray-400">
+            Loading your orders...
+          </div>
+        ) : isError ? (
+          <div className="py-16 text-center text-rose-500">
+            Could not load orders. Please sign in and try again.
+          </div>
+        ) : filteredAndSorted.length === 0 ? (
+          <div className="py-16 text-center text-[#756189] dark:text-gray-400">
+            No orders found for this filter.
+          </div>
+        ) : (
+          <TanstackTable
+            data={paginatedData}
+            columns={columns}
+            pagination={{
+              pageIndex,
+              pageSize: PAGE_SIZE,
+              total: filteredAndSorted.length,
+              onPageChange: setPageIndex,
+            }}
+          />
+        )}
 
-        {/* Help section */}
         <OrdersHelpSection />
       </div>
     </main>

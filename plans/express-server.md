@@ -150,6 +150,16 @@ apps/express-server/
 
 **Model:** `name`, `email`, `phone?`, `subject` (auto), `message`, optional `userId`.
 
+### Disputes (`/disputes`)
+
+| Method | Path | Status |
+| ------ | ---- | ------ |
+| POST | `/` | ✅ Buyer opens dispute on COMPLETED order |
+| GET | `/mine` | ✅ Buyer/seller list |
+| GET | `/` | ⏳ Admin list (501 placeholder, Phase 5) |
+
+**Rules:** buyer must own order; one active dispute per order; `details.orderSnapshot` auto-attached.
+
 ### Payments — NOWPayments (`/payments/nowpayments`)
 
 | Method | Path | Status |
@@ -244,7 +254,7 @@ pnpm --filter=@smurfelite/express-server prisma:migrate
 | `payments/bypass/` | 2 |
 | `orders/fulfillment.service.ts` | 2 |
 | `game-category/` | 5 |
-| `dispute/` | 5 |
+| `dispute/` | 4.2 buyer POST + mine; admin Phase 5 |
 | `wallet/` | 5 |
 | `products/embedding.service.ts` | 5 |
 

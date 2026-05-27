@@ -194,7 +194,7 @@ pnpm --filter=nextjs-app build
 
 ### Phase 4
 - [ ] Tawk.to script in layout
-- [ ] Dispute form from orders page
+- [x] Dispute form from orders page
 - [ ] Credentials viewer for completed orders
 - [ ] Remove mock reviews
 

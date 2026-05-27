@@ -142,9 +142,10 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 4.2 Disputes (buyer-facing)
 
-- [ ] API: `POST /disputes` with orderId + details (Phase 5 backend)
-- [ ] Orders page: "Open dispute" action for COMPLETED orders
-- [ ] Dispute form with order + item details pre-filled
+- [x] API: `POST /disputes` with orderId + details
+- [x] `GET /disputes/mine` for buyer/seller
+- [x] Orders page: "Open dispute" action for COMPLETED orders
+- [x] Dispute form with order + item details pre-filled
 
 ### 4.3 Product detail cleanup
 
@@ -195,8 +196,8 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 5.5 Disputes (full API)
 
-- [ ] `POST /disputes` — buyer creates from order
-- [ ] `GET /disputes/mine` — buyer/seller view
+- [x] `POST /disputes` — buyer creates from order (Phase 4.2)
+- [x] `GET /disputes/mine` — buyer/seller view (Phase 4.2)
 - [ ] `GET /disputes` — admin list with filters
 - [ ] `PATCH /disputes/:id/status` — admin resolve
 - [ ] On dispute open: freeze wallet amount linked to order

@@ -84,6 +84,7 @@ const tagTypes = [
     'Orders',
     'Order',
     'Enquiries',
+    'Disputes',
 ] as const;
 
 export const baseApi = createApi({
