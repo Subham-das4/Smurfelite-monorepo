@@ -100,3 +100,40 @@ ${itemsHtml}
 <p style="font-size:13px;color:#756189;">Need help? Reply to this email or contact support@smurfelite.store.</p>`
   );
 }
+
+export function buildEnquiryNotificationEmailHtml(params: {
+  enquiryId: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  message: string;
+  submittedByUserId?: string | null;
+}): string {
+  const name = escapeHtml(params.name);
+  const email = escapeHtml(params.email);
+  const phone = params.phone?.trim()
+    ? escapeHtml(params.phone.trim())
+    : "Not provided";
+  const message = escapeHtml(params.message).replace(/\n/g, "<br>");
+  const enquiryId = escapeHtml(params.enquiryId);
+  const accountNote = params.submittedByUserId
+    ? `<p style="font-size:13px;color:#756189;">Submitted by logged-in user: ${escapeHtml(params.submittedByUserId)}</p>`
+    : "<p style=\"font-size:13px;color:#756189;\">Submitted as a guest (no account linked).</p>";
+
+  return emailLayout(
+    "New contact enquiry",
+    `<h1 style="font-size:22px;margin:0 0 16px;">New contact enquiry</h1>
+<p>A visitor submitted the contact form on SmurfElite.</p>
+<table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;">
+  <tr><td style="padding:6px 0;color:#756189;width:120px;">Enquiry ID</td><td><strong>${enquiryId}</strong></td></tr>
+  <tr><td style="padding:6px 0;color:#756189;">Name</td><td>${name}</td></tr>
+  <tr><td style="padding:6px 0;color:#756189;">Email</td><td><a href="mailto:${email}">${email}</a></td></tr>
+  <tr><td style="padding:6px 0;color:#756189;">Phone</td><td>${phone}</td></tr>
+</table>
+${accountNote}
+<div style="background:#f6f3f8;border-radius:8px;padding:16px;margin:16px 0;">
+  <p style="margin:0 0 8px;font-weight:bold;">Message</p>
+  <p style="margin:0;white-space:pre-wrap;">${message}</p>
+</div>`
+  );
+}

@@ -231,12 +231,15 @@ model Enquiry {
   id        String   @id @default(uuid())
   subject   String
   message   String
+  name      String
+  email     String
+  phone     String?
   isClosed  Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  // Foreign Key for User (Customer)
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  // Optional link when submitted by a logged-in user
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 }
 
 // ----------------------------------------------------

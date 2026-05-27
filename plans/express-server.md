@@ -142,13 +142,13 @@ apps/express-server/
 
 | Method | Path | Status |
 | ------ | ---- | ------ |
-| POST | `/` | ✅ Expects `{ subject, message }` |
-| GET | `/mine` | ✅ |
+| POST | `/` | ✅ Guest or auth — `{ name, email, phone?, message }`; notifies help@ |
+| GET | `/mine` | ✅ Auth |
 | GET | `/` | ✅ Admin |
 | PATCH | `/:id/close` | ✅ Admin |
 | DELETE | `/:id` | ✅ Admin |
 
-**Gaps:** Frontend payload mismatch (see ISS-001).
+**Model:** `name`, `email`, `phone?`, `subject` (auto), `message`, optional `userId`.
 
 ### Payments — NOWPayments (`/payments/nowpayments`)
 
@@ -171,7 +171,7 @@ From `prisma/schema.prisma`:
 | `Product` | Encrypted credentials (Bytes), `isAvailable`, `transactionBlock` |
 | `Cart` / `CartItem` | 1:1 user cart |
 | `Order` / `OrderItem` | `OrderStatus`: PENDING, PROCESSING, COMPLETED, CANCELLED, REFUNDED |
-| `Enquiry` | subject, message, isClosed |
+| `Enquiry` | subject, message, name, email, phone?, isClosed, optional userId |
 | Token models | VerificationToken, RefreshToken, PasswordResetToken |
 
 **Missing models (planned Phase 1):** GameCategory, Dispute, SellerWallet, WalletLedger, embedding column.

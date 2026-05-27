@@ -122,10 +122,10 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 3.3 Enquiry fix
 
-- [ ] Decide: guest enquiry (extend schema) vs authenticated-only
-- [ ] Align `EnquiryPayload`, Zod schema, Prisma model, Contact form
-- [ ] Store name/email/phone if guest flow chosen
-- [ ] Send notification email to help@ on new enquiry
+- [x] Decide: guest enquiry (extend schema) vs authenticated-only — **guest + optional auth link**
+- [x] Align `EnquiryPayload`, Zod schema, Prisma model, Contact form
+- [x] Store name/email/phone if guest flow chosen
+- [x] Send notification email to help@ on new enquiry
 
 **Depends on:** Phase 2 (fulfillment trigger)  
 **Fixes issues:** ISS-001, ISS-009

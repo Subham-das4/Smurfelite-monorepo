@@ -1,14 +1,50 @@
 import { prisma } from "../../lib/prisma.js";
 import ApiError from "../../utils/errors.js";
+import { sendEnquiryNotificationEmail } from "../../services/email/transactional.service.js";
+import logger from "../../utils/logger.js";
 
-export const createEnquiry = async (
-  userId: string,
-  subject: string,
-  message: string
-) => {
-  return prisma.enquiry.create({
-    data: { userId, subject, message },
+export interface CreateEnquiryInput {
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+  userId?: string | null;
+}
+
+function buildEnquirySubject(name: string): string {
+  const trimmed = name.trim();
+  return trimmed.length > 0 ? `Contact from ${trimmed}` : "Website contact enquiry";
+}
+
+export const createEnquiry = async (input: CreateEnquiryInput) => {
+  const enquiry = await prisma.enquiry.create({
+    data: {
+      subject: buildEnquirySubject(input.name),
+      message: input.message.trim(),
+      name: input.name.trim(),
+      email: input.email.trim().toLowerCase(),
+      phone: input.phone?.trim() || null,
+      userId: input.userId ?? null,
+    },
   });
+
+  try {
+    await sendEnquiryNotificationEmail({
+      enquiryId: enquiry.id,
+      name: enquiry.name,
+      email: enquiry.email,
+      phone: enquiry.phone,
+      message: enquiry.message,
+      submittedByUserId: enquiry.userId,
+    });
+  } catch (error) {
+    logger.error(
+      `Enquiry ${enquiry.id} saved but notification email failed`,
+      error
+    );
+  }
+
+  return enquiry;
 };
 
 export const getMyEnquiries = async (userId: string) => {

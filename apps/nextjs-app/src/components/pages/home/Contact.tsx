@@ -20,12 +20,13 @@ export const Contact = () => {
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await sendEnquiry({ ...contactForm });
-    if (res === undefined) {
-      toast.error("Message not sent.");
-    } else {
-      toast.success("Message sent successfully.");
+    const result = await sendEnquiry({ ...contactForm });
+    if ("error" in result) {
+      toast.error("Message not sent. Please try again.");
+      return;
     }
+
+    toast.success("Message sent successfully.");
     setContactForm({
       name: "",
       email: "",

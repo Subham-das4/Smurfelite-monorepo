@@ -158,24 +158,19 @@ Regenerate client after schema changes: `pnpm --filter=@smurfelite/express-serve
 
 ### Phase 3 — Enquiry fix
 
-- [ ] Align `EnquiryPayload` with backend schema (see ISS-001)
-- [ ] Either add guest fields to response or simplify payload
+- [x] Align `EnquiryPayload` with backend schema (see ISS-001)
+- [x] Guest fields on Enquiry model + optional `userId`
 
 ---
 
-## Enquiry type mismatch (current bug)
+## Enquiry types (Phase 3.3)
 
-**Frontend `EnquiryPayload`:**
+**`EnquiryPayload` (frontend + API):**
 ```typescript
-{ message, name, email, phone }
+{ name, email, phone?, message }
 ```
 
-**Backend expects:**
-```typescript
-{ subject, message }
-```
-
-Fix in Phase 3 — update both `index.ts` and express Zod schema together.
+**Backend stores:** auto-generated `subject`, guest contact fields, optional `userId` when logged in.
 
 ---
 

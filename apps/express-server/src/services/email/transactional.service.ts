@@ -3,10 +3,12 @@ import { prisma } from "../../lib/prisma.js";
 import { decrypt } from "../encryption.service.js";
 import logger from "../../utils/logger.js";
 import { sendEmail, type SendEmailResult } from "../email.service.js";
+import { getEmailSenderProfile } from "../email.config.js";
 import {
   buildPasswordResetEmailHtml,
   buildPurchaseCredentialsEmailHtml,
   buildVerificationEmailHtml,
+  buildEnquiryNotificationEmailHtml,
 } from "./templates.js";
 
 function getFrontendBase(): string {
@@ -136,6 +138,45 @@ export async function sendPurchaseCredentialsEmailForOrder(
 
   logger.info(
     `Purchase credentials email sent for order ${orderId} → ${order.buyer.email}`
+  );
+
+  return result;
+}
+
+export async function sendEnquiryNotificationEmail(params: {
+  enquiryId: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  message: string;
+  submittedByUserId?: string | null;
+}): Promise<SendEmailResult> {
+  const helpProfile = getEmailSenderProfile("help");
+  const html = buildEnquiryNotificationEmailHtml(params);
+  const phoneLine = params.phone?.trim()
+    ? `Phone: ${params.phone.trim()}`
+    : "Phone: Not provided";
+
+  const result = await sendEmail({
+    from: "help",
+    to: helpProfile.address,
+    subject: `New enquiry from ${params.name}`,
+    html,
+    text: [
+      `New contact enquiry (${params.enquiryId})`,
+      `Name: ${params.name}`,
+      `Email: ${params.email}`,
+      phoneLine,
+      params.submittedByUserId
+        ? `User ID: ${params.submittedByUserId}`
+        : "Guest submission",
+      "",
+      params.message,
+    ].join("\n"),
+  });
+
+  logger.info(
+    `Enquiry notification sent for ${params.enquiryId} → ${helpProfile.address}`
   );
 
   return result;

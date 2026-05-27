@@ -84,3 +84,42 @@ export const authorize = (roles: PrismaNamespace.Role[]) => {
     next();
   };
 };
+
+/**
+ * Attaches user context when a valid Bearer token is present.
+ * Does not reject requests without a token (guest access).
+ */
+export const optionalAuthenticate = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  const authReq = req as AuthenticatedRequest;
+  const authHeader = authReq.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next();
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const payload: JwtPayload = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    ) as JwtPayload;
+
+    if (!payload.id || !payload.role) {
+      return next();
+    }
+
+    authReq.user = {
+      id: payload.id,
+      role: payload.role as PrismaNamespace.Role,
+    };
+  } catch {
+    // Invalid token on a public route — proceed as guest
+  }
+
+  next();
+};

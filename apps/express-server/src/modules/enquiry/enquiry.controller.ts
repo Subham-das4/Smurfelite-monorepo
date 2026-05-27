@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../../types/auth.types.js";
-import ApiError from "../../utils/errors.js";
 import {
   createEnquiry,
   getMyEnquiries,
@@ -15,12 +14,17 @@ export const createEnquiryController = async (
   next: NextFunction
 ) => {
   try {
-    const { user } = req as unknown as AuthenticatedRequest;
-    const { subject, message } = req.body;
-    if (!subject || !message) {
-      throw new ApiError("Subject and message are required.", 400);
-    }
-    const enquiry = await createEnquiry(user.id, subject, message);
+    const authReq = req as AuthenticatedRequest;
+    const { name, email, phone, message } = req.body;
+
+    const enquiry = await createEnquiry({
+      name,
+      email,
+      phone,
+      message,
+      userId: authReq.user?.id ?? null,
+    });
+
     res.status(201).json(enquiry);
   } catch (error) {
     next(error);

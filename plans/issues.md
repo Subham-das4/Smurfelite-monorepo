@@ -8,27 +8,6 @@ Prioritized list of known bugs, gaps, and technical debt. Update this file as is
 
 ## Open issues
 
-### 🔴 ISS-001 — Enquiry API contract mismatch
-
-| Field | Value |
-| ----- | ----- |
-| **Severity** | Critical |
-| **Area** | Enquiry |
-| **Phase fix** | Phase 3 |
-
-**Problem:** Frontend sends `{ name, email, phone, message }` but backend Zod schema expects `{ subject, message }`. Contact form submissions likely fail validation.
-
-**Files:**
-- `apps/nextjs-app/src/components/pages/home/Contact.tsx`
-- `apps/nextjs-app/src/api/enquiries.ts`
-- `packages/shared-types/index.ts` (`EnquiryPayload`)
-- `apps/express-server/src/schemas/enquiry.schemas.ts`
-- `apps/express-server/src/modules/enquiry/enquiry.service.ts`
-
-**Suggested fix:** Align schema — either extend Prisma `Enquiry` model with guest fields + optional auth, or map frontend fields to `subject` (e.g. `"Contact from {name}"`) and embed contact info in `message`.
-
----
-
 ### 🔴 ISS-002 — Orders page uses mock data
 
 | Field | Value |
@@ -384,6 +363,8 @@ See [feature-roadmap.md](./feature-roadmap.md).
 
 ## Resolved issues
 
-_None yet._
+### ✅ ISS-001 — Enquiry API contract mismatch (2026-05-27, Phase 3.3)
+
+Guest contact form aligned with backend: `Enquiry` model stores `name`, `email`, `phone`; `POST /enquiries` is public with optional auth; help@ notification email on create.
 
 When fixing an issue, move it here with date and PR reference.

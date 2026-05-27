@@ -18,18 +18,19 @@ export interface EnquiryPayload {
   message: string;
   name: string;
   email: string;
-  phone: string;
+  phone?: string;
 }
 
 export interface EnquiryResponse {
   id: string;
+  subject: string;
   message: string;
   name: string;
   email: string;
-  phone: string;
+  phone: string | null;
   isClosed: boolean;
   createdAt: string;
-  userId: string;
+  userId: string | null;
 }
 
 // ─────────────────────────────────────────

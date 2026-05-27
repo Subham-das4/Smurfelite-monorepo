@@ -13903,6 +13903,9 @@ export namespace Prisma {
     id: string | null
     subject: string | null
     message: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
     isClosed: boolean | null
     createdAt: Date | null
     userId: string | null
@@ -13912,6 +13915,9 @@ export namespace Prisma {
     id: string | null
     subject: string | null
     message: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
     isClosed: boolean | null
     createdAt: Date | null
     userId: string | null
@@ -13921,6 +13927,9 @@ export namespace Prisma {
     id: number
     subject: number
     message: number
+    name: number
+    email: number
+    phone: number
     isClosed: number
     createdAt: number
     userId: number
@@ -13932,6 +13941,9 @@ export namespace Prisma {
     id?: true
     subject?: true
     message?: true
+    name?: true
+    email?: true
+    phone?: true
     isClosed?: true
     createdAt?: true
     userId?: true
@@ -13941,6 +13953,9 @@ export namespace Prisma {
     id?: true
     subject?: true
     message?: true
+    name?: true
+    email?: true
+    phone?: true
     isClosed?: true
     createdAt?: true
     userId?: true
@@ -13950,6 +13965,9 @@ export namespace Prisma {
     id?: true
     subject?: true
     message?: true
+    name?: true
+    email?: true
+    phone?: true
     isClosed?: true
     createdAt?: true
     userId?: true
@@ -14032,9 +14050,12 @@ export namespace Prisma {
     id: string
     subject: string
     message: string
+    name: string
+    email: string
+    phone: string | null
     isClosed: boolean
     createdAt: Date
-    userId: string
+    userId: string | null
     _count: EnquiryCountAggregateOutputType | null
     _min: EnquiryMinAggregateOutputType | null
     _max: EnquiryMaxAggregateOutputType | null
@@ -14058,64 +14079,79 @@ export namespace Prisma {
     id?: boolean
     subject?: boolean
     message?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
     isClosed?: boolean
     createdAt?: boolean
     userId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | Enquiry$userArgs<ExtArgs>
   }, ExtArgs["result"]["enquiry"]>
 
   export type EnquirySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     subject?: boolean
     message?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
     isClosed?: boolean
     createdAt?: boolean
     userId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | Enquiry$userArgs<ExtArgs>
   }, ExtArgs["result"]["enquiry"]>
 
   export type EnquirySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     subject?: boolean
     message?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
     isClosed?: boolean
     createdAt?: boolean
     userId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | Enquiry$userArgs<ExtArgs>
   }, ExtArgs["result"]["enquiry"]>
 
   export type EnquirySelectScalar = {
     id?: boolean
     subject?: boolean
     message?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
     isClosed?: boolean
     createdAt?: boolean
     userId?: boolean
   }
 
-  export type EnquiryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "subject" | "message" | "isClosed" | "createdAt" | "userId", ExtArgs["result"]["enquiry"]>
+  export type EnquiryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "subject" | "message" | "name" | "email" | "phone" | "isClosed" | "createdAt" | "userId", ExtArgs["result"]["enquiry"]>
   export type EnquiryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | Enquiry$userArgs<ExtArgs>
   }
   export type EnquiryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | Enquiry$userArgs<ExtArgs>
   }
   export type EnquiryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | Enquiry$userArgs<ExtArgs>
   }
 
   export type $EnquiryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Enquiry"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       subject: string
       message: string
+      name: string
+      email: string
+      phone: string | null
       isClosed: boolean
       createdAt: Date
-      userId: string
+      userId: string | null
     }, ExtArgs["result"]["enquiry"]>
     composites: {}
   }
@@ -14510,7 +14546,7 @@ export namespace Prisma {
    */
   export interface Prisma__EnquiryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends Enquiry$userArgs<ExtArgs> = {}>(args?: Subset<T, Enquiry$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14543,6 +14579,9 @@ export namespace Prisma {
     readonly id: FieldRef<"Enquiry", 'String'>
     readonly subject: FieldRef<"Enquiry", 'String'>
     readonly message: FieldRef<"Enquiry", 'String'>
+    readonly name: FieldRef<"Enquiry", 'String'>
+    readonly email: FieldRef<"Enquiry", 'String'>
+    readonly phone: FieldRef<"Enquiry", 'String'>
     readonly isClosed: FieldRef<"Enquiry", 'Boolean'>
     readonly createdAt: FieldRef<"Enquiry", 'DateTime'>
     readonly userId: FieldRef<"Enquiry", 'String'>
@@ -14939,6 +14978,25 @@ export namespace Prisma {
      * Limit how many Enquiries to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Enquiry.user
+   */
+  export type Enquiry$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -18576,6 +18634,9 @@ export namespace Prisma {
     id: 'id',
     subject: 'subject',
     message: 'message',
+    name: 'name',
+    email: 'email',
+    phone: 'phone',
     isClosed: 'isClosed',
     createdAt: 'createdAt',
     userId: 'userId'
@@ -19581,19 +19642,25 @@ export namespace Prisma {
     id?: StringFilter<"Enquiry"> | string
     subject?: StringFilter<"Enquiry"> | string
     message?: StringFilter<"Enquiry"> | string
+    name?: StringFilter<"Enquiry"> | string
+    email?: StringFilter<"Enquiry"> | string
+    phone?: StringNullableFilter<"Enquiry"> | string | null
     isClosed?: BoolFilter<"Enquiry"> | boolean
     createdAt?: DateTimeFilter<"Enquiry"> | Date | string
-    userId?: StringFilter<"Enquiry"> | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    userId?: StringNullableFilter<"Enquiry"> | string | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type EnquiryOrderByWithRelationInput = {
     id?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrderInput | SortOrder
     isClosed?: SortOrder
     createdAt?: SortOrder
-    userId?: SortOrder
+    userId?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -19604,19 +19671,25 @@ export namespace Prisma {
     NOT?: EnquiryWhereInput | EnquiryWhereInput[]
     subject?: StringFilter<"Enquiry"> | string
     message?: StringFilter<"Enquiry"> | string
+    name?: StringFilter<"Enquiry"> | string
+    email?: StringFilter<"Enquiry"> | string
+    phone?: StringNullableFilter<"Enquiry"> | string | null
     isClosed?: BoolFilter<"Enquiry"> | boolean
     createdAt?: DateTimeFilter<"Enquiry"> | Date | string
-    userId?: StringFilter<"Enquiry"> | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    userId?: StringNullableFilter<"Enquiry"> | string | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type EnquiryOrderByWithAggregationInput = {
     id?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrderInput | SortOrder
     isClosed?: SortOrder
     createdAt?: SortOrder
-    userId?: SortOrder
+    userId?: SortOrderInput | SortOrder
     _count?: EnquiryCountOrderByAggregateInput
     _max?: EnquiryMaxOrderByAggregateInput
     _min?: EnquiryMinOrderByAggregateInput
@@ -19629,9 +19702,12 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Enquiry"> | string
     subject?: StringWithAggregatesFilter<"Enquiry"> | string
     message?: StringWithAggregatesFilter<"Enquiry"> | string
+    name?: StringWithAggregatesFilter<"Enquiry"> | string
+    email?: StringWithAggregatesFilter<"Enquiry"> | string
+    phone?: StringNullableWithAggregatesFilter<"Enquiry"> | string | null
     isClosed?: BoolWithAggregatesFilter<"Enquiry"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Enquiry"> | Date | string
-    userId?: StringWithAggregatesFilter<"Enquiry"> | string
+    userId?: StringNullableWithAggregatesFilter<"Enquiry"> | string | null
   }
 
   export type DisputeWhereInput = {
@@ -20624,51 +20700,69 @@ export namespace Prisma {
     id?: string
     subject: string
     message: string
+    name: string
+    email: string
+    phone?: string | null
     isClosed?: boolean
     createdAt?: Date | string
-    user: UserCreateNestedOneWithoutEnquiriesInput
+    user?: UserCreateNestedOneWithoutEnquiriesInput
   }
 
   export type EnquiryUncheckedCreateInput = {
     id?: string
     subject: string
     message: string
+    name: string
+    email: string
+    phone?: string | null
     isClosed?: boolean
     createdAt?: Date | string
-    userId: string
+    userId?: string | null
   }
 
   export type EnquiryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     isClosed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutEnquiriesNestedInput
+    user?: UserUpdateOneWithoutEnquiriesNestedInput
   }
 
   export type EnquiryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     isClosed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EnquiryCreateManyInput = {
     id?: string
     subject: string
     message: string
+    name: string
+    email: string
+    phone?: string | null
     isClosed?: boolean
     createdAt?: Date | string
-    userId: string
+    userId?: string | null
   }
 
   export type EnquiryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     isClosed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20677,9 +20771,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     isClosed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DisputeCreateInput = {
@@ -21692,10 +21789,18 @@ export namespace Prisma {
     quantity?: SortOrder
   }
 
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
   export type EnquiryCountOrderByAggregateInput = {
     id?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
     isClosed?: SortOrder
     createdAt?: SortOrder
     userId?: SortOrder
@@ -21705,6 +21810,9 @@ export namespace Prisma {
     id?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
     isClosed?: SortOrder
     createdAt?: SortOrder
     userId?: SortOrder
@@ -21714,6 +21822,9 @@ export namespace Prisma {
     id?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
     isClosed?: SortOrder
     createdAt?: SortOrder
     userId?: SortOrder
@@ -22820,10 +22931,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutEnquiriesNestedInput = {
+  export type UserUpdateOneWithoutEnquiriesNestedInput = {
     create?: XOR<UserCreateWithoutEnquiriesInput, UserUncheckedCreateWithoutEnquiriesInput>
     connectOrCreate?: UserCreateOrConnectWithoutEnquiriesInput
     upsert?: UserUpsertWithoutEnquiriesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEnquiriesInput, UserUpdateWithoutEnquiriesInput>, UserUncheckedUpdateWithoutEnquiriesInput>
   }
@@ -23496,6 +23609,9 @@ export namespace Prisma {
     id?: string
     subject: string
     message: string
+    name: string
+    email: string
+    phone?: string | null
     isClosed?: boolean
     createdAt?: Date | string
   }
@@ -23504,6 +23620,9 @@ export namespace Prisma {
     id?: string
     subject: string
     message: string
+    name: string
+    email: string
+    phone?: string | null
     isClosed?: boolean
     createdAt?: Date | string
   }
@@ -23790,9 +23909,12 @@ export namespace Prisma {
     id?: StringFilter<"Enquiry"> | string
     subject?: StringFilter<"Enquiry"> | string
     message?: StringFilter<"Enquiry"> | string
+    name?: StringFilter<"Enquiry"> | string
+    email?: StringFilter<"Enquiry"> | string
+    phone?: StringNullableFilter<"Enquiry"> | string | null
     isClosed?: BoolFilter<"Enquiry"> | boolean
     createdAt?: DateTimeFilter<"Enquiry"> | Date | string
-    userId?: StringFilter<"Enquiry"> | string
+    userId?: StringNullableFilter<"Enquiry"> | string | null
   }
 
   export type VerificationTokenUpsertWithoutUserInput = {
@@ -26150,6 +26272,9 @@ export namespace Prisma {
     id?: string
     subject: string
     message: string
+    name: string
+    email: string
+    phone?: string | null
     isClosed?: boolean
     createdAt?: Date | string
   }
@@ -26296,6 +26421,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     isClosed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26304,6 +26432,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     isClosed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26312,6 +26443,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     isClosed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
