@@ -1,29 +1,61 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useGetOrderByIdQuery } from "@/api/orders";
 import { OrderStatus } from "@smurfelite/types";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { clearCheckoutCart } from "@/lib/clearCheckoutCart";
+
+const POLL_INTERVAL_MS = 3000;
+
+function isPaymentConfirmed(status: OrderStatus | undefined): boolean {
+  return (
+    status === OrderStatus.COMPLETED || status === OrderStatus.PROCESSING
+  );
+}
 
 function CheckoutSuccessInner() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId") ?? undefined;
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const cartClearedRef = useRef(false);
 
   const { data: order, isLoading } = useGetOrderByIdQuery(orderId ?? "", {
     skip: !orderId,
+    pollingInterval: orderId && !isPaymentConfirmed(order?.status)
+      ? POLL_INTERVAL_MS
+      : 0,
   });
+
+  useEffect(() => {
+    if (
+      !isAuthenticated ||
+      cartClearedRef.current ||
+      !isPaymentConfirmed(order?.status)
+    ) {
+      return;
+    }
+
+    cartClearedRef.current = true;
+    void clearCheckoutCart(dispatch);
+  }, [dispatch, isAuthenticated, order?.status]);
 
   const statusLabel =
     order?.status === OrderStatus.COMPLETED
       ? "Your order is complete. Account credentials are available in your order history."
       : order?.status === OrderStatus.PROCESSING
-      ? "Payment received — your order is being processed."
-      : order?.status === OrderStatus.PENDING
-        ? "Waiting for payment confirmation. This page will update when your payment is confirmed."
-        : order
-          ? `Order status: ${order.status}.`
-          : null;
+        ? "Payment received — your order is being processed."
+        : order?.status === OrderStatus.PENDING
+          ? "Waiting for payment confirmation. This page will update when your payment is confirmed."
+          : order
+            ? `Order status: ${order.status}.`
+            : null;
+
+  const isWaitingForPayment =
+    order?.status === OrderStatus.PENDING || (orderId && isLoading && !order);
 
   return (
     <div className="text-center">
@@ -40,7 +72,12 @@ function CheckoutSuccessInner() {
           Order ID: {orderId}
         </p>
       )}
-      {orderId && isLoading && (
+      {isWaitingForPayment && (
+        <p className="text-sm text-primary mb-4 animate-pulse">
+          Checking payment status…
+        </p>
+      )}
+      {orderId && isLoading && !order && (
         <p className="text-sm text-primary mb-4">Loading order status…</p>
       )}
       {statusLabel && (

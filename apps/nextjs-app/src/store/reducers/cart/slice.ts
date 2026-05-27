@@ -75,6 +75,9 @@ const cartSlice = createSlice({
         applyCartResponse(state, action.payload);
       },
     );
+    builder.addMatcher(cartApi.endpoints.clearCart.matchFulfilled, (state, action) => {
+      applyCartResponse(state, action.payload);
+    });
   },
 });
 

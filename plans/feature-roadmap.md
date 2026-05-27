@@ -77,11 +77,11 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 2.3 Cart & checkout fixes
 
-- [ ] Do not clear Redux cart until payment/bypass success
-- [ ] Clear server cart items after successful order completion
-- [ ] Add `DELETE /cart` or clear-all helper endpoint
-- [ ] Cancel page: call cancel API when `orderId` query present and order is PENDING
-- [ ] Success page: poll order status until COMPLETED (bypass) or PROCESSING (real payment)
+- [x] Do not clear Redux cart until payment/bypass success
+- [x] Clear server cart items after successful order completion
+- [x] Add `DELETE /cart` or clear-all helper endpoint
+- [x] Cancel page: call cancel API when `orderId` query present and order is PENDING
+- [x] Success page: poll order status until COMPLETED (bypass) or PROCESSING (real payment)
 
 ### 2.4 Orders UI wiring
 

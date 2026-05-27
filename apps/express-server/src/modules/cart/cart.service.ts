@@ -68,3 +68,13 @@ export const removeFromCart = async (userId: string, productId: string) => {
     });
     return getCart(userId);
 }
+
+/** Remove all items from the buyer's cart (e.g. after successful checkout). */
+export const clearCartItems = async (userId: string) => {
+    const cart = await getOrCreateCart(userId);
+
+    await prisma.cartItem.deleteMany({
+        where: { cartId: cart.id },
+    });
+    return getCart(userId);
+}

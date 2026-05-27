@@ -30,6 +30,16 @@ export const cartApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['Cart'],
         }),
+
+        /////////////////////
+        // Remove all items from the cart (after successful checkout)
+        clearCart: build.mutation<CartResponse, void>({
+            query: () => ({
+                url: '/cart',
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Cart'],
+        }),
     }),
 });
 
@@ -37,4 +47,5 @@ export const {
     useGetCartQuery,
     useAddToCartMutation,
     useRemoveFromCartMutation,
+    useClearCartMutation,
 } = cartApi;

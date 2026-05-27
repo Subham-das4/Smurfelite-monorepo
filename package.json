@@ -15,7 +15,11 @@
     "build": "turbo run build",
     "start:dev": "concurrently \"pnpm --filter=@smurfelite/express-server dev\" \"pnpm --filter=nextjs-app dev\"",
     "dev:express": "pnpm --filter=@smurfelite/express-server dev",
-    "dev:nextjs": "pnpm --filter=nextjs-app dev"
+    "dev:nextjs": "pnpm --filter=nextjs-app dev",
+    "smoke:through-1": "pnpm --filter=@smurfelite/express-server smoke:through-1",
+    "smoke:through-2.1": "pnpm --filter=@smurfelite/express-server smoke:through-2.1",
+    "smoke:through-2.2": "pnpm --filter=@smurfelite/express-server smoke:through-2.2",
+    "smoke:through-2.3": "pnpm --filter=@smurfelite/express-server smoke:through-2.3"
   },
   "keywords": [],
   "author": "",

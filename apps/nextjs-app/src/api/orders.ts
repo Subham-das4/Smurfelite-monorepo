@@ -16,11 +16,8 @@ export const ordersApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body,
             }),
-            // Invalidate the orders list and the cart (cart is emptied after checkout)
-            invalidatesTags: [
-                { type: 'Orders', id: 'LIST' },
-                'Cart',
-            ],
+            // Order creation reserves products; cart is cleared after payment success.
+            invalidatesTags: [{ type: 'Orders', id: 'LIST' }],
         }),
 
         /////////////////////
