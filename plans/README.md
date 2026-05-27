@@ -30,7 +30,7 @@ Smurfelite-monorepo/
 │   ├── nextjs-app/         ✅ Buyer website
 │   ├── admin-app/          🚧 Vite SPA (port 5173)
 │   ├── seller-app/         🚧 Vite SPA (port 5174)
-│   └── cron-server/        🚧 Phase 8.1 scaffold (scheduler + stubs)
+│   └── cron-server/        ✅ Phase 8.2 (order expiry, wallet release, embedding)
 ├── packages/
 │   ├── shared-types/       ✅ @smurfelite/types
 │   └── ui/                 🚧 @smurfelite/ui (shared components)

@@ -8,6 +8,9 @@ export type CronConfig = {
   embeddingBackfillEnabled: boolean;
   embeddingBatchSize: number;
   embeddingBackfillCron: string;
+  embeddingProviderApiKey: string | undefined;
+  embeddingModel: string;
+  alertWebhookUrl: string | undefined;
   advisoryLockId: number;
 };
 
@@ -51,6 +54,11 @@ export function loadConfig(): CronConfig {
     embeddingBatchSize: parseIntEnv("EMBEDDING_BATCH_SIZE", 10),
     embeddingBackfillCron:
       process.env.EMBEDDING_BACKFILL_CRON?.trim() || "0 3 * * *",
+    embeddingProviderApiKey:
+      process.env.EMBEDDING_PROVIDER_API_KEY?.trim() || undefined,
+    embeddingModel:
+      process.env.EMBEDDING_MODEL?.trim() || "text-embedding-3-small",
+    alertWebhookUrl: process.env.CRON_ALERT_WEBHOOK_URL?.trim() || undefined,
     advisoryLockId: parseIntEnv("CRON_ADVISORY_LOCK_ID", 810_000_001),
   };
 }

@@ -1,17 +1,25 @@
+import type { PrismaClient } from "@smurfelite/types/src/generated/prisma/index.js";
 import type { Logger } from "winston";
 import type { CronConfig } from "../config.js";
-import type { JobResult } from "./order-expiry.js";
+import { releaseEligibleWalletHolds } from "../lib/wallet-hold-release.js";
+import type { JobResult } from "./types.js";
 
-/**
- * Move seller pending balance to available after WALLET_HOLD_DAYS.
- * Implementation: Phase 8.2.
- */
 export async function runWalletHoldReleaseJob(
+  prisma: PrismaClient,
   config: CronConfig,
   logger: Logger
 ): Promise<JobResult> {
-  logger.info(
-    `wallet-hold-release job registered (hold ${config.walletHoldDays} days — Phase 8.2)`
+  const { processed, skipped } = await releaseEligibleWalletHolds(
+    prisma,
+    config.walletHoldDays,
+    logger
   );
-  return { job: "wallet-hold-release", processed: 0 };
+
+  if (processed > 0 || skipped > 0) {
+    logger.info(
+      `wallet-hold-release: released ${processed}, skipped ${skipped} (hold ${config.walletHoldDays} days)`
+    );
+  }
+
+  return { job: "wallet-hold-release", processed, skipped };
 }

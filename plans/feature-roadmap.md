@@ -345,10 +345,10 @@ Prerequisite endpoints before Vite portal UIs. See [seller-app.md](./seller-app.
 
 ### 8.2 Jobs
 
-- [ ] **Wallet hold release:** move pending → available after N days
-- [ ] **Order expiry:** cancel PENDING orders past timeout; release `transactionBlock`
-- [ ] **Embedding backfill:** products missing embedding (optional, Phase 5 dependency)
-- [ ] Structured logging + error alerting hooks
+- [x] **Wallet hold release:** move pending → available after N days
+- [x] **Order expiry:** cancel PENDING orders past timeout; release `transactionBlock`
+- [x] **Embedding backfill:** products missing embedding (optional, Phase 5 dependency)
+- [x] Structured logging + error alerting hooks
 
 ### 8.3 Deployment
 

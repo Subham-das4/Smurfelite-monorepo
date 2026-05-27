@@ -2,7 +2,7 @@
 
 Background job runner for scheduled maintenance and balance operations.
 
-**Path:** `apps/cron-server` (Phase 8.1 scaffold ✅; job logic Phase 8.2)  
+**Path:** `apps/cron-server` (Phase 8.1–8.2 ✅)  
 **Roadmap phase:** 8  
 **Architecture:** Separate Node process (not embedded in express-server)
 
@@ -195,9 +195,9 @@ Add to root turbo.json pipeline.
 - [x] Scaffold `apps/cron-server` package (Phase 8.1)
 - [x] Wire Prisma + DATABASE_URL
 - [x] Implement advisory lock utility
-- [ ] Job: order expiry (highest priority — unblocks inventory)
-- [ ] Job: wallet hold release (after Phase 5 wallet writes exist)
-- [ ] Job: embedding backfill (optional)
+- [x] Job: order expiry
+- [x] Job: wallet hold release
+- [x] Job: embedding backfill (optional; requires pgvector column + API key)
 - [ ] Document in root readMe.md
 - [ ] Add to `pnpm start:dev` optionally or separate `pnpm dev:cron`
 

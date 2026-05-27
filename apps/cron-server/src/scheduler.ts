@@ -3,9 +3,11 @@ import type { Logger } from "winston";
 import type { PrismaClient } from "@smurfelite/types/src/generated/prisma/index.js";
 import type { CronConfig } from "./config.js";
 import { withAdvisoryLock, jobLockId } from "./utils/lock.js";
+import { sendJobFailureAlert } from "./utils/alert.js";
 import { runOrderExpiryJob } from "./jobs/order-expiry.js";
 import { runWalletHoldReleaseJob } from "./jobs/wallet-hold-release.js";
 import { runEmbeddingBackfillJob } from "./jobs/embedding-backfill.js";
+import type { JobResult } from "./jobs/types.js";
 
 const JOB_SLOTS = {
   orderExpiry: 1,
@@ -25,22 +27,36 @@ async function runGuarded(
   logger: Logger,
   jobName: string,
   slot: number,
-  run: () => Promise<{ processed: number; skipped?: boolean }>
+  run: () => Promise<JobResult>
 ) {
   const lockId = jobLockId(config.advisoryLockId, slot);
-  const result = await withAdvisoryLock(prisma, lockId, async () => {
-    logger.info(`[${jobName}] tick start`);
-    const out = await run();
-    logger.info(
-      `[${jobName}] tick end processed=${out.processed}${
-        out.skipped ? " (skipped)" : ""
-      }`
-    );
-    return out;
-  });
 
-  if (result === null) {
-    logger.warn(`[${jobName}] skipped — another instance holds advisory lock ${lockId}`);
+  try {
+    const result = await withAdvisoryLock(prisma, lockId, async () => {
+      logger.info(`[${jobName}] tick start`, { job: jobName, lockId });
+      const out = await run();
+      logger.info(`[${jobName}] tick end`, {
+        job: jobName,
+        processed: out.processed,
+        skipped: out.skipped,
+        skippedJob: out.skippedJob,
+      });
+      return out;
+    });
+
+    if (result === null) {
+      logger.warn(`[${jobName}] skipped — advisory lock ${lockId} held elsewhere`, {
+        job: jobName,
+        lockId,
+      });
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    logger.error(`[${jobName}] tick failed: ${message}`, {
+      job: jobName,
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+    await sendJobFailureAlert(config, jobName, err);
   }
 }
 
@@ -58,7 +74,7 @@ export function registerCronJobs(
   tasks.push(
     cron.schedule(config.orderExpiryCron, () => {
       void runGuarded(prisma, config, logger, "order-expiry", JOB_SLOTS.orderExpiry, () =>
-        runOrderExpiryJob(config, logger)
+        runOrderExpiryJob(prisma, config, logger)
       );
     })
   );
@@ -71,7 +87,7 @@ export function registerCronJobs(
         logger,
         "wallet-hold-release",
         JOB_SLOTS.walletHoldRelease,
-        () => runWalletHoldReleaseJob(config, logger)
+        () => runWalletHoldReleaseJob(prisma, config, logger)
       );
     })
   );
@@ -84,7 +100,7 @@ export function registerCronJobs(
         logger,
         "embedding-backfill",
         JOB_SLOTS.embeddingBackfill,
-        () => runEmbeddingBackfillJob(config, logger)
+        () => runEmbeddingBackfillJob(prisma, config, logger)
       );
     })
   );

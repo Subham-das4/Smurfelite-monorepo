@@ -20,7 +20,7 @@ async function main() {
   logger.info("Database connection OK");
 
   registerCronJobs(prisma, config, logger);
-  logger.info("Cron jobs registered (job bodies ship in Phase 8.2)");
+  logger.info("Cron jobs registered (order-expiry, wallet-hold-release, embedding-backfill)");
 
   const shutdown = async (signal: string) => {
     logger.info(`Received ${signal}, shutting down`);

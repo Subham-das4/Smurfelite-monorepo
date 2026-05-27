@@ -1,22 +1,25 @@
+import type { PrismaClient } from "@smurfelite/types/src/generated/prisma/index.js";
 import type { Logger } from "winston";
 import type { CronConfig } from "../config.js";
+import { expireAllStalePendingOrders } from "../lib/order-expiry.js";
+import type { JobResult } from "./types.js";
 
-export type JobResult = {
-  job: string;
-  processed: number;
-  skipped?: boolean;
-};
-
-/**
- * Cancel stale PENDING orders and release product transaction blocks.
- * Implementation: Phase 8.2 (reuse express order-expiry batch logic).
- */
 export async function runOrderExpiryJob(
-  _config: CronConfig,
+  prisma: PrismaClient,
+  config: CronConfig,
   logger: Logger
 ): Promise<JobResult> {
-  logger.info(
-    "order-expiry job registered (implementation pending Phase 8.2)"
+  const processed = await expireAllStalePendingOrders(
+    prisma,
+    config.orderPendingTimeoutMinutes,
+    logger
   );
-  return { job: "order-expiry", processed: 0 };
+
+  if (processed > 0) {
+    logger.info(
+      `order-expiry: cancelled ${processed} stale PENDING order(s) (timeout ${config.orderPendingTimeoutMinutes}m)`
+    );
+  }
+
+  return { job: "order-expiry", processed };
 }
