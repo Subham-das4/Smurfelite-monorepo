@@ -19,7 +19,9 @@
     "smoke:through-1": "pnpm --filter=@smurfelite/express-server smoke:through-1",
     "smoke:through-2.1": "pnpm --filter=@smurfelite/express-server smoke:through-2.1",
     "smoke:through-2.2": "pnpm --filter=@smurfelite/express-server smoke:through-2.2",
-    "smoke:through-2.3": "pnpm --filter=@smurfelite/express-server smoke:through-2.3"
+    "smoke:through-2.3": "pnpm --filter=@smurfelite/express-server smoke:through-2.3",
+    "smoke:through-2.5": "pnpm --filter=@smurfelite/express-server smoke:through-2.5",
+    "smoke:phase-2.5": "pnpm --filter=@smurfelite/express-server smoke:phase-2.5"
   },
   "keywords": [],
   "author": "",

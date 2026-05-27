@@ -85,9 +85,8 @@ apps/express-server/
 | ------ | ---- | ------ |
 | GET | `/` | ✅ Auto-create cart |
 | POST | `/:productId` | ✅ 1 qty, no duplicates |
+| DELETE | `/` | ✅ Clear all items |
 | DELETE | `/:productId` | ✅ |
-
-**Gaps:** No bulk clear endpoint.
 
 ### Orders (`/orders`)
 
@@ -101,7 +100,13 @@ apps/express-server/
 | PATCH | `/:orderId/status` | ADMIN | ✅ No side effects (sold, email) |
 | PATCH | `/:orderId/cancel` | BUYER | ✅ PENDING only, releases lock |
 
-**Gaps:** No fulfillment, no cart clear hook, no expiry, no dispute link.
+**Pending order expiry (Phase 2.5):**
+
+- Env `ORDER_PENDING_TIMEOUT_MINUTES` (default **30**). Unpaid `PENDING` orders older than this are auto-cancelled and product `transactionBlock` is released.
+- **Inline expiry:** runs on `GET /orders/:id`, `GET /orders` (buyer list), and `GET /orders/all` (admin) until cron-server batch job exists (Phase 8).
+- **Manual cancel until cron:** buyers can `PATCH /orders/:id/cancel` while status is `PENDING`, or leave checkout via `/checkout/cancel?orderId=` (auto-cancel). Abandoned crypto checkouts keep the cart; reserved products unlock on cancel/expiry.
+
+**Gaps:** No dispute link; email on completion deferred to Phase 3.
 
 ### Auth (`/auth`)
 
@@ -208,12 +213,10 @@ From `.env.example` + runtime requirements:
 | `PUBLIC_API_BASE_URL` | Yes (payments) | NOWPayments IPN callback |
 | `NOWPAYMENTS_API_KEY` | Payments | Sandbox/production |
 | `NOWPAYMENTS_IPN_SECRET` | Payments | Webhook HMAC |
+| `PAYMENT_BYPASS` | Dev/E2E | Skip NOWPayments (default `false`) |
+| `ORDER_PENDING_TIMEOUT_MINUTES` | Orders | Auto-cancel unpaid PENDING orders (default **30**) |
 
 **Planned additions:**
-
-- `PAYMENT_BYPASS`
-- `SMTP_*`, `EMAIL_*_*` (finance, help, purchase)
-- `ORDER_PENDING_TIMEOUT_MINUTES`
 - Embedding provider keys
 
 ---

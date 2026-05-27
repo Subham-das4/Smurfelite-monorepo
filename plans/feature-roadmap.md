@@ -93,9 +93,9 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 2.5 Order expiry (minimal — full cron in Phase 8)
 
-- [ ] Define `ORDER_PENDING_TIMEOUT_MINUTES` env default (e.g. 30)
-- [ ] Document manual cancel flow until cron exists
-- [ ] Optional: inline expiry check on order fetch
+- [x] Define `ORDER_PENDING_TIMEOUT_MINUTES` env default (e.g. 30)
+- [x] Document manual cancel flow until cron exists
+- [x] Optional: inline expiry check on order fetch
 
 **Depends on:** Phase 1 (ProductStatus, wallet)  
 **Unblocks:** Phase 4, 6, 7  

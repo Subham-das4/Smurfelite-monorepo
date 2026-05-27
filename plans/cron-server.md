@@ -77,6 +77,8 @@ apps/cron-server/
 **Trigger:** Every 5–15 minutes  
 **Phase dependency:** Phase 2 (timeout constant defined)
 
+**Note:** express-server already runs **inline expiry** on order fetch (Phase 2.5). This cron job will catch orders that are never fetched again (e.g. buyer never returns to the site).
+
 **Logic:**
 1. Find orders where `status = PENDING` and `createdAt < now - ORDER_PENDING_TIMEOUT_MINUTES`
 2. For each: set `CANCELLED`, release `transactionBlock` on related products

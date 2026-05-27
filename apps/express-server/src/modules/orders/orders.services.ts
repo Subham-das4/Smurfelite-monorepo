@@ -4,6 +4,12 @@ import { prisma } from "../../lib/prisma.js";
 import { decrypt } from "../../services/encryption.service.js";
 import ApiError from "../../utils/errors.js";
 import { isProductPurchasable } from "../product/product.constants.js";
+import {
+  cancelPendingOrderInTransaction,
+  expireAllStalePendingOrders,
+  expirePendingOrderIfStale,
+  expireStalePendingOrdersForBuyer,
+} from "./order-expiry.service.js";
 
 export const createOrder = async (userId: string, productIds: string[]) => {
   const itemMap = productIds.reduce(
@@ -64,6 +70,8 @@ export const createOrder = async (userId: string, productIds: string[]) => {
 };
 
 export const getOrderById = async (orderId: string, userId: string, isAdmin: boolean) => {
+  await expirePendingOrderIfStale(orderId);
+
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: {
@@ -93,6 +101,8 @@ export const getOrderById = async (orderId: string, userId: string, isAdmin: boo
 };
 
 export const getBuyerOrders = async (userId: string) => {
+  await expireStalePendingOrdersForBuyer(userId);
+
   return prisma.order.findMany({
     where: { buyerId: userId },
     include: {
@@ -114,6 +124,8 @@ export const getBuyerOrders = async (userId: string) => {
 };
 
 export const getAllOrders = async (page: number = 1, pageSize: number = 20) => {
+  await expireAllStalePendingOrders();
+
   const skip = (page - 1) * pageSize;
   const [orders, totalCount] = await prisma.$transaction([
     prisma.order.findMany({
@@ -169,17 +181,7 @@ export const cancelOrder = async (orderId: string, userId: string) => {
   }
 
   return prisma.$transaction(async (tx) => {
-    const productIds = order.items.map((i) => i.productId);
-
-    await tx.product.updateMany({
-      where: { id: { in: productIds } },
-      data: { transactionBlock: false },
-    });
-
-    return tx.order.update({
-      where: { id: orderId },
-      data: { status: OrderStatus.CANCELLED },
-    });
+    return cancelPendingOrderInTransaction(tx, order);
   });
 };
 
