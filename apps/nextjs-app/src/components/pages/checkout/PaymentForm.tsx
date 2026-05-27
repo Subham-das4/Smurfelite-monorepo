@@ -134,6 +134,8 @@ interface PaymentFormProps {
   isSubmitting?: boolean;
   /** When true, Complete Order is disabled (e.g. cart still loading from API). */
   submitDisabled?: boolean;
+  /** Dev/E2E: server has PAYMENT_BYPASS enabled — no crypto redirect. */
+  paymentBypassEnabled?: boolean;
 }
 
 const PAYMENT_OPTIONS: Omit<
@@ -185,6 +187,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
   onSubmit,
   isSubmitting,
   submitDisabled = false,
+  paymentBypassEnabled = false,
 }) => {
   const [selectedMethod, setSelectedMethod] =
     useState<PaymentMethod>("crypto");
@@ -202,6 +205,12 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
       {/* Payment method selection */}
       <div>
         <h2 className="text-2xl font-bold mb-2">Payment Method</h2>
+        {paymentBypassEnabled && (
+          <p className="text-sm font-medium text-amber-700 dark:text-amber-300 mb-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 px-3 py-2">
+            Test mode: payment bypass is enabled. Your order will complete
+            immediately without crypto checkout.
+          </p>
+        )}
         <p className="text-sm text-[#756189] dark:text-gray-400 mb-6">
           All transactions are secure and encrypted.
         </p>
@@ -252,7 +261,9 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
               ? "Processing…"
               : submitDisabled
                 ? "Loading cart…"
-                : "Complete Order"}
+                : paymentBypassEnabled
+                  ? "Complete Order (test)"
+                  : "Complete Order"}
           </span>
           <MdArrowForward className="text-lg" />
         </button>

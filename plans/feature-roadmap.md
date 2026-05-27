@@ -61,19 +61,19 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 2.1 Payment bypass
 
-- [ ] Add `PAYMENT_BYPASS` env var to `.env.example`
-- [ ] Create `payments/bypass/bypass.service.ts` — simulate payment success
-- [ ] Add `POST /payments/bypass/complete` (auth + owns order + PENDING only)
-- [ ] When bypass enabled, checkout calls bypass instead of NOWPayments invoice
-- [ ] Bypass flow: `PENDING → PROCESSING → COMPLETED` in one transaction
+- [x] Add `PAYMENT_BYPASS` env var to `.env.example`
+- [x] Create `payments/bypass/bypass.service.ts` — simulate payment success
+- [x] Add `POST /payments/bypass/complete` (auth + owns order + PENDING only)
+- [x] When bypass enabled, checkout calls bypass instead of NOWPayments invoice
+- [x] Bypass flow: `PENDING → COMPLETED` with `paymentStatus: PAID` in one transaction
 
 ### 2.2 Order fulfillment
 
-- [ ] Create `orders/fulfillment.service.ts`
-- [ ] On completion: set order `COMPLETED`, products `SOLD` / unavailable
-- [ ] Release or finalize `transactionBlock` appropriately
+- [x] Create `orders/fulfillment.service.ts`
+- [x] On completion: set order `COMPLETED`, products `SOLD` / unavailable
+- [x] Release or finalize `transactionBlock` appropriately
 - [ ] Decrypt credentials and prepare email payload (send deferred to Phase 3 if needed)
-- [ ] Write seller wallet `pendingBalance` credit on completion
+- [x] Write seller wallet `pendingBalance` credit on completion
 
 ### 2.3 Cart & checkout fixes
 

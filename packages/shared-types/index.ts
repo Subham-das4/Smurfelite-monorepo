@@ -311,6 +311,23 @@ export interface CreateNowPaymentsInvoiceResponse {
 }
 
 // ─────────────────────────────────────────
+// Payments — bypass (dev/E2E)
+// ─────────────────────────────────────────
+
+export interface PaymentBypassStatusResponse {
+  enabled: boolean;
+}
+
+export interface CompleteBypassPaymentRequest {
+  internalOrderId: string;
+}
+
+export interface CompleteBypassPaymentResponse {
+  message: string;
+  order: OrderResponse;
+}
+
+// ─────────────────────────────────────────
 // Game categories (Phase 5 API)
 // ─────────────────────────────────────────
 

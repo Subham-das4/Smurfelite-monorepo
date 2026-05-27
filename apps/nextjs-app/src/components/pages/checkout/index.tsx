@@ -12,7 +12,11 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { productsApi } from "@/api/products";
 import { useGetCartQuery, useRemoveFromCartMutation } from "@/api/cart";
 import { useCreateOrderMutation } from "@/api/orders";
-import { useCreateNowPaymentsInvoiceMutation } from "@/api/payments";
+import {
+  useCompleteBypassPaymentMutation,
+  useCreateNowPaymentsInvoiceMutation,
+  useGetPaymentBypassStatusQuery,
+} from "@/api/payments";
 import { setIsLoginModalOpen } from "@/store/reducers/auth/slice";
 import { clearCart } from "@/store/reducers/cart/slice";
 import type { CartItemResponse, ProductListItem } from "@smurfelite/types";
@@ -147,6 +151,9 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
 
   const [createOrder] = useCreateOrderMutation();
   const [createNowPaymentsInvoice] = useCreateNowPaymentsInvoiceMutation();
+  const [completeBypassPayment] = useCompleteBypassPaymentMutation();
+  const { data: bypassStatus } = useGetPaymentBypassStatusQuery();
+  const paymentBypassEnabled = bypassStatus?.enabled === true;
   const [removeFromCartApi] = useRemoveFromCartMutation();
 
   const handleShippingSubmit = (data: ShippingFormData) => {
@@ -194,6 +201,27 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
     setIsPaying(true);
     try {
       const order = await createOrder({ productIds: productIdsForOrder }).unwrap();
+
+      if (paymentBypassEnabled) {
+        await completeBypassPayment({ internalOrderId: order.id }).unwrap();
+
+        if (isScoped) {
+          const unique = [...new Set(scopedProductIds)];
+          for (const id of unique) {
+            try {
+              await removeFromCartApi(id).unwrap();
+            } catch {
+              // Item may not exist in server cart; checkout still succeeded.
+            }
+          }
+        } else {
+          dispatch(clearCart());
+        }
+
+        router.push(`/checkout/success?orderId=${encodeURIComponent(order.id)}`);
+        return;
+      }
+
       const invoice = await createNowPaymentsInvoice({
         internalOrderId: order.id,
       }).unwrap();
@@ -274,6 +302,7 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
               onSubmit={handlePaymentSubmit}
               isSubmitting={isPaying}
               submitDisabled={isAuthenticated && !paymentReady}
+              paymentBypassEnabled={paymentBypassEnabled}
             />
           )}
         </div>

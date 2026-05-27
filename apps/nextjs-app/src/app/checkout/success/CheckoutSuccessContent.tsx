@@ -15,7 +15,9 @@ function CheckoutSuccessInner() {
   });
 
   const statusLabel =
-    order?.status === OrderStatus.PROCESSING
+    order?.status === OrderStatus.COMPLETED
+      ? "Your order is complete. Account credentials are available in your order history."
+      : order?.status === OrderStatus.PROCESSING
       ? "Payment received — your order is being processed."
       : order?.status === OrderStatus.PENDING
         ? "Waiting for payment confirmation. This page will update when your payment is confirmed."
@@ -29,9 +31,9 @@ function CheckoutSuccessInner() {
         Thank you
       </h1>
       <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-2">
-        If you completed payment on the crypto checkout page, we will confirm
-        it shortly. You can safely close this tab — confirmation is sent to our
-        servers automatically.
+        {order?.status === OrderStatus.COMPLETED
+          ? "Thank you for your purchase."
+          : "If you completed payment on the crypto checkout page, we will confirm it shortly. You can safely close this tab — confirmation is sent to our servers automatically."}
       </p>
       {orderId && (
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 font-mono break-all">
