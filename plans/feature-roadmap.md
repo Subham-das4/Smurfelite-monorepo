@@ -72,7 +72,7 @@ Priority: get full buyer journey working without NOWPayments.
 - [x] Create `orders/fulfillment.service.ts`
 - [x] On completion: set order `COMPLETED`, products `SOLD` / unavailable
 - [x] Release or finalize `transactionBlock` appropriately
-- [ ] Decrypt credentials and prepare email payload (send deferred to Phase 3 if needed)
+- [x] Decrypt credentials and prepare email payload (purchase email on COMPLETED)
 - [x] Write seller wallet `pendingBalance` credit on completion
 
 ### 2.3 Cart & checkout fixes
@@ -115,10 +115,10 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 3.2 Wire transactional emails
 
-- [ ] Send verification email on register (help@)
-- [ ] Send password reset email (help@)
-- [ ] Send purchase credentials email on order COMPLETED (purchase@)
-- [ ] HTML templates for each email type
+- [x] Send verification email on register (help@)
+- [x] Send password reset email (help@)
+- [x] Send purchase credentials email on order COMPLETED (purchase@)
+- [x] HTML templates for each email type
 
 ### 3.3 Enquiry fix
 

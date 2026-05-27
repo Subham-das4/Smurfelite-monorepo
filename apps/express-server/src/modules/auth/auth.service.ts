@@ -8,6 +8,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 import logger from "../../utils/logger.js";
 import { createCart } from "../cart/cart.service.js";
+import { sendPasswordResetEmail, sendVerificationEmail } from "../../services/email/transactional.service.js";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS!);
@@ -57,7 +58,7 @@ export const registerUser = async (
     },
   });
 
-  await generateAndSaveVerificationToken(user.id);
+  await generateAndSaveVerificationToken(user.id, user.email, user.name);
 
   // Remove password before returning
   const { password: _, ...userWithoutPassword } = user;
@@ -102,7 +103,9 @@ export const loginUser = async (
 };
 
 async function generateAndSaveVerificationToken(
-  userId: string
+  userId: string,
+  email: string,
+  name: string
 ): Promise<string> {
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
@@ -115,12 +118,12 @@ async function generateAndSaveVerificationToken(
     },
   });
 
-  // TODO:  Send the token via email to the user for verification
-
-  logger.info(
-    `Verification token generated for user ${userId}. Token: ${token} `
-  );
-  logger.info(`Implementation required `);
+  try {
+    await sendVerificationEmail({ to: email, name, token });
+    logger.info(`Verification email sent to ${email}`);
+  } catch (err) {
+    logger.error(`Failed to send verification email to ${email}:`, err);
+  }
 
   return token;
 }
@@ -236,8 +239,16 @@ export async function forgotPassword(email: string): Promise<string> {
     create: { token, userId: user.id, expiresAt },
   });
 
-  // TODO: Send reset email
-  logger.info(`Password reset token generated for ${email}. Token: ${token}`);
+  try {
+    await sendPasswordResetEmail({
+      to: user.email,
+      name: user.name,
+      token,
+    });
+    logger.info(`Password reset email sent to ${email}`);
+  } catch (err) {
+    logger.error(`Failed to send password reset email to ${email}:`, err);
+  }
 
   return "If that email is registered, a reset link has been sent.";
 }

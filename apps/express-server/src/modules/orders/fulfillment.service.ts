@@ -6,6 +6,8 @@ import {
 } from "../../types/prisma.js";
 import { prisma } from "../../lib/prisma.js";
 import ApiError from "../../utils/errors.js";
+import logger from "../../utils/logger.js";
+import { sendPurchaseCredentialsEmailForOrder } from "../../services/email/transactional.service.js";
 
 /**
  * Completes a paid order: marks products sold and credits seller wallets.
@@ -15,7 +17,9 @@ export async function fulfillOrder(
   orderId: string,
   paymentProvider: string
 ) {
-  return prisma.$transaction(async (tx) => {
+  let sendCredentialsEmail = false;
+
+  const fulfilled = await prisma.$transaction(async (tx) => {
     const order = await tx.order.findUnique({
       where: { id: orderId },
       include: {
@@ -37,6 +41,8 @@ export async function fulfillOrder(
         400
       );
     }
+
+    sendCredentialsEmail = true;
 
     const productIds = order.items.map((i) => i.productId);
 
@@ -104,4 +110,17 @@ export async function fulfillOrder(
       },
     });
   });
+
+  if (sendCredentialsEmail) {
+    try {
+      await sendPurchaseCredentialsEmailForOrder(orderId);
+    } catch (err) {
+      logger.error(
+        `Failed to send purchase credentials email for order ${orderId}:`,
+        err
+      );
+    }
+  }
+
+  return fulfilled;
 }
