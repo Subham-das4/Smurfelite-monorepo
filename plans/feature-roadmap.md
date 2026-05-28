@@ -221,7 +221,7 @@ Priority: get full buyer journey working without NOWPayments.
 
 - [x] Remove public `role` from register schema; default BUYER only
 - [x] Update `lastLoginAt` on login success
-- [x] Seller registration flow via admin promote or dedicated endpoint
+- [x] Seller registration flow via admin promote or dedicated endpoint *(superseded by Phase 10.5 — seller approval queue + self-apply)*
 
 ### 5.9 Payment status
 
@@ -308,7 +308,7 @@ Prerequisite endpoints before Vite portal UIs. See [seller-app.md](./seller-app.
 
 ### 7.2 Auth & layout
 
-- [x] `/login` — email/password + Google; reject non-ADMIN
+- [x] `/login` — email/password + Google; reject non-ADMIN *(Google login superseded by Phase 10.6.1 — admin-only email login)*
 - [x] AppShell: Users, Products, Orders, Enquiries, Disputes, Categories, Wallets
 - [x] `/` redirects to `/users`
 
@@ -332,6 +332,225 @@ Prerequisite endpoints before Vite portal UIs. See [seller-app.md](./seller-app.
 
 **Depends on:** Phase 5.10, Phase 6.1 (packages/ui)  
 **Out of scope:** Dashboard KPIs, product approval queue, product credential decrypt, seller withdraw UI
+
+---
+
+## Phase 10 — Auth, admin governance & seller approval
+
+Role-separated login APIs, admin provisioning (no promote-to-admin), seller approval before storefront listings, and `actingAs` JWT context so sellers can shop on the buyer site.
+
+**Decisions:**
+
+- Admins are created only in the admin panel (`POST /admins`); emailed a generated password. Buyer/seller emails cannot become admins.
+- Sellers onboard via self-apply (seller portal) **or** admin invite; both start as `PENDING` until an admin approves.
+- Sellers shopping on nextjs-app use `POST /auth/buyer/login` → JWT with `actingAs: BUYER` (DB `role` stays `SELLER`).
+- Seller portal uses `POST /auth/seller/login` → `actingAs: SELLER`.
+- Storefront listing visibility requires `sellerApprovalStatus === APPROVED` (user-level; `ProductStatus.PENDING_VERIFICATION` stays unused).
+
+```mermaid
+flowchart TB
+  subgraph portals [Portals]
+    NextApp[nextjs-app]
+    SellerApp[seller-app]
+    AdminApp[admin-app]
+  end
+  subgraph authAPI [Auth endpoints]
+    BuyerLogin["POST /auth/buyer/login"]
+    SellerLogin["POST /auth/seller/login"]
+    AdminLogin["POST /auth/admin/login"]
+  end
+  NextApp --> BuyerLogin
+  SellerApp --> SellerLogin
+  AdminApp --> AdminLogin
+  BuyerLogin -->|"actingAs BUYER"| JWT_B[JWT]
+  SellerLogin -->|"actingAs SELLER"| JWT_S[JWT]
+  AdminLogin -->|"role ADMIN"| JWT_A[JWT]
+```
+
+### 10.1 Prisma / enums
+
+- [ ] Add `SellerApprovalStatus` enum: `NONE`, `PENDING`, `APPROVED`, `REJECTED`
+- [ ] Add `sellerApprovalStatus` on `User` (default `NONE`; `PENDING` on apply/invite)
+- [ ] Add `sellerApprovedAt`, `sellerRejectedAt`, optional `sellerRejectionNote`
+- [ ] Add `adminInvitedAt` / `createdByAdminId` (optional audit for admin-created sellers/admins)
+- [ ] Migration + regenerate `@smurfelite/types`
+- [ ] Document: `PENDING_VERIFICATION` on **Product** remains unused; seller gating is **user-level**, not product queue
+
+### 10.2 JWT & middleware contracts
+
+- [ ] Extend access JWT payload: `{ id, role, actingAs? }` (`actingAs` required for buyer/seller portal logins)
+- [ ] Update `authenticate` / `authorize` to accept `actingAs` where routes are portal-scoped (e.g. cart/orders → `actingAs === BUYER`)
+- [ ] Refresh flow: re-issue access token preserving `actingAs` from cookie/session or explicit refresh body
+- [ ] Export new types in `packages/shared-types/index.ts`
+- [ ] Update smoke auth helpers under `apps/express-server/scripts/smoke/`
+
+**Depends on:** Phase 1 (User model)  
+**Unblocks:** 10.3–10.6
+
+### 10.3 Separate login & password-reset APIs (Express)
+
+#### 10.3.1 Role-scoped login (replace shared login for portals)
+
+- [ ] `POST /auth/buyer/login` — allow `role === BUYER` OR `role === SELLER`; issue `actingAs: BUYER`
+- [ ] `POST /auth/seller/login` — allow `role === SELLER` only; issue `actingAs: SELLER` (pending sellers may login to manage drafts)
+- [ ] `POST /auth/admin/login` — allow `role === ADMIN` only; no `actingAs`
+- [ ] Reject wrong portal with explicit errors (e.g. admin email on buyer login → 403, not generic 401)
+- [ ] Keep `POST /auth/google` only for buyer/seller paths still supported; **exclude** from admin routes
+- [ ] Deprecation plan: mark `POST /auth/login` deprecated → 410 after portal migrations (document timeline)
+- [ ] Zod schemas in `auth.schemas.ts`; controllers in `auth.controller.ts`
+
+#### 10.3.2 Buyer password reset (existing, hardened)
+
+- [ ] `POST /auth/buyer/forgot-password` — only emails where user is `BUYER` or `SELLER` (not `ADMIN`)
+- [ ] `POST /auth/buyer/reset-password` — same scope; link targets Next.js `FRONTEND_URL/reset-password`
+- [ ] Block reset if email belongs to `ADMIN` only
+
+#### 10.3.3 Admin password reset (new, isolated)
+
+- [ ] `POST /auth/admin/forgot-password` — `ADMIN` emails only
+- [ ] `POST /auth/admin/reset-password` — admin panel URL (`ADMIN_FRONTEND_URL` env)
+- [ ] Separate email template branding (help@ vs admin-specific sender if needed)
+- [ ] Ensure buyer reset tokens cannot reset admin passwords (separate token table or `purpose` column on `PasswordResetToken`)
+
+#### 10.3.4 Register hardening
+
+- [ ] `POST /auth/register` (buyer) — reject if email already used by `ADMIN`
+- [ ] Seller self-apply (10.5.1) — reject if email is `ADMIN`; define buyer → seller pending upgrade path
+
+**Depends on:** 10.1–10.2  
+**Unblocks:** portal UI phases
+
+### 10.4 Admin provisioning & governance (API)
+
+#### 10.4.1 Admin user CRUD (no promote-via-role)
+
+- [ ] `POST /admins` (admin-only) — create admin: email, name; auto-generate password; hash + save
+- [ ] Send transactional email with one-time password + admin login URL
+- [ ] `GET /admins` — paginated list (email, name, lastLoginAt, createdAt)
+- [ ] `DELETE /admins/:id` — remove admin (guard: cannot delete last admin; cannot self-delete without fallback)
+- [ ] `PATCH /admins/:id` — optional: deactivate instead of hard delete (pick one in implementation PR)
+
+#### 10.4.2 Email exclusivity rules
+
+- [ ] On `POST /admins`: reject if email exists with `role` in (`BUYER`, `SELLER`)
+- [ ] On buyer/seller register/apply: reject if email exists with `role === ADMIN`
+- [ ] Remove `ADMIN` from `updateRoleSchema` and `updateUserRole`
+
+#### 10.4.3 Remove legacy promote-to-admin
+
+- [ ] Remove `ADMIN` option from admin-app user role dropdown (`UserDetailPage.tsx`)
+- [ ] Server: `updateUserRole` rejects `role: ADMIN` (admins only via `POST /admins`)
+- [ ] Update smoke tests that set role to ADMIN via `PATCH /users/:id/role`
+
+**Depends on:** Phase 3 (email), 10.3  
+**Unblocks:** 10.6
+
+### 10.5 Seller approval & invite (API)
+
+#### 10.5.1 Seller self-apply (seller portal)
+
+- [ ] `POST /auth/seller/apply` (or `/sellers/apply`) — create or upgrade user to `SELLER` + `sellerApprovalStatus: PENDING`
+- [ ] If existing `BUYER` with same email: upgrade to `SELLER` + `PENDING` (preserve buyer history)
+- [ ] Reject if email is `ADMIN`
+- [ ] Optional: require email verified before apply
+
+#### 10.5.2 Admin-invited seller (admin panel)
+
+- [ ] `POST /sellers` (admin-only) — email, name; generated password; `PENDING`; email credentials (mirror admin invite)
+- [ ] `GET /sellers?status=PENDING|APPROVED|REJECTED` — approval queue
+- [ ] `PATCH /sellers/:id/approve` — set `APPROVED`, `sellerApprovedAt`
+- [ ] `PATCH /sellers/:id/reject` — set `REJECTED` + optional note
+
+#### 10.5.3 Deprecate instant promote-seller
+
+- [ ] Remove or repurpose `PATCH /users/:id/promote-seller` → approval flow (410 or internal `PENDING` create)
+- [ ] Remove “Promote to seller” from `UserDetailPage.tsx`; replace with link to `/sellers` queue
+
+#### 10.5.4 Listing gate (products on Next.js)
+
+- [ ] Extend `PUBLIC_LISTABLE_PRODUCT_WHERE`: `seller.sellerApprovalStatus === APPROVED`
+- [ ] Update `assertSellerCanList`: pending/rejected sellers cannot appear on public storefront (allow DRAFT/ACTIVE in seller portal, hidden publicly)
+- [ ] Align `checkoutAvailability.ts` with API
+- [ ] Smoke: unapproved seller `ACTIVE` product not returned by `GET /products`
+
+**Depends on:** 10.1, 10.3  
+**Unblocks:** 10.6–10.7
+
+### 10.6 Admin app UI
+
+#### 10.6.1 Auth cleanup
+
+- [ ] Remove Google OAuth from `main.tsx` and `LoginPage.tsx`
+- [ ] Remove `VITE_GOOGLE_CLIENT_ID` from `.env.example` and `plans/admin-app.md`
+- [ ] Point login to `POST /auth/admin/login` in `api/auth.ts`
+
+#### 10.6.2 Admin management screen
+
+- [ ] New route `/admins` — list, add (email + name), remove
+- [ ] RTK endpoints: `GET/POST/DELETE /admins`
+- [ ] AppShell nav item “Admins”
+- [ ] Confirm dialogs for delete; surface API errors (email already buyer/seller)
+
+#### 10.6.3 Admin password reset UI
+
+- [ ] `/forgot-password` + `/reset-password` pages (public routes)
+- [ ] Wire to `POST /auth/admin/forgot-password` and `POST /auth/admin/reset-password`
+- [ ] Link from login page
+
+#### 10.6.4 Seller approval screen
+
+- [ ] New route `/sellers` — tabs or filters: Pending / Approved / Rejected
+- [ ] Actions: Approve, Reject (with note), Invite seller (form → `POST /sellers`)
+- [ ] Remove ADMIN from user role dropdown; remove promote-seller CTA
+
+**Depends on:** 10.4, 10.5, 10.3  
+**Updates:** `plans/admin-app.md`
+
+### 10.7 Seller app UI
+
+- [ ] Login → `POST /auth/seller/login` (`seller-app/src/api/auth.ts`)
+- [ ] Registration / apply flow for non-sellers (`POST /auth/seller/apply`)
+- [ ] Post-login banner when `sellerApprovalStatus === PENDING` (“Awaiting admin approval — listings won’t appear on storefront”)
+- [ ] Optional: disable publish button until approved; fix publish success copy when not approved
+- [ ] Google OAuth: keep for seller (unchanged unless explicitly removed later)
+
+**Depends on:** 10.3, 10.5
+
+### 10.8 Next.js buyer app (dual-role sellers)
+
+- [ ] Login/register → `POST /auth/buyer/login` / existing register path
+- [ ] Store and send token with `actingAs: BUYER` in `baseApi.ts`
+- [ ] Allow `SELLER` DB role to complete buyer journey (cart, checkout, orders) when `actingAs === BUYER`
+- [ ] Implement missing `/reset-password` page (email links already point there)
+- [ ] Forgot-password → `POST /auth/buyer/forgot-password` only
+- [ ] UX: optional indicator when logged in as seller shopping as buyer (low priority)
+
+**Depends on:** 10.2, 10.3
+
+### 10.9 Route guards & security hardening
+
+- [ ] Audit all `authorize([Role...])` usages: distinguish `role` vs `actingAs` (cart/orders/payments → buyer context)
+- [ ] Seller portal routes: require `actingAs === SELLER` and `role === SELLER`
+- [ ] Admin routes: unchanged `role === ADMIN`
+- [ ] Reject cross-portal token reuse at middleware (seller `actingAs: SELLER` token on cart → 403)
+- [ ] Update CORS if new public routes added
+- [ ] Rate limits on new login/reset endpoints (mirror existing auth limiter)
+
+**Depends on:** 10.2–10.8
+
+### 10.10 Docs, smoke, cleanup
+
+- [ ] New smoke phase `phase-10` (admin create, seller approve, listing visibility, split login, reset isolation)
+- [ ] Update feature quick reference (this file) — done in Phase 10 rollout
+- [ ] Update `plans/seller-app.md` onboarding diagram
+- [ ] Update `plans/admin-app.md`: remove Google, add `/admins`, `/sellers`, reset pages
+- [ ] `.env.example`: `ADMIN_FRONTEND_URL`; document `actingAs` in API docs if present
+- [ ] Restrict `ensureAdminUser` dev seed to non-production only (document)
+
+**Depends on:** 10.1–10.9  
+**Requirement mapping:** (1) 10.6.1, (2) 10.4.1+10.6.2, (3) 10.4.1, (4) 10.3.3+10.6.3, (5) 10.4.3+10.6.4, (6) 10.4.2, (7) 10.3.1, (8) 10.2+10.3.1+10.8, (9) 10.5.4, (10) 10.5.2+10.6.4
+
+**Suggested implementation order:** 10.1 → 10.2 → 10.3 → (10.4 ∥ 10.5) → 10.6 → (10.7 ∥ 10.8) → 10.9 → 10.10
 
 ---
 
@@ -396,10 +615,11 @@ Map prompt.md requirements to phases:
 | 2 | Cart | 2 (fixes) |
 | 3 | Orders | 2, 3, 5 |
 | 4 | Enquiry | 3, 5, 7 |
-| 5 | Users | 1, 5, 7 |
-| 6 | Authentication | 3, 5, 6, 7 |
-| 7 | Admin | 5, 5.10, 7 |
-| 7b | Seller portal | 5, 5.10, 6 |
+| 5 | Users | 1, 5, 7, 10 |
+| 6 | Authentication | 3, 5, 6, 7, **10** |
+| 7 | Admin | 5, 5.10, 7, **10.4–10.6** |
+| 7b | Seller portal | 5, 5.10, 6, **10.5–10.7** |
+| 14 | Auth & role governance | **10** (admin provisioning, seller approval, split login) |
 | 8 | Email | 3 |
 | 9 | Payment | 2 (bypass), 9 (gateway) |
 | 10 | Disputes | 1, 4, 5, 7 |
@@ -420,3 +640,15 @@ After Phase 0 (done), pick these for the first coding sprint:
 5. Phase 2.3 — Cart clearing fixes
 
 This unlocks end-to-end buyer testing without external payment dependencies.
+
+### Auth & role governance sprint (Phase 10)
+
+After portal apps (Phases 6–7) are stable, pick these for a focused auth sprint:
+
+1. Phase 10.1 — `SellerApprovalStatus` schema migration
+2. Phase 10.2 — JWT `actingAs` + middleware
+3. Phase 10.3 — Split login + isolated password-reset APIs
+4. Phase 10.4 + 10.5 — Admin CRUD + seller approval APIs (parallel)
+5. Phase 10.6 — Admin app (`/admins`, `/sellers`, remove Google, reset pages)
+6. Phase 10.7 + 10.8 — Seller + Next.js portal wiring (parallel)
+7. Phase 10.9 + 10.10 — Guards, smoke, docs

@@ -3,7 +3,7 @@
 Seller portal for listing and managing game accounts.
 
 **Path:** `apps/seller-app`  
-**Roadmap:** Phase 6  
+**Roadmap:** Phase 6 (shipped) → **Phase 10.7** (auth & seller approval UX)
 **Stack:** Vite + React 19 + TypeScript + Tailwind + TanStack Router + TanStack Table + Redux Toolkit + RTK Query + redux-persist + `@smurfelite/ui`
 
 ---
@@ -23,7 +23,29 @@ Seller portal for listing and managing game accounts.
 - BUYER/ADMIN tokens: logout + toast (“Seller account required. Contact support.”)
 - Product mutations scoped to `sellerId === currentUser.id` (API + `verifySeller`)
 
-**Onboarding:** User registers as BUYER on nextjs-app → admin promotes via `PATCH /users/:id/promote-seller` → seller logs in here.
+**Onboarding (Phase 7 — current):** User registers as BUYER on nextjs-app → admin promotes via `PATCH /users/:id/promote-seller` → seller logs in here.
+
+**Onboarding (Phase 10 — planned):**
+
+```mermaid
+flowchart LR
+  BuyerReg[Register as BUYER on nextjs-app]
+  SelfApply[POST /auth/seller/apply]
+  AdminInvite[Admin POST /sellers invite]
+  Pending[PENDING approval]
+  Approved[APPROVED]
+  Storefront[Listings visible on nextjs-app]
+  BuyerReg --> SelfApply
+  AdminInvite --> Pending
+  SelfApply --> Pending
+  Pending -->|admin approve| Approved
+  Approved --> Storefront
+```
+
+- Self-apply or admin invite → `sellerApprovalStatus: PENDING`
+- Seller portal login allowed while pending (`POST /auth/seller/login`, `actingAs: SELLER`)
+- Storefront listings require `APPROVED` (Phase 10.5.4)
+- Sellers can shop on nextjs-app via `POST /auth/buyer/login` (`actingAs: BUYER`, DB role stays `SELLER`)
 
 ---
 
@@ -81,7 +103,8 @@ apps/seller-app/
 | Route | Features | API |
 | ----- | -------- | --- |
 | `/` | Redirect → `/products` | — |
-| `/login` | Email/password + Google; SELLER gate | `/auth/login`, `/auth/google` |
+| `/login` | Email/password + Google; SELLER gate | `/auth/seller/login` (Phase 10), `/auth/google` |
+| `/apply` | Seller registration / upgrade to PENDING | `POST /auth/seller/apply` (Phase 10.7) |
 | `/products` | Table, status/search filters, publish/delist/reactivate/delete | `GET /products/mine` |
 | `/products/new` | Create form, publish immediately checkbox | `POST /products`, `GET /game-categories` |
 | `/products/:id/edit` | Edit metadata; optional credential replace | `GET/PUT /products/:id` |
@@ -106,7 +129,7 @@ stateDiagram-v2
   BANNED_BY_ADMIN --> ACTIVE: admin lift ban
 ```
 
-No `PENDING_VERIFICATION` UI — self-publish only (Phase 5.1).
+No `PENDING_VERIFICATION` UI — self-publish only (Phase 5.1). **Phase 10:** publish allowed in portal while pending, but public storefront hides listings until seller is **approved**.
 
 ---
 
@@ -146,8 +169,14 @@ Aligned with `CreateProductRequest`:
 
 ---
 
+## Phase 10 checklist
+
+See [feature-roadmap.md](./feature-roadmap.md) §10.7 — split seller login, apply flow, pending-approval banner.
+
+---
+
 ## Related docs
 
-- [admin-app.md](./admin-app.md) — promotes sellers, records payouts
-- [feature-roadmap.md](./feature-roadmap.md) — Phase 6 checklist
+- [admin-app.md](./admin-app.md) — approves sellers (Phase 10), records payouts
+- [feature-roadmap.md](./feature-roadmap.md) — Phase 6 + Phase 10 checklists
 - [express-server.md](./express-server.md) — API reference
