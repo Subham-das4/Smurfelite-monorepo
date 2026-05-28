@@ -6,6 +6,7 @@ import type { RootState } from "@/store/store";
 
 const NAV = [
   { to: "/admins", label: "Admins" },
+  { to: "/sellers", label: "Sellers" },
   { to: "/users", label: "Users" },
   { to: "/products", label: "Products" },
   { to: "/orders", label: "Orders" },

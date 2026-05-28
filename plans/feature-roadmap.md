@@ -500,9 +500,9 @@ flowchart TB
 
 #### 10.6.4 Seller approval screen
 
-- [ ] New route `/sellers` — tabs or filters: Pending / Approved / Rejected
-- [ ] Actions: Approve, Reject (with note), Invite seller (form → `POST /sellers`)
-- [ ] Remove ADMIN from user role dropdown; remove promote-seller CTA
+- [x] New route `/sellers` — tabs or filters: Pending / Approved / Rejected
+- [x] Actions: Approve, Reject (with note), Invite seller (form → `POST /sellers`)
+- [x] Remove ADMIN from user role dropdown; remove promote-seller CTA
 
 **Depends on:** 10.4, 10.5, 10.3  
 **Updates:** `plans/admin-app.md`

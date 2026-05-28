@@ -127,7 +127,7 @@ See [feature-roadmap.md](./feature-roadmap.md) §10.6.
 - [x] 10.6.1 — Admin login (`/auth/admin/login`), Google OAuth removed
 - [x] 10.6.2 — `/admins` management screen
 - [x] 10.6.3 — `/forgot-password`, `/reset-password`
-- [ ] 10.6.4 — `/sellers` approval screen
+- [x] 10.6.4 — `/sellers` approval screen
 
 ---
 

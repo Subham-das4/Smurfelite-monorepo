@@ -11,6 +11,7 @@ import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "@/pages/ResetPasswordPage";
 import { AuthenticatedLayout } from "@/pages/AuthenticatedLayout";
 import { AdminsPage } from "@/pages/AdminsPage";
+import { SellersPage } from "@/pages/SellersPage";
 import { UsersPage } from "@/pages/UsersPage";
 import { UserDetailPage } from "@/pages/UserDetailPage";
 import { ProductsPage } from "@/pages/ProductsPage";
@@ -88,6 +89,12 @@ const adminsRoute = createRoute({
   component: AdminsPage,
 });
 
+const sellersRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: "/sellers",
+  component: SellersPage,
+});
+
 const usersRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: "/users",
@@ -161,6 +168,7 @@ const routeTree = rootRoute.addChildren([
   resetPasswordRoute,
   authLayoutRoute.addChildren([
     adminsRoute,
+    sellersRoute,
     usersRoute,
     userDetailRoute,
     productsRoute,

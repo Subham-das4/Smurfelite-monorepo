@@ -75,6 +75,7 @@ export const baseApi = createApi({
     "Wallets",
     "Ledger",
     "Admins",
+    "Sellers",
   ],
   endpoints: () => ({}),
 });

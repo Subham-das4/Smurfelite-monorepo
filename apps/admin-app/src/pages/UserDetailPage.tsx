@@ -47,14 +47,11 @@ export function UserDetailPage() {
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {user.role === "BUYER" && (
-            <Button
-              variant="secondary"
-              onClick={() => {
-                window.location.assign("/sellers");
-              }}
-            >
-              Invite / manage sellers
-            </Button>
+            <Link to="/sellers">
+              <Button variant="secondary" type="button">
+                Invite / manage sellers
+              </Button>
+            </Link>
           )}
           {user.role === "SELLER" && !user.sellerDelisted && (
             <Button variant="danger" onClick={() => delist(userId).unwrap().then(() => toast.success("Delisted"))}>
