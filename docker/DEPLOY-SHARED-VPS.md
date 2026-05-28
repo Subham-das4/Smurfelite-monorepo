@@ -81,6 +81,7 @@ docker compose -p smurfelite --env-file docker/.env up -d
 
 | Issue | Fix |
 |-------|-----|
+| `express-server` restart loop (`Starting API server...` only) | Set `ENCRYPTION_KEY` (32 chars), `JWT_SECRET`, `SALT_ROUNDS`, `TOKEN_EXPIRATION` in `docker/.env`; `grep ENCRYPTION_KEY docker/.env`; rebuild image after entrypoint update |
 | `address already in use` on `:80` | Remove `80:80` override; use default `127.0.0.1:8001` |
 | Edge nginx 502 | SmurfElite not running or wrong upstream IP; test `curl 127.0.0.1:8001` |
 | CORS errors | Match `ALLOWED_CORS_ORIGINS` to exact browser origins (scheme + host) |
