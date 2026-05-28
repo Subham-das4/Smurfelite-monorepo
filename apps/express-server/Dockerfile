@@ -10,6 +10,8 @@ COPY packages ./packages
 COPY apps/express-server ./apps/express-server
 
 RUN pnpm install --frozen-lockfile
+# Placeholder for Prisma 7 config at build time (generate does not connect to DB)
+ENV DATABASE_URL="postgresql://smurfelite:build@localhost:5432/smurfelite"
 RUN pnpm --filter @smurfelite/express-server prisma:generate
 RUN pnpm --filter @smurfelite/express-server build
 

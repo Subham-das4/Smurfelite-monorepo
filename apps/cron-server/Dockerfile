@@ -12,6 +12,7 @@ COPY apps/express-server/package.json ./apps/express-server/package.json
 COPY apps/cron-server ./apps/cron-server
 
 RUN pnpm install --frozen-lockfile
+ENV DATABASE_URL="postgresql://smurfelite:build@localhost:5432/smurfelite"
 RUN pnpm --filter @smurfelite/express-server prisma:generate
 RUN pnpm --filter @smurfelite/cron-server build
 

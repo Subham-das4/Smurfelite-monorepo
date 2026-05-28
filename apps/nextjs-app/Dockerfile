@@ -20,6 +20,7 @@ COPY apps/express-server/package.json ./apps/express-server/package.json
 COPY apps/nextjs-app ./apps/nextjs-app
 
 RUN pnpm install --frozen-lockfile
+ENV DATABASE_URL="postgresql://smurfelite:build@localhost:5432/smurfelite"
 RUN pnpm --filter @smurfelite/express-server prisma:generate
 RUN pnpm --filter nextjs-app build
 
