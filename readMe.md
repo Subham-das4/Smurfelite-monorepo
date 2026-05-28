@@ -10,7 +10,7 @@ Compose project name: **`smurfelite`**. Subdomains: `www`, `api`, `admin`, `sell
 ### Local machine (ports 80 free)
 
 1. Hosts file — `127.0.0.1 www.smurfelite.store api.smurfelite.store admin.smurfelite.store seller.smurfelite.store`
-2. `cp docker/.env.example docker/.env` — use `http://` URLs for local if needed
+2. `cp docker/.env.example docker/.env` — set `ENCRYPTION_KEY` (32 chars), `JWT_SECRET`, passwords; use `http://` URLs for local if needed
 3. `cp docker-compose.override.example.yml docker-compose.override.yml` — binds nginx to host `:80`
 4. `pnpm docker:build && pnpm docker:up`
 

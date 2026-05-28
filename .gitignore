@@ -52,5 +52,8 @@ docker-compose.override.yml
 # OS
 Thumbs.db
 
+# Ignore generic migrations folders, but keep Prisma SQL migrations
 migrations/
+!apps/express-server/prisma/migrations/
+!apps/express-server/prisma/migrations/**
 .cursor

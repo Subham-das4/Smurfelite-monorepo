@@ -21,6 +21,7 @@ nano docker/.env
 Set production values (HTTPS recommended):
 
 - `POSTGRES_PASSWORD`, `JWT_SECRET`, `VITE_PERSIST_SECRET`
+- `ENCRYPTION_KEY` — **exactly 32 characters** (required; API crashes without it)
 - `FRONTEND_URL`, `ADMIN_FRONTEND_URL`, `SELLER_FRONTEND_URL` → `https://www|admin|seller.smurfelite.store`
 - `ALLOWED_CORS_ORIGINS` / `FRONTEND_URLS` — same three origins
 - `PUBLIC_API_BASE_URL` → `https://api.smurfelite.store`
