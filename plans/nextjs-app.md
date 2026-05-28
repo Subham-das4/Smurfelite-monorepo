@@ -64,8 +64,10 @@ apps/nextjs-app/
 | `/checkout` | Client | Cart + order + payment mutations | ⚠️ Partial |
 | `/checkout/[productId]` | Client | Buy-now scoped checkout | ⚠️ Partial |
 | `/checkout/success` | Client | Polls order by query `orderId` | ⚠️ Partial |
-| `/checkout/cancel` | Client | Static message only | ❌ No cancel API |
-| `/orders` | SSR | **Hardcoded mock array** | ❌ Mock |
+| `/checkout/cancel` | Client | Cancel API when `orderId` present (PENDING) | ✅ |
+| `/orders` | Client | RTK `useGetMyOrdersQuery` | ✅ Real API |
+| `/orders/[orderId]` | Client | `useGetOrderByIdQuery` + actions | ✅ |
+| `/orders/[orderId]/dispute` | Client | `useCreateDisputeMutation` (COMPLETED) | ✅ |
 | `/privacy-policy` | Static | — | ✅ |
 
 ---
@@ -79,7 +81,7 @@ Base URL from `NEXT_PUBLIC_EXPRESS_SERVER_API` (see `baseApi.ts`).
 | `auth.ts` | buyer login/google/forgot/reset, register, logout | ✅ Login modal + `/forgot-password`, `/reset-password` |
 | `products.ts` | list, getById, create, update, delete | ✅ Browse/detail; CRUD unused in UI |
 | `cart.ts` | get, add, remove | ✅ Cart page, header badge |
-| `orders.ts` | create, getMine, getById, cancel, credentials | ⚠️ Checkout only; orders page mock |
+| `orders.ts` | create, getMine, getById, cancel, credentials | ✅ Checkout, orders table, detail, credentials modal |
 | `payments.ts` | nowpayments invoice, paypal (unused) | ✅ Checkout crypto |
 | `enquiries.ts` | send, getMine | ⚠️ Contact form (broken payload) |
 | `user.ts` | getMe, updateMe | ✅ Profile slice |
@@ -129,7 +131,6 @@ sequenceDiagram
 
 | Location | What's mocked |
 | -------- | --------------- |
-| `app/orders/page.tsx` | Entire order list (12 fake orders) |
 | `components/pages/products/detail/data.ts` | Reviews, seller stats |
 | `CheckoutOrderSummary.tsx` | Promo code (no backend) |
 | `PaymentForm.tsx` | PayPal, card, Skrill disabled; crypto only |
@@ -162,7 +163,9 @@ sequenceDiagram
 | `SimilarProducts` | `detail/` | Same gameType API query |
 | `CartContent` | `components/pages/cart/` | Line items + summary |
 | `CheckoutContent` | `components/pages/checkout/` | Main checkout orchestrator |
-| `OrdersContent` | `components/pages/orders/` | Table + filters (mock data) |
+| `OrdersContent` | `components/pages/orders/` | Table + filters (live API); auth CTA when logged out |
+| `OrderCredentialsModal` | `components/pages/orders/` | COMPLETED orders — copy credentials |
+| `OrderDetailContent` | `components/pages/orders/` | `/orders/[orderId]` summary + actions |
 | `Contact` | `components/pages/home/` | Enquiry form |
 
 ---
@@ -192,15 +195,15 @@ pnpm --filter=nextjs-app build
 ## Planned work (this app)
 
 ### Phase 2
-- [ ] Wire orders page to real API
+- [x] Wire orders page to real API (Phase 2.4)
 - [ ] Fix checkout cart timing
 - [ ] Payment bypass integration
-- [ ] Cancel page → cancel order API
+- [x] Cancel page → cancel order API
 
 ### Phase 4
 - [ ] Tawk.to script in layout
 - [x] Dispute form from orders page
-- [ ] Credentials viewer for completed orders
+- [x] Credentials viewer for completed orders (Phase 2.4 modal)
 - [x] Remove mock reviews (Phase 4.3 — `PRODUCT_REVIEWS_ENABLED`)
 
 ---

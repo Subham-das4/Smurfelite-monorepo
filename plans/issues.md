@@ -8,25 +8,6 @@ Prioritized list of known bugs, gaps, and technical debt. Update this file as is
 
 ## Open issues
 
-### 🔴 ISS-002 — Orders page uses mock data
-
-| Field | Value |
-| ----- | ----- |
-| **Severity** | Critical |
-| **Area** | Orders |
-| **Phase fix** | Phase 2 |
-
-**Problem:** `apps/nextjs-app/src/app/orders/page.tsx` returns hardcoded orders. `useGetMyOrdersQuery` exists in RTK but is unused. Cancel/retry/credentials actions cannot work against real data.
-
-**Files:**
-- `apps/nextjs-app/src/app/orders/page.tsx`
-- `apps/nextjs-app/src/components/pages/orders/OrdersContent.tsx`
-- `apps/nextjs-app/src/api/orders.ts`
-
-**Suggested fix:** Replace server-side mock with client RTK query or authenticated server fetch; map `OrderResponse` to UI types.
-
----
-
 ### 🔴 ISS-003 — Checkout clears cart before payment confirmation
 
 | Field | Value |
@@ -326,6 +307,10 @@ See [feature-roadmap.md](./feature-roadmap.md).
 ---
 
 ## Resolved issues
+
+### ✅ ISS-002 — Orders page uses mock data (2026-05-28, Phase 2.4)
+
+`OrdersContent` uses `useGetMyOrdersQuery` with auth skip/CTA; five API status badges and filters; cancel via `useCancelOrderMutation` (PENDING); credentials modal for COMPLETED; minimal `/orders/[orderId]` detail page.
 
 ### ✅ ISS-001 — Enquiry API contract mismatch (2026-05-27, Phase 3.3)
 

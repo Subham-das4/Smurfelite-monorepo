@@ -85,11 +85,11 @@ Priority: get full buyer journey working without NOWPayments.
 
 ### 2.4 Orders UI wiring
 
-- [ ] Replace mock data in `orders/page.tsx` with `useGetMyOrdersQuery`
-- [ ] Map `OrderResponse` to orders table UI types
-- [ ] Wire cancel order action to `PATCH /orders/:id/cancel`
-- [ ] Show real status badges (PENDING, PROCESSING, COMPLETED, CANCELLED, REFUNDED)
-- [ ] Add "View credentials" for COMPLETED orders (`GET /orders/:id/credentials`)
+- [x] Replace mock data in `orders/page.tsx` with `useGetMyOrdersQuery`
+- [x] Map `OrderResponse` to orders table UI types
+- [x] Wire cancel order action to `PATCH /orders/:id/cancel`
+- [x] Show real status badges (PENDING, PROCESSING, COMPLETED, CANCELLED, REFUNDED)
+- [x] Add "View credentials" for COMPLETED orders (`GET /orders/:id/credentials`)
 
 ### 2.5 Order expiry (minimal — full cron in Phase 8)
 
