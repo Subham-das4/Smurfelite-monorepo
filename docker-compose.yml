@@ -43,6 +43,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-smurfelite}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-smurfelite}
       NODE_ENV: production
       PORT: "8080"
+      ALLOWED_CORS_ORIGINS: ${ALLOWED_CORS_ORIGINS:-https://www.smurfelite.store,https://admin.smurfelite.store,https://seller.smurfelite.store}
     depends_on:
       postgres:
         condition: service_healthy
