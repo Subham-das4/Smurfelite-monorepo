@@ -8,11 +8,10 @@ import {
 import { logout } from '@/store/reducers/user/slice';
 import { setCredentials } from '@/store/reducers/auth/slice';
 import type { RootState } from '@/store/store';
-import { LoginResponse } from '@smurfelite/types';
+import { RefreshTokenResponse } from '@smurfelite/types';
 
 const baseQuery = fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_EXPRESS_SERVER_API ?? '',
-    // Include HTTP-only cookies on every request (required for refresh token flow)
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as RootState).auth.token;
@@ -22,18 +21,13 @@ const baseQuery = fetchBaseQuery({
     },
 });
 
-/**
- * Routes that should never trigger a token refresh on 401.
- * A 401 from these endpoints means invalid credentials or an expired
- * token link — not an expired session — so dispatching logout would be wrong.
- */
 const NO_REAUTH_ROUTES = new Set([
-    '/auth/login',
+    '/auth/buyer/login',
+    '/auth/buyer/google',
+    '/auth/buyer/forgot-password',
+    '/auth/buyer/reset-password',
     '/auth/register',
-    '/auth/google',
     '/auth/logout',
-    '/auth/forgot-password',
-    '/auth/reset-password',
     '/auth/refresh',
     '/auth/verify-email',
 ]);
@@ -49,23 +43,26 @@ const baseQueryWithReauth: BaseQueryFn<
     const isNoReauthRoute = NO_REAUTH_ROUTES.has(requestUrl);
 
     if (result.error && result.error.status === 401 && !isNoReauthRoute) {
-        // Attempt to refresh — backend reads the refresh token from the HTTP-only cookie
         const refreshResult = await baseQuery(
-            { url: '/auth/refresh', method: 'POST' },
+            {
+                url: '/auth/refresh',
+                method: 'POST',
+                body: { actingAs: 'BUYER' },
+            },
             api,
             extraOptions
         );
 
-        const refreshData = refreshResult.data as LoginResponse | undefined;
+        const refreshData = refreshResult.data as RefreshTokenResponse | undefined;
 
         if (refreshData?.accessToken) {
             api.dispatch(
                 setCredentials({
                     token: refreshData.accessToken,
-                    refreshToken: refreshData.refreshToken ?? '',
+                    refreshToken: '',
+                    actingAs: refreshData.actingAs ?? 'BUYER',
                 })
             );
-            // Retry the original request with the new access token
             result = await baseQuery(args, api, extraOptions);
         } else {
             api.dispatch(logout());

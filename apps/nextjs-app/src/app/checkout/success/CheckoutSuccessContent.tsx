@@ -25,9 +25,7 @@ function CheckoutSuccessInner() {
 
   const { data: order, isLoading } = useGetOrderByIdQuery(orderId ?? "", {
     skip: !orderId,
-    pollingInterval: orderId && !isPaymentConfirmed(order?.status)
-      ? POLL_INTERVAL_MS
-      : 0,
+    pollingInterval: orderId ? POLL_INTERVAL_MS : 0,
   });
 
   useEffect(() => {

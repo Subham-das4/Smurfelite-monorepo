@@ -519,12 +519,12 @@ flowchart TB
 
 ### 10.8 Next.js buyer app (dual-role sellers)
 
-- [ ] Login/register → `POST /auth/buyer/login` / existing register path
-- [ ] Store and send token with `actingAs: BUYER` in `baseApi.ts`
-- [ ] Allow `SELLER` DB role to complete buyer journey (cart, checkout, orders) when `actingAs === BUYER`
-- [ ] Implement missing `/reset-password` page (email links already point there)
-- [ ] Forgot-password → `POST /auth/buyer/forgot-password` only
-- [ ] UX: optional indicator when logged in as seller shopping as buyer (low priority)
+- [x] Login/register → `POST /auth/buyer/login` / existing register path
+- [x] Store and send token with `actingAs: BUYER` in `baseApi.ts`
+- [x] Allow `SELLER` DB role to complete buyer journey (cart, checkout, orders) when `actingAs === BUYER`
+- [x] Implement missing `/reset-password` page (email links already point there)
+- [x] Forgot-password → `POST /auth/buyer/forgot-password` only
+- [x] UX: optional indicator when logged in as seller shopping as buyer (low priority)
 
 **Depends on:** 10.2, 10.3
 

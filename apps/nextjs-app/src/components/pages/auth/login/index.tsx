@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setIsLoginModalOpen } from "@/store";
 import { useGoogleOAuthMutation } from "@/api/auth";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "@/lib/apiError";
 import { RegisterForm } from "./RegisterForm";
 import { LoginForm } from "./LoginForm";
 
@@ -23,8 +24,9 @@ export const LoginRegister = () => {
         credential: tokenResponse.access_token,
       } as Parameters<typeof googleOAuth>[0]);
       if (res.error) {
-        toast.error("Google sign-in failed. Please try again.");
+        toast.error(getApiErrorMessage(res.error, "Google sign-in failed. Please try again."));
       } else {
+        toast.success("Welcome back!");
         dispatch(setIsLoginModalOpen(false));
       }
     },

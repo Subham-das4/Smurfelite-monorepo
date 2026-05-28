@@ -21,7 +21,7 @@ const PAGE_SIZE = 5;
 
 const columnHelper = createColumnHelper<OrderTableRow>();
 
-const columns: ColumnDef<OrderTableRow>[] = [
+const columns = [
   {
     accessorKey: "orderId",
     header: "Order ID",
@@ -93,7 +93,7 @@ const columns: ColumnDef<OrderTableRow>[] = [
       />
     ),
   }),
-];
+] as ColumnDef<OrderTableRow>[];
 
 function sortRows(
   rows: OrderTableRow[],

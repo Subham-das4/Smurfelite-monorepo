@@ -1,4 +1,4 @@
-import { User } from '@/types';
+import { User } from '@smurfelite/types';
 import { UserState } from '@/types/slice.types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 

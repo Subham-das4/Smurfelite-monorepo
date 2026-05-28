@@ -14,22 +14,21 @@ import { CredentialResponse } from '@react-oauth/google';
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        /////////////////////
-        // Login API Endpoint
         login: builder.mutation<LoginResponse, LoginRequest>({
             query: (payload) => ({
-                url: '/auth/login',
+                url: '/auth/buyer/login',
                 method: 'POST',
                 body: payload,
             }),
             onQueryStarted: async (_, { queryFulfilled, dispatch }) => {
                 try {
-                    const { data: { user, accessToken, refreshToken } } = await queryFulfilled;
+                    const { data } = await queryFulfilled;
                     dispatch(setCredentials({
-                        token: accessToken,
-                        refreshToken: refreshToken,
+                        token: data.accessToken,
+                        refreshToken: data.refreshToken ?? '',
+                        actingAs: data.actingAs ?? 'BUYER',
                     }));
-                    dispatch(setUser(user as unknown as User));
+                    dispatch(setUser(data.user as unknown as User));
                 } catch (error) {
                     console.error(error);
                 }
@@ -37,28 +36,16 @@ export const authApi = baseApi.injectEndpoints({
             invalidatesTags: ['User'],
         }),
 
-        /////////////////////
-        // Logout API Endpoint
         logout: builder.mutation<null, void>({
-            queryFn: async (_, { getState }, _extraOptions, baseQuery) => {
-                const state = getState() as RootState;
-                const refresh_token = state.auth.refreshToken;
-
-                await baseQuery({
-                    url: '/auth/logout',
-                    method: 'POST',
-                    body: { refresh_token },
-                });
-
-                return { data: null };
-            },
-            onQueryStarted(_, mutationLifeCycleApi) {
-                mutationLifeCycleApi.dispatch(logout());
+            query: () => ({
+                url: '/auth/logout',
+                method: 'POST',
+            }),
+            onQueryStarted(_, { dispatch }) {
+                dispatch(logout());
             },
         }),
 
-        /////////////////////
-        // Register API Endpoint
         register: builder.mutation<RegisterResponse, RegisterRequest>({
             query: (payload) => ({
                 url: '/auth/register',
@@ -67,43 +54,38 @@ export const authApi = baseApi.injectEndpoints({
             }),
         }),
 
-        /////////////////////
-        // Google OAuth API Endpoint
         googleOAuth: builder.mutation<LoginResponse, CredentialResponse>({
             query: (payload) => ({
-                url: '/auth/google',
+                url: '/auth/buyer/google',
                 method: 'POST',
                 body: payload,
             }),
             onQueryStarted: async (_, { queryFulfilled, dispatch }) => {
                 try {
-                    const { data: { user, accessToken, refreshToken } } = await queryFulfilled;
+                    const { data } = await queryFulfilled;
                     dispatch(setCredentials({
-                        token: accessToken,
-                        refreshToken: refreshToken,
+                        token: data.accessToken,
+                        refreshToken: data.refreshToken ?? '',
+                        actingAs: data.actingAs ?? 'BUYER',
                     }));
-                    dispatch(setUser(user as unknown as User));
+                    dispatch(setUser(data.user as unknown as User));
                 } catch (error) {
                     console.error(error);
                 }
             },
         }),
 
-        /////////////////////
-        // Forgot Password API Endpoint
         forgotPassword: builder.mutation<{ message: string }, ForgotPasswordRequest>({
             query: (payload) => ({
-                url: '/auth/forgot-password',
+                url: '/auth/buyer/forgot-password',
                 method: 'POST',
                 body: payload,
             }),
         }),
 
-        /////////////////////
-        // Reset Password API Endpoint
         resetPassword: builder.mutation<{ message: string }, ResetPasswordRequest>({
             query: (payload) => ({
-                url: '/auth/reset-password',
+                url: '/auth/buyer/reset-password',
                 method: 'POST',
                 body: payload,
             }),
@@ -119,4 +101,3 @@ export const {
     useForgotPasswordMutation,
     useResetPasswordMutation,
 } = authApi;
-

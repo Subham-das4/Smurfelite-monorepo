@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 import { useLoginMutation } from "@/api/auth";
 import { LoginRequest } from "@smurfelite/types";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "@/hooks";
 import { setIsLoginModalOpen } from "@/store";
+import { getApiErrorMessage } from "@/lib/apiError";
 
 type LoginFields = {
   email: string;
@@ -29,18 +31,17 @@ export const LoginForm = ({ onSwitchToRegister }: Props) => {
       email: data.email,
       password: data.password,
     };
-    const res = await login(payload);
-    if (res.error) {
-      toast.error("Login failed. Check your credentials and try again.");
-    } else {
+    try {
+      await login(payload).unwrap();
       toast.success("Welcome back!");
       dispatch(setIsLoginModalOpen(false));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, "Login failed. Check your credentials and try again."));
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      {/* Email */}
       <div className="space-y-1.5">
         <label
           className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant px-1"
@@ -66,14 +67,22 @@ export const LoginForm = ({ onSwitchToRegister }: Props) => {
         )}
       </div>
 
-      {/* Password */}
       <div className="space-y-1.5">
-        <label
-          className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant px-1"
-          htmlFor="login-password"
-        >
-          Password
-        </label>
+        <div className="flex items-center justify-between px-1">
+          <label
+            className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant"
+            htmlFor="login-password"
+          >
+            Password
+          </label>
+          <Link
+            href="/forgot-password"
+            className="text-xs font-semibold text-primary hover:underline"
+            onClick={() => dispatch(setIsLoginModalOpen(false))}
+          >
+            Forgot password?
+          </Link>
+        </div>
         <input
           id="login-password"
           type="password"

@@ -76,7 +76,7 @@ Base URL from `NEXT_PUBLIC_EXPRESS_SERVER_API` (see `baseApi.ts`).
 
 | API file | Endpoints used | Wired in UI |
 | -------- | -------------- | ----------- |
-| `auth.ts` | login, register, google, refresh, logout | ✅ Login modal |
+| `auth.ts` | buyer login/google/forgot/reset, register, logout | ✅ Login modal + `/forgot-password`, `/reset-password` |
 | `products.ts` | list, getById, create, update, delete | ✅ Browse/detail; CRUD unused in UI |
 | `cart.ts` | get, add, remove | ✅ Cart page, header badge |
 | `orders.ts` | create, getMine, getById, cancel, credentials | ⚠️ Checkout only; orders page mock |
@@ -90,7 +90,7 @@ Base URL from `NEXT_PUBLIC_EXPRESS_SERVER_API` (see `baseApi.ts`).
 
 | Slice | Purpose |
 | ----- | ------- |
-| `auth` | isAuthenticated, tokens, login modal |
+| `auth` | isAuthenticated, tokens, `actingAs`, login modal |
 | `cart` | Items synced from API on load/mutations |
 | `user` | Profile from `GET /users/me` |
 
@@ -138,12 +138,17 @@ sequenceDiagram
 
 ## Auth UX
 
-- Login/register modal in header (not separate routes)
+- Login/register modal in header; public `/forgot-password` and `/reset-password?token=...` (email reset links)
+- Buyer portal: `POST /auth/buyer/login`, `POST /auth/buyer/google`, `POST /auth/buyer/forgot-password`, `POST /auth/buyer/reset-password`
+- Register unchanged: `POST /auth/register` (new buyers); sellers use seller-app apply + buyer login here
+- Redux `auth.actingAs` persisted (defaults to `BUYER` on login); refresh sends `{ actingAs: "BUYER" }`
 - Google OAuth via `@react-oauth/google`
 - Unauthenticated add-to-cart opens login modal
 - Checkout requires auth (opens modal if not logged in)
+- Dual-role: sellers can shop as buyers (`actingAs === BUYER`); `SellerShoppingBanner` when `role === SELLER` and buyer mode
+- Admin emails on buyer login surface API error (e.g. `WRONG_BUYER_PORTAL`)
 
-**Gaps:** No role-specific routing (all users use same site). Seller/admin will use separate apps.
+**Gaps:** No role-specific routing beyond buyer portal context. Seller/admin governance uses separate apps.
 
 ---
 

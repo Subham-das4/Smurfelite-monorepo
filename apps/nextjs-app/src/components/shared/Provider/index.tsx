@@ -6,6 +6,7 @@ import { Bounce, ToastContainer } from "react-toastify";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
 import { Footer, Header } from "@/components/pages/layout";
+import { SellerShoppingBanner } from "@/components/shared/SellerShoppingBanner";
 import { LoginRegister } from "@/components/pages/auth";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -41,6 +42,7 @@ export const GlobalProvider: React.FC<{
           />
           <LoginRegister />
           <Header />
+          <SellerShoppingBanner />
 
           {children}
           <Footer />
