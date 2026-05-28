@@ -6,6 +6,7 @@ import { sendEmail, type SendEmailResult } from "../email.service.js";
 import { getEmailSenderProfile } from "../email.config.js";
 import {
   buildAdminInviteEmailHtml,
+  buildSellerInviteEmailHtml,
   buildAdminPasswordResetEmailHtml,
   buildPasswordResetEmailHtml,
   buildPurchaseCredentialsEmailHtml,
@@ -23,6 +24,12 @@ function getAdminFrontendBase(): string {
     process.env.ADMIN_FRONTEND_URL?.trim() ||
     process.env.ADMIN_PANEL_URL?.trim() ||
     "http://localhost:5173";
+  return raw.replace(/\/$/, "");
+}
+
+function getSellerFrontendBase(): string {
+  const raw =
+    process.env.SELLER_FRONTEND_URL?.trim() || "http://localhost:5174";
   return raw.replace(/\/$/, "");
 }
 
@@ -93,6 +100,27 @@ export async function sendAdminInviteEmail(params: {
     subject: "Your SmurfElite admin account",
     html,
     text: `Hi ${params.name}, your admin account is ready. Temporary password: ${params.temporaryPassword}. Sign in: ${loginUrl}`,
+  });
+}
+
+export async function sendSellerInviteEmail(params: {
+  to: string;
+  name: string;
+  temporaryPassword: string;
+}): Promise<SendEmailResult> {
+  const loginUrl = `${getSellerFrontendBase()}/login`;
+  const html = buildSellerInviteEmailHtml({
+    name: params.name,
+    loginUrl,
+    temporaryPassword: params.temporaryPassword,
+  });
+
+  return sendEmail({
+    from: "help",
+    to: params.to,
+    subject: "Your SmurfElite seller account",
+    html,
+    text: `Hi ${params.name}, your seller account is ready. Temporary password: ${params.temporaryPassword}. Sign in: ${loginUrl}`,
   });
 }
 

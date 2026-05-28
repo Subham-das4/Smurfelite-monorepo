@@ -2,6 +2,7 @@ import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import {
   registerController,
+  sellerApplyController,
   loginController,
   buyerLoginController,
   sellerLoginController,
@@ -22,6 +23,7 @@ import {
 import { validate } from "../../utils/validate.js";
 import {
   registerSchema,
+  sellerApplySchema,
   loginSchema,
   googleAuthSchema,
   forgotPasswordSchema,
@@ -41,6 +43,14 @@ const authLimiter = rateLimit({
 
 // POST /api/auth/register
 router.post("/register", authLimiter, validate(registerSchema), registerController);
+
+// POST /api/auth/seller/apply — seller self-apply (Phase 10.5.1)
+router.post(
+  "/seller/apply",
+  authLimiter,
+  validate(sellerApplySchema),
+  sellerApplyController
+);
 
 // Portal-specific login (Phase 10.3)
 router.post("/buyer/login", authLimiter, validate(loginSchema), buyerLoginController);

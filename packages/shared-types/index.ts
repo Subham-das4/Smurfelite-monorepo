@@ -138,6 +138,55 @@ export interface AdminListResponse {
   meta: PaginationMeta;
 }
 
+// ─────────────────────────────────────────
+// Seller approval (Phase 10.5)
+// ─────────────────────────────────────────
+
+export interface SellerListItem {
+  id: string;
+  email: string;
+  name: string;
+  role: Role;
+  isVerified: boolean;
+  sellerApprovalStatus: SellerApprovalStatus;
+  sellerApprovedAt: string | null;
+  sellerRejectedAt: string | null;
+  sellerRejectionNote: string | null;
+  adminInvitedAt?: string | null;
+  createdByAdminId?: string | null;
+  lastLoginAt: string | null;
+  createdAt: string;
+}
+
+export interface CreateSellerRequest {
+  email: string;
+  name: string;
+}
+
+export interface CreateSellerResponse {
+  seller: SellerListItem;
+}
+
+export interface SellerListResponse {
+  sellers: SellerListItem[];
+  meta: PaginationMeta;
+}
+
+export interface RejectSellerRequest {
+  note?: string;
+}
+
+export interface SellerApplyRequest {
+  email: string;
+  password: string;
+  name: string;
+}
+
+export interface SellerApplyResponse {
+  message: string;
+  user: Omit<User, "password">;
+}
+
 export interface GoogleOAuthResponse {
   iss: string;
   azp: string;

@@ -12,6 +12,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 import logger from "../../utils/logger.js";
 import { createCart } from "../cart/cart.service.js";
+import { ensureSellerWallet } from "../wallet/wallet.service.js";
 import {
   sendAdminPasswordResetEmail,
   sendPasswordResetEmail,
@@ -89,6 +90,109 @@ export const registerUser = async (
   const { password: _, ...userWithoutPassword } = user;
   return userWithoutPassword;
 };
+
+const sellerApplySelect = {
+  id: true,
+  email: true,
+  name: true,
+  role: true,
+  isVerified: true,
+  sellerApprovalStatus: true,
+  sellerApprovedAt: true,
+  sellerRejectedAt: true,
+  sellerRejectionNote: true,
+  createdAt: true,
+} as const;
+
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+const pendingSellerData = {
+  role: PrismaNamespace.Role.SELLER,
+  sellerApprovalStatus: PrismaNamespace.SellerApprovalStatus.PENDING,
+  sellerApprovedAt: null,
+  sellerRejectedAt: null,
+  sellerRejectionNote: null,
+} as const;
+
+type SellerApplyUser = PrismaNamespace.Prisma.UserGetPayload<{
+  select: typeof sellerApplySelect;
+}>;
+
+export async function applyAsSeller(input: {
+  email: string;
+  password: string;
+  name: string;
+}): Promise<{
+  user: SellerApplyUser;
+  created: boolean;
+}> {
+  const email = normalizeEmail(input.email);
+  const name = input.name.trim();
+  const existing = await prisma.user.findUnique({ where: { email } });
+
+  if (existing?.role === PrismaNamespace.Role.ADMIN) {
+    throw new ApiError(AuthErrorMessages.ADMIN_EMAIL_RESERVED, 409);
+  }
+
+  if (existing?.role === PrismaNamespace.Role.SELLER) {
+    if (
+      existing.sellerApprovalStatus ===
+      PrismaNamespace.SellerApprovalStatus.APPROVED
+    ) {
+      throw new ApiError(AuthErrorMessages.ALREADY_APPROVED_SELLER, 409);
+    }
+    if (
+      existing.sellerApprovalStatus ===
+      PrismaNamespace.SellerApprovalStatus.PENDING
+    ) {
+      const user = await prisma.user.findUnique({
+        where: { id: existing.id },
+        select: sellerApplySelect,
+      });
+      return { user: user!, created: false };
+    }
+    const user = await prisma.user.update({
+      where: { id: existing.id },
+      data: pendingSellerData,
+      select: sellerApplySelect,
+    });
+    await ensureSellerWallet(user.id);
+    return { user, created: false };
+  }
+
+  if (existing?.role === PrismaNamespace.Role.BUYER) {
+    const hashedPassword = await bcrypt.hash(input.password, SALT_ROUNDS);
+    const user = await prisma.user.update({
+      where: { id: existing.id },
+      data: {
+        ...pendingSellerData,
+        name,
+        password: hashedPassword,
+      },
+      select: sellerApplySelect,
+    });
+    await ensureSellerWallet(user.id);
+    return { user, created: false };
+  }
+
+  const hashedPassword = await bcrypt.hash(input.password, SALT_ROUNDS);
+  const user = await prisma.user.create({
+    data: {
+      email,
+      name,
+      password: hashedPassword,
+      isVerified: false,
+      googleProfilePicture: "",
+      ...pendingSellerData,
+    },
+    select: sellerApplySelect,
+  });
+  await generateAndSaveVerificationToken(user.id, user.email, user.name);
+  await ensureSellerWallet(user.id);
+  return { user, created: true };
+}
 
 async function authenticateCredentials(
   email: string,

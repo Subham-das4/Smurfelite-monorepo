@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import {
   registerUser,
+  applyAsSeller,
   loginUser,
   loginBuyerPortal,
   loginSellerPortal,
@@ -79,6 +80,25 @@ export async function registerController(
       message:
         "Registration successful. Please verify your email before logging in.",
       user: newUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function sellerApplyController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { email, password, name } = req.body;
+    const { user, created } = await applyAsSeller({ email, password, name });
+    res.status(created ? 201 : 200).json({
+      message: created
+        ? "Seller application submitted. Please verify your email if prompted."
+        : "Seller application is already pending review.",
+      user,
     });
   } catch (error) {
     next(error);

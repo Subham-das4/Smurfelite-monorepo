@@ -1,9 +1,9 @@
-import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { Role } from "../../types/prisma.js";
 import { prisma } from "../../lib/prisma.js";
 import ApiError from "../../utils/errors.js";
 import logger from "../../utils/logger.js";
+import { generateInvitePassword } from "../../lib/invite-password.js";
 import { sendAdminInviteEmail } from "../../services/email/transactional.service.js";
 import { AdminErrorMessages } from "./admin.messages.js";
 
@@ -19,10 +19,6 @@ const adminSelect = {
   adminInvitedAt: true,
   createdByAdminId: true,
 } as const;
-
-export function generateInvitePassword(): string {
-  return crypto.randomBytes(12).toString("base64url");
-}
 
 function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();

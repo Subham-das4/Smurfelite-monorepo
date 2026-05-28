@@ -449,17 +449,17 @@ flowchart TB
 
 #### 10.5.1 Seller self-apply (seller portal)
 
-- [ ] `POST /auth/seller/apply` (or `/sellers/apply`) — create or upgrade user to `SELLER` + `sellerApprovalStatus: PENDING`
-- [ ] If existing `BUYER` with same email: upgrade to `SELLER` + `PENDING` (preserve buyer history)
-- [ ] Reject if email is `ADMIN`
-- [ ] Optional: require email verified before apply
+- [x] `POST /auth/seller/apply` (or `/sellers/apply`) — create or upgrade user to `SELLER` + `sellerApprovalStatus: PENDING`
+- [x] If existing `BUYER` with same email: upgrade to `SELLER` + `PENDING` (preserve buyer history)
+- [x] Reject if email is `ADMIN`
+- [x] Optional: require email verified before apply — deferred (no gate; verification email sent for new accounts)
 
 #### 10.5.2 Admin-invited seller (admin panel)
 
-- [ ] `POST /sellers` (admin-only) — email, name; generated password; `PENDING`; email credentials (mirror admin invite)
-- [ ] `GET /sellers?status=PENDING|APPROVED|REJECTED` — approval queue
-- [ ] `PATCH /sellers/:id/approve` — set `APPROVED`, `sellerApprovedAt`
-- [ ] `PATCH /sellers/:id/reject` — set `REJECTED` + optional note
+- [x] `POST /sellers` (admin-only) — email, name; generated password; `PENDING`; email credentials (mirror admin invite)
+- [x] `GET /sellers?status=PENDING|APPROVED|REJECTED` — approval queue
+- [x] `PATCH /sellers/:id/approve` — set `APPROVED`, `sellerApprovedAt`
+- [x] `PATCH /sellers/:id/reject` — set `REJECTED` + optional note
 
 #### 10.5.3 Deprecate instant promote-seller
 

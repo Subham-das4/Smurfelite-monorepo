@@ -16,6 +16,8 @@ export const AuthErrorMessages = {
   WRONG_ADMIN_PORTAL: "This account cannot sign in on the admin panel.",
   ADMIN_EMAIL_RESERVED:
     "This email is reserved for admin accounts and cannot be used for registration.",
+  ALREADY_APPROVED_SELLER:
+    "This email is already registered as an approved seller.",
   INVALID_PASSWORD_RESET_TOKEN: "Invalid or expired password reset token.",
 };
 

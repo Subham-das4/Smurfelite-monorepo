@@ -62,6 +62,28 @@ export function buildAdminInviteEmailHtml(params: {
   );
 }
 
+export function buildSellerInviteEmailHtml(params: {
+  name: string;
+  loginUrl: string;
+  temporaryPassword: string;
+}): string {
+  const name = escapeHtml(params.name);
+  const loginUrl = escapeHtml(params.loginUrl);
+  const temporaryPassword = escapeHtml(params.temporaryPassword);
+  return emailLayout(
+    "Your SmurfElite seller account",
+    `<h1 style="font-size:22px;margin:0 0 16px;">Your seller account is ready</h1>
+<p>Hi ${name},</p>
+<p>An administrator invited you to the SmurfElite <strong>seller portal</strong>. Sign in with the temporary password below. Your storefront listings will appear after an admin approves your account.</p>
+<p style="margin:16px 0;padding:12px 16px;background:#f4f0fa;border-radius:8px;font-family:monospace;font-size:14px;"><strong>Temporary password:</strong> ${temporaryPassword}</p>
+<p style="margin:24px 0;">
+  <a href="${loginUrl}" style="background:#6c47ff;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:bold;display:inline-block;">Open seller portal</a>
+</p>
+<p style="font-size:13px;color:#756189;">Login URL:<br><span style="word-break:break-all;">${loginUrl}</span></p>
+<p style="font-size:13px;color:#756189;">Keep this password private. Do not share it by email reply.</p>`
+  );
+}
+
 export function buildAdminPasswordResetEmailHtml(params: {
   name: string;
   resetUrl: string;
