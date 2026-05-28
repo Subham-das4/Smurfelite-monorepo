@@ -11,12 +11,14 @@ import {
 import { useGetGamesQuery } from "@/api/games";
 import { useGetPlatformsQuery } from "@/api/platforms";
 import type { RootState } from "@/store/store";
+import { isSellerApproved } from "@/lib/sellerApproval";
 
 export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
   const navigate = useNavigate();
   const params = useParams({ strict: false });
   const productId = params.productId as string | undefined;
   const profile = useSelector((s: RootState) => s.user.profile);
+  const canPublish = isSellerApproved(profile?.sellerApprovalStatus);
 
   const { data: product } = useGetProductQuery(productId!, {
     skip: mode === "create" || !productId,
@@ -98,7 +100,13 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
           publish: publishNow,
           ...credentials,
         }).unwrap();
-        toast.success(publishNow ? "Listing published" : "Draft created");
+        toast.success(
+          publishNow
+            ? canPublish
+              ? "Listing published"
+              : "Draft created as active — visible on storefront after admin approval"
+            : "Draft created"
+        );
       } else if (productId) {
         const body: Record<string, unknown> = {
           gameId,
@@ -300,14 +308,23 @@ export function ProductFormPage({ mode }: { mode: "create" | "edit" }) {
           />
         </fieldset>
         {mode === "create" ? (
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={publishNow}
-              onChange={(e) => setPublishNow(e.target.checked)}
-            />
-            Publish immediately
-          </label>
+          <div className="space-y-1">
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={publishNow}
+                disabled={!canPublish}
+                onChange={(e) => setPublishNow(e.target.checked)}
+              />
+              Publish immediately
+            </label>
+            {!canPublish ? (
+              <p className="text-xs text-[var(--color-text-muted)]">
+                Available after admin approves your seller account. You can still
+                save as draft.
+              </p>
+            ) : null}
+          </div>
         ) : null}
         <Button type="submit" disabled={readonly || creating || updating}>
           {mode === "create" ? "Create listing" : "Save changes"}

@@ -292,6 +292,14 @@ export async function runPhase10_5(ctx: SmokeContext): Promise<boolean> {
       select: { id: true },
     });
     for (const u of users) {
+      const products = await prisma.product.findMany({
+        where: { sellerId: u.id },
+        select: { id: true },
+      });
+      for (const p of products) {
+        await prisma.cartItem.deleteMany({ where: { productId: p.id } });
+      }
+      await prisma.product.deleteMany({ where: { sellerId: u.id } });
       const cart = await prisma.cart.findUnique({ where: { userId: u.id } });
       if (cart) {
         await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });

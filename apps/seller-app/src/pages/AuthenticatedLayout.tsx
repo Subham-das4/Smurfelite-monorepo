@@ -27,6 +27,20 @@ export function AuthenticatedLayout() {
         navigate({ to: "/login" });
       }}
     >
+      {profile?.sellerApprovalStatus === "PENDING" && (
+        <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          Awaiting admin approval — listings won&apos;t appear on the storefront
+          until approved.
+        </div>
+      )}
+      {profile?.sellerApprovalStatus === "REJECTED" && (
+        <div className="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900">
+          Your seller application was rejected.
+          {profile.sellerRejectionNote
+            ? ` Note: ${profile.sellerRejectionNote}`
+            : " Contact support or submit a new application."}
+        </div>
+      )}
       <Outlet />
     </AppShell>
   );

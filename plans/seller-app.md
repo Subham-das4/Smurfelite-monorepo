@@ -101,8 +101,8 @@ apps/seller-app/
 | Route | Features | API |
 | ----- | -------- | --- |
 | `/` | Redirect → `/products` | — |
-| `/login` | Email/password + Google; SELLER gate | `/auth/seller/login` (Phase 10), `/auth/google` |
-| `/apply` | Seller registration / upgrade to PENDING | `POST /auth/seller/apply` (Phase 10.7) |
+| `/login` | Email/password + Google; SELLER gate | `/auth/seller/login`, `/auth/google` |
+| `/apply` | Seller registration / upgrade to PENDING | `POST /auth/seller/apply` |
 | `/products` | Table, status/search filters, publish/delist/reactivate/delete | `GET /products/mine` |
 | `/products/new` | Create form, publish immediately checkbox | `POST /products`, `GET /game-categories` |
 | `/products/:id/edit` | Edit metadata; optional credential replace | `GET/PUT /products/:id` |
@@ -169,7 +169,12 @@ Aligned with `CreateProductRequest`:
 
 ## Phase 10 checklist
 
-See [feature-roadmap.md](./feature-roadmap.md) §10.7 — split seller login, apply flow, pending-approval banner.
+See [feature-roadmap.md](./feature-roadmap.md) §10.7.
+
+- [x] Portal login (`POST /auth/seller/login`), Google OAuth retained
+- [x] `/apply` self-apply flow
+- [x] Pending / rejected approval banners in shell
+- [x] Publish UX gated until `APPROVED`
 
 ---
 

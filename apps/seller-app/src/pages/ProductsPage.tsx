@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 import type { ProductListItem } from "@smurfelite/types";
@@ -18,10 +19,18 @@ import {
   useReactivateProductMutation,
   useDeleteProductMutation,
 } from "@/api/products";
+import { getApiErrorMessage } from "@/lib/apiError";
+import { isSellerApproved } from "@/lib/sellerApproval";
+import type { RootState } from "@/store/store";
 
 const col = createColumnHelper<ProductListItem>();
 
+const PUBLISH_DISABLED_TITLE =
+  "Your account must be approved before listings appear on the storefront.";
+
 export function ProductsPage() {
+  const profile = useSelector((s: RootState) => s.user.profile);
+  const canPublish = isSellerApproved(profile?.sellerApprovalStatus);
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
@@ -77,12 +86,18 @@ export function ProductsPage() {
             {p.status === "DRAFT" && (
               <Button
                 variant="secondary"
+                disabled={!canPublish}
+                title={!canPublish ? PUBLISH_DISABLED_TITLE : undefined}
                 onClick={async () => {
                   try {
                     await publish(p.id).unwrap();
-                    toast.success("Published");
-                  } catch {
-                    toast.error("Publish failed");
+                    toast.success(
+                      canPublish
+                        ? "Published"
+                        : "Listing is active in your portal. It will appear on the storefront after admin approval."
+                    );
+                  } catch (err) {
+                    toast.error(getApiErrorMessage(err, "Publish failed"));
                   }
                 }}
               >
@@ -107,12 +122,18 @@ export function ProductsPage() {
             {p.status === "DELISTED_BY_SELLER" && (
               <Button
                 variant="secondary"
+                disabled={!canPublish}
+                title={!canPublish ? PUBLISH_DISABLED_TITLE : undefined}
                 onClick={async () => {
                   try {
                     await reactivate(p.id).unwrap();
-                    toast.success("Reactivated");
-                  } catch {
-                    toast.error("Reactivate failed");
+                    toast.success(
+                      canPublish
+                        ? "Reactivated"
+                        : "Listing is active in your portal. It will appear on the storefront after admin approval."
+                    );
+                  } catch (err) {
+                    toast.error(getApiErrorMessage(err, "Reactivate failed"));
                   }
                 }}
               >

@@ -509,11 +509,11 @@ flowchart TB
 
 ### 10.7 Seller app UI
 
-- [ ] Login → `POST /auth/seller/login` (`seller-app/src/api/auth.ts`)
-- [ ] Registration / apply flow for non-sellers (`POST /auth/seller/apply`)
-- [ ] Post-login banner when `sellerApprovalStatus === PENDING` (“Awaiting admin approval — listings won’t appear on storefront”)
-- [ ] Optional: disable publish button until approved; fix publish success copy when not approved
-- [ ] Google OAuth: keep for seller (unchanged unless explicitly removed later)
+- [x] Login → `POST /auth/seller/login` (`seller-app/src/api/auth.ts`)
+- [x] Registration / apply flow for non-sellers (`POST /auth/seller/apply`)
+- [x] Post-login banner when `sellerApprovalStatus === PENDING` (“Awaiting admin approval — listings won’t appear on storefront”)
+- [x] Optional: disable publish button until approved; fix publish success copy when not approved
+- [x] Google OAuth: keep for seller (unchanged unless explicitly removed later)
 
 **Depends on:** 10.3, 10.5
 

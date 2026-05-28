@@ -22,7 +22,8 @@ const baseQuery = fetchBaseQuery({
 });
 
 const NO_REAUTH = new Set([
-  "/auth/login",
+  "/auth/seller/login",
+  "/auth/seller/apply",
   "/auth/google",
   "/auth/refresh",
   "/auth/logout",

@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { store, type RootState } from "@/store/store";
 import { LoginPage } from "@/pages/LoginPage";
+import { ApplyPage } from "@/pages/ApplyPage";
 import { ProductsPage } from "@/pages/ProductsPage";
 import { ProductFormPage } from "@/pages/ProductFormPage";
 import { SalesPage } from "@/pages/SalesPage";
@@ -15,6 +16,16 @@ import { DisputesPage } from "@/pages/DisputesPage";
 import { AuthenticatedLayout } from "@/pages/AuthenticatedLayout";
 
 export type RouterContext = { store: typeof store };
+
+function redirectIfSellerAuthenticated(context: RouterContext) {
+  const state = context.store.getState() as RootState;
+  if (
+    state.auth.isAuthenticated &&
+    state.user.profile?.role === "SELLER"
+  ) {
+    throw redirect({ to: "/products" });
+  }
+}
 
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => <Outlet />,
@@ -31,16 +42,15 @@ const indexRoute = createRoute({
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/login",
-  beforeLoad: ({ context }) => {
-    const state = context.store.getState() as RootState;
-    if (
-      state.auth.isAuthenticated &&
-      state.user.profile?.role === "SELLER"
-    ) {
-      throw redirect({ to: "/products" });
-    }
-  },
+  beforeLoad: ({ context }) => redirectIfSellerAuthenticated(context),
   component: LoginPage,
+});
+
+const applyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/apply",
+  beforeLoad: ({ context }) => redirectIfSellerAuthenticated(context),
+  component: ApplyPage,
 });
 
 const authLayoutRoute = createRoute({
@@ -97,6 +107,7 @@ const disputesRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
+  applyRoute,
   authLayoutRoute.addChildren([
     productsRoute,
     productNewRoute,

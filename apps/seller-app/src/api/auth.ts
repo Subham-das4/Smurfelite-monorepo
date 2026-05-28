@@ -1,5 +1,10 @@
 import type { CredentialResponse } from "@react-oauth/google";
-import type { LoginRequest, LoginResponse } from "@smurfelite/types";
+import type {
+  LoginRequest,
+  LoginResponse,
+  SellerApplyRequest,
+  SellerApplyResponse,
+} from "@smurfelite/types";
 import { setCredentials } from "@/store/authSlice";
 import { setUser, logout } from "@/store/userSlice";
 import { baseApi } from "./baseApi";
@@ -7,13 +12,13 @@ import { baseApi } from "./baseApi";
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
-      query: (body) => ({ url: "/auth/login", method: "POST", body }),
+      query: (body) => ({ url: "/auth/seller/login", method: "POST", body }),
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
         const { data } = await queryFulfilled;
         dispatch(
           setCredentials({
             token: data.accessToken,
-            refreshToken: data.refreshToken,
+            refreshToken: data.refreshToken ?? "",
           })
         );
         dispatch(setUser(data.user));
@@ -26,26 +31,20 @@ export const authApi = baseApi.injectEndpoints({
         dispatch(
           setCredentials({
             token: data.accessToken,
-            refreshToken: data.refreshToken,
+            refreshToken: data.refreshToken ?? "",
           })
         );
         dispatch(setUser(data.user));
       },
     }),
     logout: builder.mutation<null, void>({
-      queryFn: async (_, { getState }, _extra, baseQuery) => {
-        const refreshToken = (getState() as { auth: { refreshToken: string | null } })
-          .auth.refreshToken;
-        await baseQuery({
-          url: "/auth/logout",
-          method: "POST",
-          body: { refresh_token: refreshToken },
-        });
-        return { data: null };
-      },
+      query: () => ({ url: "/auth/logout", method: "POST" }),
       async onQueryStarted(_, { dispatch }) {
         dispatch(logout());
       },
+    }),
+    applyAsSeller: builder.mutation<SellerApplyResponse, SellerApplyRequest>({
+      query: (body) => ({ url: "/auth/seller/apply", method: "POST", body }),
     }),
   }),
 });
@@ -54,4 +53,5 @@ export const {
   useLoginMutation,
   useGoogleAuthMutation,
   useLogoutMutation,
+  useApplyAsSellerMutation,
 } = authApi;

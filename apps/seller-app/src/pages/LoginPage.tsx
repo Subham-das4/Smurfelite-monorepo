@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { GoogleLogin } from "@react-oauth/google";
 import { Button, Input, Label } from "@smurfelite/ui";
 import { toast } from "react-toastify";
 import { useLoginMutation, useGoogleAuthMutation, useLogoutMutation } from "@/api/auth";
+import { getApiErrorMessage } from "@/lib/apiError";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -13,13 +14,17 @@ export function LoginPage() {
   const [googleAuth] = useGoogleAuthMutation();
   const [logout] = useLogoutMutation();
 
-  const finishLogin = async (role: string) => {
+  const finishLogin = async (role: string, sellerApprovalStatus?: string) => {
     if (role !== "SELLER") {
       await logout();
       toast.error("Seller account required. Contact support to get seller access.");
       return;
     }
-    toast.success("Welcome back!");
+    if (sellerApprovalStatus === "REJECTED") {
+      toast.info("Your seller application was rejected. Contact support or re-apply.");
+    } else {
+      toast.success("Welcome back!");
+    }
     navigate({ to: "/products" });
   };
 
@@ -27,9 +32,9 @@ export function LoginPage() {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
-      await finishLogin(res.user.role);
-    } catch {
-      toast.error("Invalid email or password.");
+      await finishLogin(res.user.role, res.user.sellerApprovalStatus);
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, "Invalid email or password."));
     }
   };
 
@@ -75,14 +80,19 @@ export function LoginPage() {
             onSuccess={async (cred) => {
               try {
                 const res = await googleAuth(cred).unwrap();
-                await finishLogin(res.user.role);
-              } catch {
-                toast.error("Google sign-in failed.");
+                await finishLogin(res.user.role, res.user.sellerApprovalStatus);
+              } catch (err) {
+                toast.error(getApiErrorMessage(err, "Google sign-in failed."));
               }
             }}
             onError={() => toast.error("Google sign-in failed.")}
           />
         </div>
+        <p className="mt-4 text-center text-sm">
+          <Link to="/apply" className="text-primary underline">
+            Apply to become a seller
+          </Link>
+        </p>
       </div>
     </div>
   );
