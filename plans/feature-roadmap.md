@@ -369,12 +369,12 @@ flowchart TB
 
 ### 10.1 Prisma / enums
 
-- [ ] Add `SellerApprovalStatus` enum: `NONE`, `PENDING`, `APPROVED`, `REJECTED`
-- [ ] Add `sellerApprovalStatus` on `User` (default `NONE`; `PENDING` on apply/invite)
-- [ ] Add `sellerApprovedAt`, `sellerRejectedAt`, optional `sellerRejectionNote`
-- [ ] Add `adminInvitedAt` / `createdByAdminId` (optional audit for admin-created sellers/admins)
-- [ ] Migration + regenerate `@smurfelite/types`
-- [ ] Document: `PENDING_VERIFICATION` on **Product** remains unused; seller gating is **user-level**, not product queue
+- [x] Add `SellerApprovalStatus` enum: `NONE`, `PENDING`, `APPROVED`, `REJECTED`
+- [x] Add `sellerApprovalStatus` on `User` (default `NONE`; `PENDING` on apply/invite)
+- [x] Add `sellerApprovedAt`, `sellerRejectedAt`, optional `sellerRejectionNote`
+- [x] Add `adminInvitedAt` / `createdByAdminId` (optional audit for admin-created sellers/admins)
+- [x] Migration + regenerate `@smurfelite/types` — `20260528120000_seller_approval_status`; backfill script for existing sellers
+- [x] Document: `PENDING_VERIFICATION` on **Product** remains unused; seller gating is **user-level**, not product queue (see `plans/shared-types.md` § Phase 10.1)
 
 ### 10.2 JWT & middleware contracts
 

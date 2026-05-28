@@ -132,7 +132,13 @@ exports.Prisma.UserScalarFieldEnum = {
   googleId: 'googleId',
   googleProfilePicture: 'googleProfilePicture',
   lastLoginAt: 'lastLoginAt',
-  sellerDelisted: 'sellerDelisted'
+  sellerDelisted: 'sellerDelisted',
+  sellerApprovalStatus: 'sellerApprovalStatus',
+  sellerApprovedAt: 'sellerApprovedAt',
+  sellerRejectedAt: 'sellerRejectedAt',
+  sellerRejectionNote: 'sellerRejectionNote',
+  adminInvitedAt: 'adminInvitedAt',
+  createdByAdminId: 'createdByAdminId'
 };
 
 exports.Prisma.VerificationTokenScalarFieldEnum = {
@@ -308,6 +314,13 @@ exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   SELLER: 'SELLER',
   BUYER: 'BUYER'
+};
+
+exports.SellerApprovalStatus = exports.$Enums.SellerApprovalStatus = {
+  NONE: 'NONE',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
 };
 
 exports.ProductStatus = exports.$Enums.ProductStatus = {

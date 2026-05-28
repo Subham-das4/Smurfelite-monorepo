@@ -59,22 +59,45 @@ enum WalletLedgerType {
   ADJUSTMENT
 }
 
+/// Seller onboarding gate (Phase 10). Storefront visibility requires APPROVED.
+/// ProductStatus.PENDING_VERIFICATION is unused — gating is user-level, not per-product.
+enum SellerApprovalStatus {
+  NONE
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
-  id                   String    @id @default(uuid())
-  email                String    @unique
+  id                   String               @id @default(uuid())
+  email                String               @unique
   password             String // Hashed password for login
-  role                 Role      @default(BUYER)
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  role                 Role                 @default(BUYER)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
   name                 String
-  isVerified           Boolean   @default(false)
-  googleId             String?   @unique
-  googleProfilePicture String?   @default("")
+  isVerified           Boolean              @default(false)
+  googleId             String?              @unique
+  googleProfilePicture String?              @default("")
   lastLoginAt          DateTime?
   /**
    * Admin delisted seller account; cascades to product visibility.
    */
-  sellerDelisted       Boolean   @default(false)
+  sellerDelisted       Boolean              @default(false)
+  /**
+   * Seller approval for storefront listings (Phase 10).
+   */
+  sellerApprovalStatus SellerApprovalStatus @default(NONE)
+  sellerApprovedAt     DateTime?
+  sellerRejectedAt     DateTime?
+  sellerRejectionNote  String?
+  /**
+   * Set when admin invites/creates this user (seller or admin account).
+   */
+  adminInvitedAt       DateTime?
+  createdByAdminId     String?
+  createdByAdmin       User?                @relation("UserCreatedByAdmin", fields: [createdByAdminId], references: [id], onDelete: SetNull)
+  usersCreatedByAdmin  User[]               @relation("UserCreatedByAdmin")
 
   // Relations
   products           Product[]

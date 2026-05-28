@@ -71,7 +71,7 @@ Only express-server owns migrations (`prisma migrate dev`). All apps consume the
 
 ### Re-exported from Prisma
 
-- `Role`, `OrderStatus`, `User`, and all model types
+- `Role`, `OrderStatus`, `SellerApprovalStatus`, `User`, and all model types
 - Full `@smurfelite/types` re-exports `./src/generated/prisma/index`
 
 ### Hand-written DTOs
@@ -139,6 +139,16 @@ Regenerate client after schema changes: `pnpm --filter=@smurfelite/express-serve
 - [x] `ProductListItem` includes `status`, `sellerDelisted`, `gameCategoryId`
 - [x] `OrderResponse` includes `paymentStatus`
 - [x] `UserProfileResponse` includes `lastLoginAt`
+
+### Phase 10.1 — Seller approval (2026-05-28)
+
+- [x] `SellerApprovalStatus` enum: `NONE`, `PENDING`, `APPROVED`, `REJECTED`
+- [x] `User.sellerApprovalStatus`, `sellerApprovedAt`, `sellerRejectedAt`, `sellerRejectionNote`
+- [x] `User.adminInvitedAt`, `createdByAdminId` (+ self-relation `createdByAdmin`)
+- [x] Migration: `prisma/migrations/20260528120000_seller_approval_status`
+- [x] Backfill: existing `SELLER` users → `APPROVED` (`scripts/backfill-seller-approval.mts`)
+
+**Note:** `ProductStatus.PENDING_VERIFICATION` is **not** used for seller onboarding. Storefront gating in Phase 10.5 uses `User.sellerApprovalStatus === APPROVED`.
 
 ### pgvector (deferred)
 

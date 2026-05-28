@@ -93,8 +93,21 @@ export async function ensureSellerUser() {
           12
         ),
         role: PrismaNamespace.Role.SELLER,
+        sellerApprovalStatus: PrismaNamespace.SellerApprovalStatus.APPROVED,
+        sellerApprovedAt: new Date(),
         isVerified: true,
         name: "Default Seller",
+      },
+    });
+  } else if (
+    existing.role === PrismaNamespace.Role.SELLER &&
+    existing.sellerApprovalStatus === PrismaNamespace.SellerApprovalStatus.NONE
+  ) {
+    await prisma.user.update({
+      where: { id: existing.id },
+      data: {
+        sellerApprovalStatus: PrismaNamespace.SellerApprovalStatus.APPROVED,
+        sellerApprovedAt: new Date(),
       },
     });
   }

@@ -157,6 +157,16 @@ export const WalletLedgerType: {
 
 export type WalletLedgerType = (typeof WalletLedgerType)[keyof typeof WalletLedgerType]
 
+
+export const SellerApprovalStatus: {
+  NONE: 'NONE',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type SellerApprovalStatus = (typeof SellerApprovalStatus)[keyof typeof SellerApprovalStatus]
+
 }
 
 export type Role = $Enums.Role
@@ -182,6 +192,10 @@ export const DisputeStatus: typeof $Enums.DisputeStatus
 export type WalletLedgerType = $Enums.WalletLedgerType
 
 export const WalletLedgerType: typeof $Enums.WalletLedgerType
+
+export type SellerApprovalStatus = $Enums.SellerApprovalStatus
+
+export const SellerApprovalStatus: typeof $Enums.SellerApprovalStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -2230,6 +2244,7 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
+    usersCreatedByAdmin: number
     products: number
     orders: number
     enquiries: number
@@ -2239,6 +2254,7 @@ export namespace Prisma {
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    usersCreatedByAdmin?: boolean | UserCountOutputTypeCountUsersCreatedByAdminArgs
     products?: boolean | UserCountOutputTypeCountProductsArgs
     orders?: boolean | UserCountOutputTypeCountOrdersArgs
     enquiries?: boolean | UserCountOutputTypeCountEnquiriesArgs
@@ -2256,6 +2272,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountUsersCreatedByAdminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
   /**
@@ -2572,6 +2595,12 @@ export namespace Prisma {
     googleProfilePicture: string | null
     lastLoginAt: Date | null
     sellerDelisted: boolean | null
+    sellerApprovalStatus: $Enums.SellerApprovalStatus | null
+    sellerApprovedAt: Date | null
+    sellerRejectedAt: Date | null
+    sellerRejectionNote: string | null
+    adminInvitedAt: Date | null
+    createdByAdminId: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2587,6 +2616,12 @@ export namespace Prisma {
     googleProfilePicture: string | null
     lastLoginAt: Date | null
     sellerDelisted: boolean | null
+    sellerApprovalStatus: $Enums.SellerApprovalStatus | null
+    sellerApprovedAt: Date | null
+    sellerRejectedAt: Date | null
+    sellerRejectionNote: string | null
+    adminInvitedAt: Date | null
+    createdByAdminId: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2602,6 +2637,12 @@ export namespace Prisma {
     googleProfilePicture: number
     lastLoginAt: number
     sellerDelisted: number
+    sellerApprovalStatus: number
+    sellerApprovedAt: number
+    sellerRejectedAt: number
+    sellerRejectionNote: number
+    adminInvitedAt: number
+    createdByAdminId: number
     _all: number
   }
 
@@ -2619,6 +2660,12 @@ export namespace Prisma {
     googleProfilePicture?: true
     lastLoginAt?: true
     sellerDelisted?: true
+    sellerApprovalStatus?: true
+    sellerApprovedAt?: true
+    sellerRejectedAt?: true
+    sellerRejectionNote?: true
+    adminInvitedAt?: true
+    createdByAdminId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2634,6 +2681,12 @@ export namespace Prisma {
     googleProfilePicture?: true
     lastLoginAt?: true
     sellerDelisted?: true
+    sellerApprovalStatus?: true
+    sellerApprovedAt?: true
+    sellerRejectedAt?: true
+    sellerRejectionNote?: true
+    adminInvitedAt?: true
+    createdByAdminId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2649,6 +2702,12 @@ export namespace Prisma {
     googleProfilePicture?: true
     lastLoginAt?: true
     sellerDelisted?: true
+    sellerApprovalStatus?: true
+    sellerApprovedAt?: true
+    sellerRejectedAt?: true
+    sellerRejectionNote?: true
+    adminInvitedAt?: true
+    createdByAdminId?: true
     _all?: true
   }
 
@@ -2737,6 +2796,12 @@ export namespace Prisma {
     googleProfilePicture: string | null
     lastLoginAt: Date | null
     sellerDelisted: boolean
+    sellerApprovalStatus: $Enums.SellerApprovalStatus
+    sellerApprovedAt: Date | null
+    sellerRejectedAt: Date | null
+    sellerRejectionNote: string | null
+    adminInvitedAt: Date | null
+    createdByAdminId: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2769,6 +2834,14 @@ export namespace Prisma {
     googleProfilePicture?: boolean
     lastLoginAt?: boolean
     sellerDelisted?: boolean
+    sellerApprovalStatus?: boolean
+    sellerApprovedAt?: boolean
+    sellerRejectedAt?: boolean
+    sellerRejectionNote?: boolean
+    adminInvitedAt?: boolean
+    createdByAdminId?: boolean
+    createdByAdmin?: boolean | User$createdByAdminArgs<ExtArgs>
+    usersCreatedByAdmin?: boolean | User$usersCreatedByAdminArgs<ExtArgs>
     products?: boolean | User$productsArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
     cart?: boolean | User$cartArgs<ExtArgs>
@@ -2795,6 +2868,13 @@ export namespace Prisma {
     googleProfilePicture?: boolean
     lastLoginAt?: boolean
     sellerDelisted?: boolean
+    sellerApprovalStatus?: boolean
+    sellerApprovedAt?: boolean
+    sellerRejectedAt?: boolean
+    sellerRejectionNote?: boolean
+    adminInvitedAt?: boolean
+    createdByAdminId?: boolean
+    createdByAdmin?: boolean | User$createdByAdminArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2810,6 +2890,13 @@ export namespace Prisma {
     googleProfilePicture?: boolean
     lastLoginAt?: boolean
     sellerDelisted?: boolean
+    sellerApprovalStatus?: boolean
+    sellerApprovedAt?: boolean
+    sellerRejectedAt?: boolean
+    sellerRejectionNote?: boolean
+    adminInvitedAt?: boolean
+    createdByAdminId?: boolean
+    createdByAdmin?: boolean | User$createdByAdminArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -2825,10 +2912,18 @@ export namespace Prisma {
     googleProfilePicture?: boolean
     lastLoginAt?: boolean
     sellerDelisted?: boolean
+    sellerApprovalStatus?: boolean
+    sellerApprovedAt?: boolean
+    sellerRejectedAt?: boolean
+    sellerRejectionNote?: boolean
+    adminInvitedAt?: boolean
+    createdByAdminId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "updatedAt" | "name" | "isVerified" | "googleId" | "googleProfilePicture" | "lastLoginAt" | "sellerDelisted", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "updatedAt" | "name" | "isVerified" | "googleId" | "googleProfilePicture" | "lastLoginAt" | "sellerDelisted" | "sellerApprovalStatus" | "sellerApprovedAt" | "sellerRejectedAt" | "sellerRejectionNote" | "adminInvitedAt" | "createdByAdminId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdByAdmin?: boolean | User$createdByAdminArgs<ExtArgs>
+    usersCreatedByAdmin?: boolean | User$usersCreatedByAdminArgs<ExtArgs>
     products?: boolean | User$productsArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
     cart?: boolean | User$cartArgs<ExtArgs>
@@ -2841,12 +2936,18 @@ export namespace Prisma {
     disputesAsSeller?: boolean | User$disputesAsSellerArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdByAdmin?: boolean | User$createdByAdminArgs<ExtArgs>
+  }
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdByAdmin?: boolean | User$createdByAdminArgs<ExtArgs>
+  }
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      createdByAdmin: Prisma.$UserPayload<ExtArgs> | null
+      usersCreatedByAdmin: Prisma.$UserPayload<ExtArgs>[]
       products: Prisma.$ProductPayload<ExtArgs>[]
       orders: Prisma.$OrderPayload<ExtArgs>[]
       cart: Prisma.$CartPayload<ExtArgs> | null
@@ -2874,6 +2975,18 @@ export namespace Prisma {
        * * Admin delisted seller account; cascades to product visibility.
        */
       sellerDelisted: boolean
+      /**
+       * * Seller approval for storefront listings (Phase 10).
+       */
+      sellerApprovalStatus: $Enums.SellerApprovalStatus
+      sellerApprovedAt: Date | null
+      sellerRejectedAt: Date | null
+      sellerRejectionNote: string | null
+      /**
+       * * Set when admin invites/creates this user (seller or admin account).
+       */
+      adminInvitedAt: Date | null
+      createdByAdminId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3268,6 +3381,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    createdByAdmin<T extends User$createdByAdminArgs<ExtArgs> = {}>(args?: Subset<T, User$createdByAdminArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    usersCreatedByAdmin<T extends User$usersCreatedByAdminArgs<ExtArgs> = {}>(args?: Subset<T, User$usersCreatedByAdminArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     products<T extends User$productsArgs<ExtArgs> = {}>(args?: Subset<T, User$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orders<T extends User$ordersArgs<ExtArgs> = {}>(args?: Subset<T, User$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cart<T extends User$cartArgs<ExtArgs> = {}>(args?: Subset<T, User$cartArgs<ExtArgs>>): Prisma__CartClient<$Result.GetResult<Prisma.$CartPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3319,6 +3434,12 @@ export namespace Prisma {
     readonly googleProfilePicture: FieldRef<"User", 'String'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
     readonly sellerDelisted: FieldRef<"User", 'Boolean'>
+    readonly sellerApprovalStatus: FieldRef<"User", 'SellerApprovalStatus'>
+    readonly sellerApprovedAt: FieldRef<"User", 'DateTime'>
+    readonly sellerRejectedAt: FieldRef<"User", 'DateTime'>
+    readonly sellerRejectionNote: FieldRef<"User", 'String'>
+    readonly adminInvitedAt: FieldRef<"User", 'DateTime'>
+    readonly createdByAdminId: FieldRef<"User", 'String'>
   }
     
 
@@ -3568,6 +3689,10 @@ export namespace Prisma {
      */
     data: UserCreateManyInput | UserCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3638,6 +3763,10 @@ export namespace Prisma {
      * Limit how many Users to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3704,6 +3833,49 @@ export namespace Prisma {
      * Limit how many Users to delete.
      */
     limit?: number
+  }
+
+  /**
+   * User.createdByAdmin
+   */
+  export type User$createdByAdminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * User.usersCreatedByAdmin
+   */
+  export type User$usersCreatedByAdminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -19772,7 +19944,13 @@ export namespace Prisma {
     googleId: 'googleId',
     googleProfilePicture: 'googleProfilePicture',
     lastLoginAt: 'lastLoginAt',
-    sellerDelisted: 'sellerDelisted'
+    sellerDelisted: 'sellerDelisted',
+    sellerApprovalStatus: 'sellerApprovalStatus',
+    sellerApprovedAt: 'sellerApprovedAt',
+    sellerRejectedAt: 'sellerRejectedAt',
+    sellerRejectionNote: 'sellerRejectionNote',
+    adminInvitedAt: 'adminInvitedAt',
+    createdByAdminId: 'createdByAdminId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -20063,6 +20241,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'SellerApprovalStatus'
+   */
+  export type EnumSellerApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SellerApprovalStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SellerApprovalStatus[]'
+   */
+  export type ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SellerApprovalStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -20207,6 +20399,14 @@ export namespace Prisma {
     googleProfilePicture?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     sellerDelisted?: BoolFilter<"User"> | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFilter<"User"> | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    sellerRejectedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    sellerRejectionNote?: StringNullableFilter<"User"> | string | null
+    adminInvitedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdByAdminId?: StringNullableFilter<"User"> | string | null
+    createdByAdmin?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    usersCreatedByAdmin?: UserListRelationFilter
     products?: ProductListRelationFilter
     orders?: OrderListRelationFilter
     cart?: XOR<CartNullableScalarRelationFilter, CartWhereInput> | null
@@ -20232,6 +20432,14 @@ export namespace Prisma {
     googleProfilePicture?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     sellerDelisted?: SortOrder
+    sellerApprovalStatus?: SortOrder
+    sellerApprovedAt?: SortOrderInput | SortOrder
+    sellerRejectedAt?: SortOrderInput | SortOrder
+    sellerRejectionNote?: SortOrderInput | SortOrder
+    adminInvitedAt?: SortOrderInput | SortOrder
+    createdByAdminId?: SortOrderInput | SortOrder
+    createdByAdmin?: UserOrderByWithRelationInput
+    usersCreatedByAdmin?: UserOrderByRelationAggregateInput
     products?: ProductOrderByRelationAggregateInput
     orders?: OrderOrderByRelationAggregateInput
     cart?: CartOrderByWithRelationInput
@@ -20260,6 +20468,14 @@ export namespace Prisma {
     googleProfilePicture?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     sellerDelisted?: BoolFilter<"User"> | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFilter<"User"> | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    sellerRejectedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    sellerRejectionNote?: StringNullableFilter<"User"> | string | null
+    adminInvitedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdByAdminId?: StringNullableFilter<"User"> | string | null
+    createdByAdmin?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    usersCreatedByAdmin?: UserListRelationFilter
     products?: ProductListRelationFilter
     orders?: OrderListRelationFilter
     cart?: XOR<CartNullableScalarRelationFilter, CartWhereInput> | null
@@ -20285,6 +20501,12 @@ export namespace Prisma {
     googleProfilePicture?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     sellerDelisted?: SortOrder
+    sellerApprovalStatus?: SortOrder
+    sellerApprovedAt?: SortOrderInput | SortOrder
+    sellerRejectedAt?: SortOrderInput | SortOrder
+    sellerRejectionNote?: SortOrderInput | SortOrder
+    adminInvitedAt?: SortOrderInput | SortOrder
+    createdByAdminId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -20306,6 +20528,12 @@ export namespace Prisma {
     googleProfilePicture?: StringNullableWithAggregatesFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     sellerDelisted?: BoolWithAggregatesFilter<"User"> | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusWithAggregatesFilter<"User"> | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    sellerRejectedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    sellerRejectionNote?: StringNullableWithAggregatesFilter<"User"> | string | null
+    adminInvitedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    createdByAdminId?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type VerificationTokenWhereInput = {
@@ -21293,6 +21521,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -21318,6 +21553,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -21343,6 +21585,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -21368,6 +21617,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -21393,6 +21649,12 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -21408,6 +21670,11 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -21423,6 +21690,12 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type VerificationTokenCreateInput = {
@@ -22489,6 +22762,24 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type EnumSellerApprovalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SellerApprovalStatus | EnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SellerApprovalStatus[] | ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SellerApprovalStatus[] | ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSellerApprovalStatusFilter<$PrismaModel> | $Enums.SellerApprovalStatus
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
+  }
+
   export type ProductListRelationFilter = {
     every?: ProductWhereInput
     some?: ProductWhereInput
@@ -22544,6 +22835,10 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
+  export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ProductOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -22577,6 +22872,12 @@ export namespace Prisma {
     googleProfilePicture?: SortOrder
     lastLoginAt?: SortOrder
     sellerDelisted?: SortOrder
+    sellerApprovalStatus?: SortOrder
+    sellerApprovedAt?: SortOrder
+    sellerRejectedAt?: SortOrder
+    sellerRejectionNote?: SortOrder
+    adminInvitedAt?: SortOrder
+    createdByAdminId?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -22592,6 +22893,12 @@ export namespace Prisma {
     googleProfilePicture?: SortOrder
     lastLoginAt?: SortOrder
     sellerDelisted?: SortOrder
+    sellerApprovalStatus?: SortOrder
+    sellerApprovedAt?: SortOrder
+    sellerRejectedAt?: SortOrder
+    sellerRejectionNote?: SortOrder
+    adminInvitedAt?: SortOrder
+    createdByAdminId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -22607,6 +22914,12 @@ export namespace Prisma {
     googleProfilePicture?: SortOrder
     lastLoginAt?: SortOrder
     sellerDelisted?: SortOrder
+    sellerApprovalStatus?: SortOrder
+    sellerApprovedAt?: SortOrder
+    sellerRejectedAt?: SortOrder
+    sellerRejectionNote?: SortOrder
+    adminInvitedAt?: SortOrder
+    createdByAdminId?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -22689,6 +23002,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumSellerApprovalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SellerApprovalStatus | EnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SellerApprovalStatus[] | ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SellerApprovalStatus[] | ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSellerApprovalStatusWithAggregatesFilter<$PrismaModel> | $Enums.SellerApprovalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSellerApprovalStatusFilter<$PrismaModel>
+    _max?: NestedEnumSellerApprovalStatusFilter<$PrismaModel>
   }
 
   export type UserScalarRelationFilter = {
@@ -23255,11 +23578,6 @@ export namespace Prisma {
     quantity?: SortOrder
   }
 
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
-  }
-
   export type EnquiryCountOrderByAggregateInput = {
     id?: SortOrder
     subject?: SortOrder
@@ -23505,6 +23823,19 @@ export namespace Prisma {
     _max?: NestedEnumWalletLedgerTypeFilter<$PrismaModel>
   }
 
+  export type UserCreateNestedOneWithoutUsersCreatedByAdminInput = {
+    create?: XOR<UserCreateWithoutUsersCreatedByAdminInput, UserUncheckedCreateWithoutUsersCreatedByAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUsersCreatedByAdminInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedManyWithoutCreatedByAdminInput = {
+    create?: XOR<UserCreateWithoutCreatedByAdminInput, UserUncheckedCreateWithoutCreatedByAdminInput> | UserCreateWithoutCreatedByAdminInput[] | UserUncheckedCreateWithoutCreatedByAdminInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedByAdminInput | UserCreateOrConnectWithoutCreatedByAdminInput[]
+    createMany?: UserCreateManyCreatedByAdminInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
   export type ProductCreateNestedManyWithoutSellerInput = {
     create?: XOR<ProductCreateWithoutSellerInput, ProductUncheckedCreateWithoutSellerInput> | ProductCreateWithoutSellerInput[] | ProductUncheckedCreateWithoutSellerInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutSellerInput | ProductCreateOrConnectWithoutSellerInput[]
@@ -23569,6 +23900,13 @@ export namespace Prisma {
     connectOrCreate?: DisputeCreateOrConnectWithoutSellerInput | DisputeCreateOrConnectWithoutSellerInput[]
     createMany?: DisputeCreateManySellerInputEnvelope
     connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutCreatedByAdminInput = {
+    create?: XOR<UserCreateWithoutCreatedByAdminInput, UserUncheckedCreateWithoutCreatedByAdminInput> | UserCreateWithoutCreatedByAdminInput[] | UserUncheckedCreateWithoutCreatedByAdminInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedByAdminInput | UserCreateOrConnectWithoutCreatedByAdminInput[]
+    createMany?: UserCreateManyCreatedByAdminInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type ProductUncheckedCreateNestedManyWithoutSellerInput = {
@@ -23659,6 +23997,34 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type EnumSellerApprovalStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SellerApprovalStatus
+  }
+
+  export type UserUpdateOneWithoutUsersCreatedByAdminNestedInput = {
+    create?: XOR<UserCreateWithoutUsersCreatedByAdminInput, UserUncheckedCreateWithoutUsersCreatedByAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUsersCreatedByAdminInput
+    upsert?: UserUpsertWithoutUsersCreatedByAdminInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUsersCreatedByAdminInput, UserUpdateWithoutUsersCreatedByAdminInput>, UserUncheckedUpdateWithoutUsersCreatedByAdminInput>
+  }
+
+  export type UserUpdateManyWithoutCreatedByAdminNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedByAdminInput, UserUncheckedCreateWithoutCreatedByAdminInput> | UserCreateWithoutCreatedByAdminInput[] | UserUncheckedCreateWithoutCreatedByAdminInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedByAdminInput | UserCreateOrConnectWithoutCreatedByAdminInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutCreatedByAdminInput | UserUpsertWithWhereUniqueWithoutCreatedByAdminInput[]
+    createMany?: UserCreateManyCreatedByAdminInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutCreatedByAdminInput | UserUpdateWithWhereUniqueWithoutCreatedByAdminInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutCreatedByAdminInput | UserUpdateManyWithWhereWithoutCreatedByAdminInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type ProductUpdateManyWithoutSellerNestedInput = {
@@ -23783,6 +24149,20 @@ export namespace Prisma {
     update?: DisputeUpdateWithWhereUniqueWithoutSellerInput | DisputeUpdateWithWhereUniqueWithoutSellerInput[]
     updateMany?: DisputeUpdateManyWithWhereWithoutSellerInput | DisputeUpdateManyWithWhereWithoutSellerInput[]
     deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedByAdminInput, UserUncheckedCreateWithoutCreatedByAdminInput> | UserCreateWithoutCreatedByAdminInput[] | UserUncheckedCreateWithoutCreatedByAdminInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedByAdminInput | UserCreateOrConnectWithoutCreatedByAdminInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutCreatedByAdminInput | UserUpsertWithWhereUniqueWithoutCreatedByAdminInput[]
+    createMany?: UserCreateManyCreatedByAdminInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutCreatedByAdminInput | UserUpdateWithWhereUniqueWithoutCreatedByAdminInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutCreatedByAdminInput | UserUpdateManyWithWhereWithoutCreatedByAdminInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type ProductUncheckedUpdateManyWithoutSellerNestedInput = {
@@ -24721,6 +25101,13 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type NestedEnumSellerApprovalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SellerApprovalStatus | EnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SellerApprovalStatus[] | ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SellerApprovalStatus[] | ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSellerApprovalStatusFilter<$PrismaModel> | $Enums.SellerApprovalStatus
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -24821,6 +25208,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSellerApprovalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SellerApprovalStatus | EnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SellerApprovalStatus[] | ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SellerApprovalStatus[] | ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSellerApprovalStatusWithAggregatesFilter<$PrismaModel> | $Enums.SellerApprovalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSellerApprovalStatusFilter<$PrismaModel>
+    _max?: NestedEnumSellerApprovalStatusFilter<$PrismaModel>
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -25012,6 +25409,145 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWalletLedgerTypeFilter<$PrismaModel>
     _max?: NestedEnumWalletLedgerTypeFilter<$PrismaModel>
+  }
+
+  export type UserCreateWithoutUsersCreatedByAdminInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    products?: ProductCreateNestedManyWithoutSellerInput
+    orders?: OrderCreateNestedManyWithoutBuyerInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
+  }
+
+  export type UserUncheckedCreateWithoutUsersCreatedByAdminInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    products?: ProductUncheckedCreateNestedManyWithoutSellerInput
+    orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
+  }
+
+  export type UserCreateOrConnectWithoutUsersCreatedByAdminInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUsersCreatedByAdminInput, UserUncheckedCreateWithoutUsersCreatedByAdminInput>
+  }
+
+  export type UserCreateWithoutCreatedByAdminInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
+    products?: ProductCreateNestedManyWithoutSellerInput
+    orders?: OrderCreateNestedManyWithoutBuyerInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeCreateNestedManyWithoutSellerInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedByAdminInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
+    products?: ProductUncheckedCreateNestedManyWithoutSellerInput
+    orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
+    verificationToken?: VerificationTokenUncheckedCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetToken?: PasswordResetTokenUncheckedCreateNestedOneWithoutUserInput
+    sellerWallet?: SellerWalletUncheckedCreateNestedOneWithoutUserInput
+    disputesAsBuyer?: DisputeUncheckedCreateNestedManyWithoutBuyerInput
+    disputesAsSeller?: DisputeUncheckedCreateNestedManyWithoutSellerInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedByAdminInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedByAdminInput, UserUncheckedCreateWithoutCreatedByAdminInput>
+  }
+
+  export type UserCreateManyCreatedByAdminInputEnvelope = {
+    data: UserCreateManyCreatedByAdminInput | UserCreateManyCreatedByAdminInput[]
+    skipDuplicates?: boolean
   }
 
   export type ProductCreateWithoutSellerInput = {
@@ -25316,6 +25852,119 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserUpsertWithoutUsersCreatedByAdminInput = {
+    update: XOR<UserUpdateWithoutUsersCreatedByAdminInput, UserUncheckedUpdateWithoutUsersCreatedByAdminInput>
+    create: XOR<UserCreateWithoutUsersCreatedByAdminInput, UserUncheckedCreateWithoutUsersCreatedByAdminInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUsersCreatedByAdminInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUsersCreatedByAdminInput, UserUncheckedUpdateWithoutUsersCreatedByAdminInput>
+  }
+
+  export type UserUpdateWithoutUsersCreatedByAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    products?: ProductUpdateManyWithoutSellerNestedInput
+    orders?: OrderUpdateManyWithoutBuyerNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUsersCreatedByAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutCreatedByAdminInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutCreatedByAdminInput, UserUncheckedUpdateWithoutCreatedByAdminInput>
+    create: XOR<UserCreateWithoutCreatedByAdminInput, UserUncheckedCreateWithoutCreatedByAdminInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutCreatedByAdminInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutCreatedByAdminInput, UserUncheckedUpdateWithoutCreatedByAdminInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutCreatedByAdminInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutCreatedByAdminInput>
+  }
+
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    id?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    password?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    name?: StringFilter<"User"> | string
+    isVerified?: BoolFilter<"User"> | boolean
+    googleId?: StringNullableFilter<"User"> | string | null
+    googleProfilePicture?: StringNullableFilter<"User"> | string | null
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    sellerDelisted?: BoolFilter<"User"> | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFilter<"User"> | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    sellerRejectedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    sellerRejectionNote?: StringNullableFilter<"User"> | string | null
+    adminInvitedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdByAdminId?: StringNullableFilter<"User"> | string | null
+  }
+
   export type ProductUpsertWithWhereUniqueWithoutSellerInput = {
     where: ProductWhereUniqueInput
     update: XOR<ProductUpdateWithoutSellerInput, ProductUncheckedUpdateWithoutSellerInput>
@@ -25611,6 +26260,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -25635,6 +26291,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -25675,6 +26338,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -25699,6 +26369,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -25723,6 +26400,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -25747,6 +26431,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -25787,6 +26478,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -25811,6 +26509,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -25835,6 +26540,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -25859,6 +26571,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -25899,6 +26618,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -25923,6 +26649,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -26145,6 +26878,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
@@ -26169,6 +26909,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
@@ -26305,6 +27052,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
@@ -26329,6 +27083,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
@@ -26404,6 +27165,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
@@ -26428,6 +27196,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
@@ -26488,6 +27263,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
@@ -26512,6 +27294,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
@@ -26716,6 +27505,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     cart?: CartCreateNestedOneWithoutUserInput
     enquiries?: EnquiryCreateNestedManyWithoutUserInput
@@ -26740,6 +27536,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     enquiries?: EnquiryUncheckedCreateNestedManyWithoutUserInput
@@ -26866,6 +27669,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUpdateManyWithoutUserNestedInput
@@ -26890,6 +27700,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
@@ -27168,6 +27985,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -27192,6 +28016,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -27232,6 +28063,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -27256,6 +28094,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -27313,6 +28158,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -27337,6 +28189,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -27366,6 +28225,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -27390,6 +28256,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -27499,6 +28372,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -27523,6 +28403,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -27558,6 +28445,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -27582,6 +28476,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -27622,6 +28523,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdmin?: UserCreateNestedOneWithoutUsersCreatedByAdminInput
+    usersCreatedByAdmin?: UserCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductCreateNestedManyWithoutSellerInput
     orders?: OrderCreateNestedManyWithoutBuyerInput
     cart?: CartCreateNestedOneWithoutUserInput
@@ -27646,6 +28554,13 @@ export namespace Prisma {
     googleProfilePicture?: string | null
     lastLoginAt?: Date | string | null
     sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+    createdByAdminId?: string | null
+    usersCreatedByAdmin?: UserUncheckedCreateNestedManyWithoutCreatedByAdminInput
     products?: ProductUncheckedCreateNestedManyWithoutSellerInput
     orders?: OrderUncheckedCreateNestedManyWithoutBuyerInput
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
@@ -27716,6 +28631,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdmin?: UserUpdateOneWithoutUsersCreatedByAdminNestedInput
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUpdateManyWithoutSellerNestedInput
     orders?: OrderUpdateManyWithoutBuyerNestedInput
     cart?: CartUpdateOneWithoutUserNestedInput
@@ -27740,6 +28662,13 @@ export namespace Prisma {
     googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdByAdminId?: NullableStringFieldUpdateOperationsInput | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
     products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
     orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
@@ -27951,6 +28880,26 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserCreateManyCreatedByAdminInput = {
+    id?: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    isVerified?: boolean
+    googleId?: string | null
+    googleProfilePicture?: string | null
+    lastLoginAt?: Date | string | null
+    sellerDelisted?: boolean
+    sellerApprovalStatus?: $Enums.SellerApprovalStatus
+    sellerApprovedAt?: Date | string | null
+    sellerRejectedAt?: Date | string | null
+    sellerRejectionNote?: string | null
+    adminInvitedAt?: Date | string | null
+  }
+
   export type ProductCreateManySellerInput = {
     id?: string
     gameType: string
@@ -28024,6 +28973,88 @@ export namespace Prisma {
     details?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type UserUpdateWithoutCreatedByAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usersCreatedByAdmin?: UserUpdateManyWithoutCreatedByAdminNestedInput
+    products?: ProductUpdateManyWithoutSellerNestedInput
+    orders?: OrderUpdateManyWithoutBuyerNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUpdateManyWithoutSellerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedByAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usersCreatedByAdmin?: UserUncheckedUpdateManyWithoutCreatedByAdminNestedInput
+    products?: ProductUncheckedUpdateManyWithoutSellerNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    enquiries?: EnquiryUncheckedUpdateManyWithoutUserNestedInput
+    verificationToken?: VerificationTokenUncheckedUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetToken?: PasswordResetTokenUncheckedUpdateOneWithoutUserNestedInput
+    sellerWallet?: SellerWalletUncheckedUpdateOneWithoutUserNestedInput
+    disputesAsBuyer?: DisputeUncheckedUpdateManyWithoutBuyerNestedInput
+    disputesAsSeller?: DisputeUncheckedUpdateManyWithoutSellerNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutCreatedByAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleProfilePicture?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerDelisted?: BoolFieldUpdateOperationsInput | boolean
+    sellerApprovalStatus?: EnumSellerApprovalStatusFieldUpdateOperationsInput | $Enums.SellerApprovalStatus
+    sellerApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerRejectionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    adminInvitedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProductUpdateWithoutSellerInput = {

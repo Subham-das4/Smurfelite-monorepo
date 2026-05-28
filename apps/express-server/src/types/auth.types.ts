@@ -25,6 +25,14 @@ export type UserRegistrationInput = Omit<
   | "disputesAsBuyer"
   | "disputesAsSeller"
   | "sellerDelisted"
+  | "sellerApprovalStatus"
+  | "sellerApprovedAt"
+  | "sellerRejectedAt"
+  | "sellerRejectionNote"
+  | "adminInvitedAt"
+  | "createdByAdminId"
+  | "createdByAdmin"
+  | "usersCreatedByAdmin"
 >;
 
 // Extend the Request interface to include user data

@@ -6,6 +6,7 @@ import {
   PaymentStatus,
   DisputeStatus,
   WalletLedgerType,
+  SellerApprovalStatus,
 } from "./src/generated/prisma/index";
 
 export * from "./src/generated/prisma/index";
