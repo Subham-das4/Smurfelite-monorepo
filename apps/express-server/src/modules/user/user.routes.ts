@@ -18,7 +18,6 @@ import {
   deleteUserController,
   delistSellerController,
   reactivateSellerController,
-  promoteSellerController,
 } from "./user.controller.js";
 
 const router = Router();
@@ -48,13 +47,6 @@ router.get(
 
 // GET /api/users/:userId — user detail (admin only)
 router.get("/:userId", authorize([Role.ADMIN]), getUserByIdController);
-
-// PATCH /api/users/:userId/promote-seller — admin promotes buyer to seller (+ wallet)
-router.patch(
-  "/:userId/promote-seller",
-  authorize([Role.ADMIN]),
-  promoteSellerController
-);
 
 // PATCH /api/users/:userId/delist — admin delist seller + cascade products
 router.patch(

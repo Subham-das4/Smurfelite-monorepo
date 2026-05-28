@@ -23,9 +23,7 @@ Seller portal for listing and managing game accounts.
 - BUYER/ADMIN tokens: logout + toast (“Seller account required. Contact support.”)
 - Product mutations scoped to `sellerId === currentUser.id` (API + `verifySeller`)
 
-**Onboarding (Phase 7 — current):** User registers as BUYER on nextjs-app → admin promotes via `PATCH /users/:id/promote-seller` → seller logs in here.
-
-**Onboarding (Phase 10 — planned):**
+**Onboarding (Phase 10):**
 
 ```mermaid
 flowchart LR

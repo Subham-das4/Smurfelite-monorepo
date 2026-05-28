@@ -258,6 +258,13 @@ export const updateUserRole = async (userId: string, role: Role) => {
     );
   }
 
+  if (role === Role.SELLER) {
+    throw new ApiError(
+      "Seller accounts are created via seller apply or POST /sellers.",
+      400
+    );
+  }
+
   if (!Object.values(Role).includes(role)) {
     throw new ApiError(
       `Invalid role. Must be one of: ${Object.values(Role).join(", ")}`,
@@ -274,15 +281,7 @@ export const updateUserRole = async (userId: string, role: Role) => {
     select: { id: true, email: true, name: true, role: true },
   });
 
-  if (role === Role.SELLER) {
-    await ensureSellerWallet(userId);
-  }
-
   return updated;
-};
-
-export const promoteUserToSeller = async (userId: string) => {
-  return updateUserRole(userId, Role.SELLER);
 };
 
 export const delistSellerByAdmin = async (userId: string) => {

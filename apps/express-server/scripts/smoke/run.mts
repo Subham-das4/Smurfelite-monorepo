@@ -27,6 +27,7 @@ import { runPhase10_2 } from "./phases/phase-10_2.mts";
 import { runPhase10_3 } from "./phases/phase-10_3.mts";
 import { runPhase10_4 } from "./phases/phase-10_4.mts";
 import { runPhase10_5 } from "./phases/phase-10_5.mts";
+import { runPhase10_5_3_4 } from "./phases/phase-10_5_3-4.mts";
 
 export type SmokePhase =
   | "1"
@@ -52,7 +53,8 @@ export type SmokePhase =
   | "10.2"
   | "10.3"
   | "10.4"
-  | "10.5";
+  | "10.5"
+  | "10.5.3-4";
 
 const PHASE_ORDER: SmokePhase[] = [
   "1",
@@ -79,6 +81,7 @@ const PHASE_ORDER: SmokePhase[] = [
   "10.3",
   "10.4",
   "10.5",
+  "10.5.3-4",
 ];
 
 const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
@@ -106,6 +109,7 @@ const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
   "10.3": runPhase10_3,
   "10.4": runPhase10_4,
   "10.5": runPhase10_5,
+  "10.5.3-4": runPhase10_5_3_4,
 };
 
 function printUsage(): void {
@@ -141,6 +145,7 @@ Phases:
   10.3 Portal auth APIs — split login, isolated password reset, register guard
   10.4 Admin provisioning — POST/GET/DELETE /admins, role patch lockdown
   10.5 Seller apply & admin seller API — apply, invite, approve, reject
+  10.5.3-4 Promote removal + storefront listing gate
 
 Examples:
   pnpm smoke:through-1      # Phase 1 only
@@ -178,6 +183,8 @@ Examples:
   pnpm smoke:through-10.4   # Phase 1 through 10.4
   pnpm smoke:phase-10.5     # Phase 10.5 only (seller apply & approval API)
   pnpm smoke:through-10.5   # Phase 1 through 10.5
+  pnpm smoke:phase-10.5.3-4 # Phase 10.5.3-4 only (listing gate)
+  pnpm smoke:through-10.5.3-4 # Phase 1 through 10.5.3-4
 
 Environment:
   SMOKE_API_BASE     API base URL (default: http://localhost:\${PORT}/api)

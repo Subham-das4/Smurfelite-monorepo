@@ -49,13 +49,6 @@ export const usersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Users", "User"],
     }),
-    promoteSeller: builder.mutation<User, string>({
-      query: (userId) => ({
-        url: `/users/${userId}/promote-seller`,
-        method: "PATCH",
-      }),
-      invalidatesTags: ["Users", "User", "Wallets"],
-    }),
     delistSeller: builder.mutation<User, string>({
       query: (userId) => ({
         url: `/users/${userId}/delist`,
@@ -82,7 +75,6 @@ export const {
   useGetUserQuery,
   useGetUserProductsQuery,
   useUpdateRoleMutation,
-  usePromoteSellerMutation,
   useDelistSellerMutation,
   useReactivateSellerMutation,
   useDeleteUserMutation,

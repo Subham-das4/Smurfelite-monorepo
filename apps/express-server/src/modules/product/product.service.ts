@@ -27,6 +27,7 @@ function maskSensitiveFields<T extends Record<string, unknown>>(product: T) {
   };
 }
 
+/** Portal listing guard — delisted sellers cannot publish. Public storefront visibility uses PUBLIC_LISTABLE_PRODUCT_WHERE (seller approval). */
 async function assertSellerCanList(sellerId: string) {
   const seller = await prisma.user.findUnique({
     where: { id: sellerId },
@@ -259,20 +260,16 @@ export async function getProductDetails(
   productId: string,
   decryptData: boolean = false
 ) {
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
+  const product = await prisma.product.findFirst({
+    where: { id: productId, ...PUBLIC_LISTABLE_PRODUCT_WHERE },
+    include: {
+      seller: {
+        select: { sellerApprovalStatus: true, sellerDelisted: true },
+      },
+    },
   });
 
   if (!product) throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
-
-  if (
-    product.status !== ProductStatus.ACTIVE ||
-    product.sellerDelisted ||
-    !product.isAvailable ||
-    product.deletedAt
-  ) {
-    throw new ApiError(ProductErrors.PRODUCT_NOT_FOUND, 404);
-  }
 
   if (!Buffer.isBuffer(product.accountEmail)) {
     if (product.accountEmail instanceof Uint8Array) {
@@ -297,8 +294,11 @@ export async function getProductDetails(
     delete (product as Record<string, unknown>).accountEmailPassword;
   }
 
+  const { seller, ...productFields } = product;
+
   return {
-    ...product,
+    ...productFields,
+    sellerApprovalStatus: seller.sellerApprovalStatus,
     ...decryptedCredentials,
   };
 }
@@ -451,7 +451,7 @@ export async function getAllProducts(filters: ProductFilters) {
 
   orderBy.push({ createdAt: "desc" });
 
-  const [products, totalCount] = await prisma.$transaction([
+  const [rows, totalCount] = await prisma.$transaction([
     prisma.product.findMany({
       skip: skip,
       take: take,
@@ -473,11 +473,19 @@ export async function getAllProducts(filters: ProductFilters) {
         platform: true,
         createdAt: true,
         updatedAt: true,
+        seller: {
+          select: { sellerApprovalStatus: true, sellerDelisted: true },
+        },
       },
       orderBy: orderBy,
     }),
     prisma.product.count({ where: where }),
   ]);
+
+  const products = rows.map(({ seller, ...product }) => ({
+    ...product,
+    sellerApprovalStatus: seller.sellerApprovalStatus,
+  }));
 
   const totalPages = Math.ceil(totalCount / pageSize);
 

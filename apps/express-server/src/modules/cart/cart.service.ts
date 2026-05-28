@@ -2,6 +2,7 @@ import prisma from "../../lib/prisma.js";
 import { CreateCartDTO, GetCartQueryReturn } from "../../types/cart.types.js";
 import { createCartDTO } from "./cart.utils.js";
 import ApiError from "../../utils/errors.js";
+import { PUBLIC_LISTABLE_PRODUCT_WHERE } from "../product/product.constants.js";
 
 export const createCart = async (userId: string) => {
     const cart = await prisma.cart.create({
@@ -46,6 +47,14 @@ export const getCart = async (userId: string): Promise<CreateCartDTO> => {
 export const addToCart = async (userId: string, productId: string) => {
     // Auto-create the cart if it doesn't exist yet
     const cart = await getOrCreateCart(userId);
+
+    const listable = await prisma.product.findFirst({
+        where: { id: productId, ...PUBLIC_LISTABLE_PRODUCT_WHERE },
+        select: { id: true },
+    });
+    if (!listable) {
+        throw new ApiError("Product is not available for purchase.", 400);
+    }
 
     const existing = await prisma.cartItem.findUnique({
         where: { cartId_productId: { cartId: cart.id, productId } },

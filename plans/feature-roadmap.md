@@ -463,15 +463,16 @@ flowchart TB
 
 #### 10.5.3 Deprecate instant promote-seller
 
-- [ ] Remove or repurpose `PATCH /users/:id/promote-seller` → approval flow (410 or internal `PENDING` create)
-- [ ] Remove “Promote to seller” from `UserDetailPage.tsx`; replace with link to `/sellers` queue
+- [x] Remove `PATCH /users/:id/promote-seller` (hard delete; use apply / `POST /sellers`)
+- [x] Block `PATCH /users/:id/role` with `role: SELLER`
+- [x] Remove “Promote to seller” from `UserDetailPage.tsx`; link to `/sellers` for invites
 
 #### 10.5.4 Listing gate (products on Next.js)
 
-- [ ] Extend `PUBLIC_LISTABLE_PRODUCT_WHERE`: `seller.sellerApprovalStatus === APPROVED`
-- [ ] Update `assertSellerCanList`: pending/rejected sellers cannot appear on public storefront (allow DRAFT/ACTIVE in seller portal, hidden publicly)
-- [ ] Align `checkoutAvailability.ts` with API
-- [ ] Smoke: unapproved seller `ACTIVE` product not returned by `GET /products`
+- [x] Extend `PUBLIC_LISTABLE_PRODUCT_WHERE`: `seller.sellerApprovalStatus === APPROVED`
+- [x] `assertSellerCanList` — portal publish only (delist guard); public gate via `PUBLIC_LISTABLE_PRODUCT_WHERE`
+- [x] Align `checkoutAvailability.ts` + `isProductPurchasable` + cart add guard with API
+- [x] Smoke: unapproved seller `ACTIVE` product not returned by `GET /products`
 
 **Depends on:** 10.1, 10.3  
 **Unblocks:** 10.6–10.7

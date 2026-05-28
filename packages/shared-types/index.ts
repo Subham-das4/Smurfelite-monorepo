@@ -258,6 +258,8 @@ export interface ProductListItem {
   price: number;
   status: ProductStatus;
   sellerDelisted: boolean;
+  /** Seller approval for storefront listing (Phase 10.5.4). */
+  sellerApprovalStatus?: SellerApprovalStatus;
   isAvailable: boolean;
   specifications: Record<string, unknown>;
   imageUrl: string | null;

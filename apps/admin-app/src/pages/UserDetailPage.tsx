@@ -6,7 +6,6 @@ import {
   useGetUserQuery,
   useGetUserProductsQuery,
   useUpdateRoleMutation,
-  usePromoteSellerMutation,
   useDelistSellerMutation,
   useReactivateSellerMutation,
   useDeleteUserMutation,
@@ -18,7 +17,6 @@ export function UserDetailPage() {
   const { data: user } = useGetUserQuery(userId);
   const { data: products } = useGetUserProductsQuery({ userId, page: 1 });
   const [updateRole] = useUpdateRoleMutation();
-  const [promote] = usePromoteSellerMutation();
   const [delist] = useDelistSellerMutation();
   const [reactivate] = useReactivateSellerMutation();
   const [deleteUser] = useDeleteUserMutation();
@@ -49,8 +47,11 @@ export function UserDetailPage() {
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {user.role === "BUYER" && (
-            <Button onClick={() => promote(userId).unwrap().then(() => toast.success("Promoted"))}>
-              Promote to seller
+            <Button
+              variant="secondary"
+              onClick={() => navigate({ to: "/sellers" })}
+            >
+              Invite / manage sellers
             </Button>
           )}
           {user.role === "SELLER" && !user.sellerDelisted && (
@@ -63,18 +64,21 @@ export function UserDetailPage() {
               Reactivate seller
             </Button>
           )}
-          <select
-            className="rounded-lg border px-2 py-1 text-sm"
-            value={user.role}
-            onChange={(e) =>
-              updateRole({ userId, role: e.target.value })
-                .unwrap()
-                .then(() => toast.success("Role updated"))
-            }
-          >
-            <option value="BUYER">BUYER</option>
-            <option value="SELLER">SELLER</option>
-          </select>
+          {user.role === "SELLER" && (
+            <select
+              className="rounded-lg border px-2 py-1 text-sm"
+              value={user.role}
+              onChange={(e) => {
+                if (e.target.value !== "BUYER") return;
+                updateRole({ userId, role: e.target.value })
+                  .unwrap()
+                  .then(() => toast.success("Role updated"));
+              }}
+            >
+              <option value="SELLER">SELLER</option>
+              <option value="BUYER">BUYER (demote)</option>
+            </select>
+          )}
           <Button variant="danger" onClick={() => setConfirmDelete(true)}>
             Delete user
           </Button>

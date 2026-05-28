@@ -1,4 +1,4 @@
-import { ProductStatus } from "../../types/prisma.js";
+import { ProductStatus, SellerApprovalStatus } from "../../types/prisma.js";
 
 /** Products visible on the public storefront and eligible for purchase. */
 export const PUBLIC_LISTABLE_PRODUCT_WHERE = {
@@ -6,8 +6,21 @@ export const PUBLIC_LISTABLE_PRODUCT_WHERE = {
   sellerDelisted: false,
   isAvailable: true,
   deletedAt: null,
-  seller: { sellerDelisted: false },
+  seller: {
+    sellerDelisted: false,
+    sellerApprovalStatus: SellerApprovalStatus.APPROVED,
+  },
 } as const;
+
+export function isSellerStorefrontApproved(seller: {
+  sellerDelisted: boolean;
+  sellerApprovalStatus: SellerApprovalStatus;
+}): boolean {
+  return (
+    !seller.sellerDelisted &&
+    seller.sellerApprovalStatus === SellerApprovalStatus.APPROVED
+  );
+}
 
 /** Whether a product can be added to cart or checked out. */
 export function isProductPurchasable(product: {
@@ -15,11 +28,23 @@ export function isProductPurchasable(product: {
   sellerDelisted: boolean;
   isAvailable: boolean;
   transactionBlock: boolean;
+  seller?: {
+    sellerDelisted: boolean;
+    sellerApprovalStatus: SellerApprovalStatus;
+  };
 }): boolean {
-  return (
-    product.status === ProductStatus.ACTIVE &&
-    !product.sellerDelisted &&
-    product.isAvailable &&
-    !product.transactionBlock
-  );
+  if (
+    product.status !== ProductStatus.ACTIVE ||
+    product.sellerDelisted ||
+    !product.isAvailable ||
+    product.transactionBlock
+  ) {
+    return false;
+  }
+
+  if (product.seller && !isSellerStorefrontApproved(product.seller)) {
+    return false;
+  }
+
+  return true;
 }

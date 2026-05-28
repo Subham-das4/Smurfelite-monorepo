@@ -12,5 +12,5 @@ export const changePasswordSchema = z.object({
 });
 
 export const updateRoleSchema = z.object({
-  role: z.enum([Role.BUYER, Role.SELLER]),
+  role: z.enum([Role.BUYER]),
 });

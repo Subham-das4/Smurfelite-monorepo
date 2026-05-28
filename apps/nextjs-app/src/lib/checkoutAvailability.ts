@@ -1,5 +1,5 @@
 import type { ProductListItem } from "@smurfelite/types";
-import { ProductStatus } from "@smurfelite/types";
+import { ProductStatus, SellerApprovalStatus } from "@smurfelite/types";
 
 export interface CheckoutAvailabilityIssue {
   productId: string;
@@ -8,10 +8,15 @@ export interface CheckoutAvailabilityIssue {
 }
 
 export function isProductPurchasableForCheckout(product: ProductListItem): boolean {
+  const sellerApproved =
+    product.sellerApprovalStatus === undefined ||
+    product.sellerApprovalStatus === SellerApprovalStatus.APPROVED;
+
   return (
     product.status === ProductStatus.ACTIVE &&
     !product.sellerDelisted &&
-    product.isAvailable
+    product.isAvailable &&
+    sellerApproved
   );
 }
 
@@ -24,6 +29,12 @@ export function getCheckoutUnavailableReason(product: ProductListItem): string {
   }
   if (product.sellerDelisted) {
     return "Delisted by the seller.";
+  }
+  if (
+    product.sellerApprovalStatus !== undefined &&
+    product.sellerApprovalStatus !== SellerApprovalStatus.APPROVED
+  ) {
+    return "Seller is not approved for storefront listings.";
   }
   if (product.status !== "ACTIVE") {
     return "Not available for purchase.";

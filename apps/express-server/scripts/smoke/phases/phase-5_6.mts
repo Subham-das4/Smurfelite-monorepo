@@ -58,21 +58,26 @@ export async function runPhase5_6(ctx: SmokeContext): Promise<boolean> {
     );
     runner.assert(reg.data.user.role === "BUYER", "registered as BUYER");
 
-    const { data } = await apiRequest<{ id: string; role: string }>(
-      ctx,
-      `/users/${reg.data.user.id}/promote-seller`,
-      {
-        method: "PATCH",
-        token: admin.accessToken,
-        expectStatus: 200,
-      }
-    );
-    runner.assert(data.role === "SELLER", "promoted to SELLER");
+    await apiRequest(ctx, "/auth/seller/apply", {
+      method: "POST",
+      body: {
+        email,
+        password: "testpass123",
+        name: "Smoke Wallet Buyer",
+      },
+      expectStatus: 200,
+    });
+
+    await apiRequest(ctx, `/sellers/${reg.data.user.id}/approve`, {
+      method: "PATCH",
+      token: admin.accessToken,
+      expectStatus: 200,
+    });
 
     const wallet = await prisma.sellerWallet.findUnique({
       where: { userId: reg.data.user.id },
     });
-    runner.assert(wallet, "wallet created on promote-seller");
+    runner.assert(wallet, "wallet should exist after seller apply");
 
     await prisma.verificationToken.deleteMany({
       where: { userId: reg.data.user.id },

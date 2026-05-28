@@ -56,30 +56,40 @@ export async function runPhase5_8(ctx: SmokeContext): Promise<boolean> {
     }
   });
 
-  runner.section("Seller promotion (admin only)");
+  runner.section("Seller onboarding (no promote-seller)");
 
-  await runner.test("PATCH /users/:id/promote-seller creates seller + wallet", async () => {
+  await runner.test("PATCH /users/:id/promote-seller is removed", async () => {
     const user = await prisma.user.findUnique({
       where: { email: uniqueEmail },
       select: { id: true },
     });
     runner.assert(user, "registered user missing");
 
-    const { data } = await apiRequest<{ role: string }>(
-      ctx,
-      `/users/${user!.id}/promote-seller`,
-      {
-        method: "PATCH",
-        token: admin.accessToken,
-        expectStatus: 200,
-      }
+    await apiRequest(ctx, `/users/${user!.id}/promote-seller`, {
+      method: "PATCH",
+      token: admin.accessToken,
+      expectStatus: 404,
+    });
+  });
+
+  await runner.test("POST /auth/seller/apply upgrades buyer to PENDING seller + wallet", async () => {
+    const { data } = await apiRequest<{
+      user: { id: string; role: string; sellerApprovalStatus: string };
+    }>(ctx, "/auth/seller/apply", {
+      method: "POST",
+      body: { email: uniqueEmail, password, name: "Smoke Auth Hardening" },
+      expectStatus: 200,
+    });
+    runner.assert(data.user.role === "SELLER", "expected SELLER role");
+    runner.assert(
+      data.user.sellerApprovalStatus === "PENDING",
+      "expected PENDING approval"
     );
-    runner.assert(data.role === "SELLER", "expected SELLER role");
 
     const wallet = await prisma.sellerWallet.findUnique({
-      where: { userId: user!.id },
+      where: { userId: data.user.id },
     });
-    runner.assert(wallet, "seller wallet should exist after promotion");
+    runner.assert(wallet, "seller wallet should exist after apply");
   });
 
   runner.section("Cleanup");

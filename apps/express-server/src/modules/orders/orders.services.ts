@@ -25,6 +25,11 @@ export const createOrder = async (userId: string, productIds: string[]) => {
   return await prisma.$transaction(async (tx) => {
     const products = await tx.product.findMany({
       where: { id: { in: uniqueIds } },
+      include: {
+        seller: {
+          select: { sellerDelisted: true, sellerApprovalStatus: true },
+        },
+      },
     });
 
     if (products.length !== uniqueIds.length) {
