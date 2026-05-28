@@ -9,11 +9,13 @@ import {
   MdHelpOutline,
   MdReportProblem,
   MdCancel,
+  MdCurrencyBitcoin,
 } from "react-icons/md";
 import { toast } from "react-toastify";
 import { OrderStatus } from "@smurfelite/types";
-import { useCancelOrderMutation } from "@/api";
+import { useCancelOrderMutation, useCreateNowPaymentsInvoiceMutation } from "@/api";
 import { getApiErrorMessage } from "@/lib/apiError";
+import { payOrderWithCrypto } from "@/lib/payWithCrypto";
 import type { OrderStatus as OrderStatusType } from "./types";
 
 interface MenuItem {
@@ -32,7 +34,9 @@ function getMenuItems(
   handlers: {
     onViewCredentials: () => void;
     onCancel: () => void;
+    onPayWithCrypto: () => void;
     isCancelling: boolean;
+    isPaying: boolean;
   }
 ): MenuItem[] {
   const items: MenuItem[] = [
@@ -65,13 +69,21 @@ function getMenuItems(
   });
 
   if (status === OrderStatus.PENDING) {
-    items.push({
-      label: handlers.isCancelling ? "Cancelling…" : "Cancel Order",
-      icon: <MdCancel className="text-base shrink-0" />,
-      onClick: handlers.onCancel,
-      variant: "danger",
-      disabled: handlers.isCancelling,
-    });
+    items.push(
+      {
+        label: handlers.isPaying ? "Starting payment…" : "Pay with crypto",
+        icon: <MdCurrencyBitcoin className="text-base shrink-0" />,
+        onClick: handlers.onPayWithCrypto,
+        disabled: handlers.isPaying || handlers.isCancelling,
+      },
+      {
+        label: handlers.isCancelling ? "Cancelling…" : "Cancel Order",
+        icon: <MdCancel className="text-base shrink-0" />,
+        onClick: handlers.onCancel,
+        variant: "danger",
+        disabled: handlers.isCancelling || handlers.isPaying,
+      }
+    );
   }
 
   return items;
@@ -93,6 +105,8 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
+  const [createInvoice, { isLoading: isPaying }] =
+    useCreateNowPaymentsInvoiceMutation();
 
   useEffect(() => {
     if (!open) return;
@@ -122,10 +136,18 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
     }
   };
 
+  const handlePayWithCrypto = () => {
+    void payOrderWithCrypto(orderId, (args) =>
+      createInvoice(args).unwrap()
+    );
+  };
+
   const menuItems = getMenuItems(orderId, productId, status, {
     onViewCredentials: () => onViewCredentials(orderId),
     onCancel: () => void handleCancel(),
+    onPayWithCrypto: handlePayWithCrypto,
     isCancelling,
+    isPaying,
   });
 
   return (

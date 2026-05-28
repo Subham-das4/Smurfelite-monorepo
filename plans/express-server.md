@@ -237,8 +237,14 @@ From `prisma/schema.prisma`:
 
 ### NOWPayments (`payments/nowpayments/`)
 
-- Creates invoice for order total (USD)
-- IPN callback updates to PROCESSING on `payment_status === "finished"`
+- Creates invoice for order total (USD); stores `nowpaymentsInvoiceId` on the order
+- IPN (`POST /api/payments/nowpayments/ipn`, HMAC verified):
+  - `finished` / `confirmed` / `paid` → `paymentStatus: PAID`, fulfill to `COMPLETED` (credentials email, wallet credit)
+  - `failed` / `expired` → `paymentStatus: FAILED`, `CANCELLED`, release `transactionBlock`
+  - `refunded` / `chargeback` on `COMPLETED` → `REFUNDED` (wallet reversal deferred)
+  - `waiting` / `confirming` / etc. → no-op
+- IPN sets `nowpaymentsPaymentId` without overwriting `nowpaymentsInvoiceId`
+- Pending order expiry (inline + cron) sets `paymentStatus: FAILED` when auto-cancelled
 
 ---
 

@@ -1,5 +1,6 @@
 import {
   OrderStatus,
+  PaymentStatus,
   type Prisma,
   type PrismaClient,
 } from "@smurfelite/types/src/generated/prisma/index.js";
@@ -23,7 +24,10 @@ async function cancelPendingOrderInTx(
 
   return tx.order.update({
     where: { id: order.id },
-    data: { status: OrderStatus.CANCELLED },
+    data: {
+      status: OrderStatus.CANCELLED,
+      paymentStatus: PaymentStatus.FAILED,
+    },
   });
 }
 

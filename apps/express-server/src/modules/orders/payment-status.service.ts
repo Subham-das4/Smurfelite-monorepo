@@ -1,9 +1,7 @@
 import { OrderStatus, PaymentStatus } from "../../types/prisma.js";
 import { prisma } from "../../lib/prisma.js";
-import {
-  mapIpnPaymentStatus,
-  orderStatusForPaymentUpdate,
-} from "../../lib/payment-status.js";
+import { orderStatusForPaymentUpdate } from "../../lib/payment-status.js";
+import { handleIpnPaymentStatus } from "./payment-lifecycle.service.js";
 
 export async function applyOrderPaymentStatusUpdate(
   orderId: string,
@@ -11,6 +9,7 @@ export async function applyOrderPaymentStatusUpdate(
   options?: {
     paymentProvider?: string;
     paymentIntent?: string;
+    nowpaymentsPaymentId?: string;
     orderStatus?: OrderStatus;
   }
 ) {
@@ -32,31 +31,30 @@ export async function applyOrderPaymentStatusUpdate(
       ...(options?.paymentIntent
         ? { paymentIntent: options.paymentIntent }
         : {}),
+      ...(options?.nowpaymentsPaymentId
+        ? { nowpaymentsPaymentId: options.nowpaymentsPaymentId }
+        : {}),
     },
   });
 }
 
+/** @deprecated Prefer handleIpnPaymentStatus — delegates to payment lifecycle. */
 export async function applyIpnPaymentStatus(
   orderId: string,
   rawPaymentStatus: string | null,
-  options?: { paymentProvider?: string; paymentIntent?: string }
-) {
-  const paymentStatus = mapIpnPaymentStatus(rawPaymentStatus);
-  if (!paymentStatus) return null;
-
-  const order = await prisma.order.findUnique({ where: { id: orderId } });
-  if (!order) return null;
-
-  if (
-    order.status === OrderStatus.COMPLETED ||
-    order.status === OrderStatus.CANCELLED ||
-    order.status === OrderStatus.REFUNDED
-  ) {
-    if (paymentStatus === PaymentStatus.PAID && order.paymentStatus !== PaymentStatus.PAID) {
-      return applyOrderPaymentStatusUpdate(orderId, PaymentStatus.PAID, options);
-    }
-    return order;
+  options?: {
+    paymentProvider?: string;
+    paymentIntent?: string;
+    nowpaymentsPaymentId?: string;
   }
+) {
+  const legacyOptions = options?.paymentIntent
+    ? {
+        ...options,
+        nowpaymentsPaymentId:
+          options.nowpaymentsPaymentId ?? options.paymentIntent,
+      }
+    : options;
 
-  return applyOrderPaymentStatusUpdate(orderId, paymentStatus, options);
+  return handleIpnPaymentStatus(orderId, rawPaymentStatus, legacyOptions);
 }

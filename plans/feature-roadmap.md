@@ -588,10 +588,10 @@ After E2E passes with bypass.
 
 ### 9.1 NOWPayments hardening
 
-- [ ] Handle IPN: failed, expired, refunded statuses
-- [ ] Map to `PaymentStatus` + order cancel where appropriate
-- [ ] Payment retry UI on orders page for PENDING orders
-- [ ] Separate `invoiceId` vs `paymentId` fields on Order
+- [x] Handle IPN: failed, expired, refunded statuses
+- [x] Map to `PaymentStatus` + order cancel where appropriate
+- [x] Payment retry UI on orders page for PENDING orders
+- [x] Separate `invoiceId` vs `paymentId` fields on Order
 
 ### 9.2 Production readiness
 

@@ -4,6 +4,8 @@ import ApiError from "../../../utils/errors.js";
 import logger from "../../../utils/logger.js";
 import { createInvoice, NowPaymentsApiError } from "./nowpayments.client.js";
 import { verifyNowPaymentsIpnSignature } from "./nowpayments.verify.js";
+import { handleIpnPaymentStatus } from "../../orders/payment-lifecycle.service.js";
+import { mapIpnPaymentStatus } from "../../../lib/payment-status.js";
 
 function getPublicApiBase(): string {
   const raw = process.env.PUBLIC_API_BASE_URL?.trim();
@@ -87,7 +89,7 @@ export async function createInvoiceForOrder(
   await prisma.order.update({
     where: { id: orderId },
     data: {
-      paymentIntent: invoiceId,
+      nowpaymentsInvoiceId: invoiceId,
       paymentProvider: "nowpayments",
     },
   });
@@ -128,8 +130,16 @@ export async function processNowPaymentsIpn(
     return;
   }
 
-  const paymentStatus = getPaymentStatus(payload);
+  const rawPaymentStatus = getPaymentStatus(payload);
   const paymentId = getPaymentIdString(payload);
+  const mapped = mapIpnPaymentStatus(rawPaymentStatus);
+
+  if (!mapped) {
+    logger.info(
+      `NOWPayments IPN: order ${orderId} unmapped status=${rawPaymentStatus ?? "null"}`
+    );
+    return;
+  }
 
   const order = await prisma.order.findUnique({ where: { id: orderId } });
   if (!order) {
@@ -138,21 +148,18 @@ export async function processNowPaymentsIpn(
   }
 
   if (
-    order.status === OrderStatus.PROCESSING ||
-    order.status === OrderStatus.COMPLETED ||
     order.status === OrderStatus.CANCELLED ||
     order.status === OrderStatus.REFUNDED
   ) {
+    logger.info(
+      `NOWPayments IPN: order ${orderId} terminal status ${order.status}, ignoring`
+    );
     return;
   }
 
-  const { applyIpnPaymentStatus } = await import(
-    "../../orders/payment-status.service.js"
-  );
-
-  const updated = await applyIpnPaymentStatus(orderId, paymentStatus, {
+  const updated = await handleIpnPaymentStatus(orderId, rawPaymentStatus, {
     paymentProvider: "nowpayments",
-    paymentIntent: paymentId ?? undefined,
+    nowpaymentsPaymentId: paymentId ?? undefined,
   });
 
   if (updated) {

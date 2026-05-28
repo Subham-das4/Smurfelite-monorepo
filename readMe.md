@@ -16,7 +16,7 @@ Database:
 4. Buyer flow: `POST /api/orders` then `POST /api/payments/nowpayments/create-invoice` with `{ "internalOrderId": "<uuid>" }`; redirect the browser to `invoiceUrl`.
 5. Production: switch `NOWPAYMENTS_API_BASE_URL` to `https://api.nowpayments.io/v1` and use production API keys.
 
-Manual checks: valid signature + `payment_status` `finished` moves order to `PROCESSING`; invalid signature returns `401`; duplicate IPN is idempotent; cancel URL returns the user to `/checkout/cancel`.
+Manual checks: valid signature + `payment_status` `finished` fulfills order to `COMPLETED`; `failed`/`expired` cancels and unlocks products; `refunded` on completed order sets `REFUNDED`; invalid signature returns `401`; duplicate IPN is idempotent; PENDING orders on `/orders` can retry via Pay with crypto; cancel URL returns the user to `/checkout/cancel`.
 
 <!-- ****************************************** -->
 <!-- ****************************************** -->

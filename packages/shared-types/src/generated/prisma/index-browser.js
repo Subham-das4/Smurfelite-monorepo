@@ -226,6 +226,8 @@ exports.Prisma.OrderScalarFieldEnum = {
   paymentStatus: 'paymentStatus',
   totalAmount: 'totalAmount',
   paymentIntent: 'paymentIntent',
+  nowpaymentsInvoiceId: 'nowpaymentsInvoiceId',
+  nowpaymentsPaymentId: 'nowpaymentsPaymentId',
   paymentProvider: 'paymentProvider',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

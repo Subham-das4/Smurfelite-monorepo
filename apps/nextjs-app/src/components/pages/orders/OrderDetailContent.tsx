@@ -9,8 +9,10 @@ import { OrderStatus } from "@smurfelite/types";
 import {
   useGetOrderByIdQuery,
   useCancelOrderMutation,
+  useCreateNowPaymentsInvoiceMutation,
 } from "@/api";
 import { getApiErrorMessage } from "@/lib/apiError";
+import { payOrderWithCrypto } from "@/lib/payWithCrypto";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { OrderCredentialsModal } from "./OrderCredentialsModal";
 
@@ -19,6 +21,8 @@ export function OrderDetailContent() {
   const orderId = params.orderId;
   const { data: order, isLoading, isError } = useGetOrderByIdQuery(orderId);
   const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
+  const [createInvoice, { isLoading: isPaying }] =
+    useCreateNowPaymentsInvoiceMutation();
   const [credentialsOpen, setCredentialsOpen] = useState(false);
 
   const handleCancel = async () => {
@@ -125,14 +129,28 @@ export function OrderDetailContent() {
 
         <div className="flex flex-wrap gap-3">
           {order.status === OrderStatus.PENDING && (
-            <button
-              type="button"
-              onClick={handleCancel}
-              disabled={isCancelling}
-              className="px-5 py-2.5 rounded-xl font-bold text-sm text-rose-600 border border-rose-200 hover:bg-rose-50 disabled:opacity-60"
-            >
-              {isCancelling ? "Cancelling…" : "Cancel order"}
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() =>
+                  void payOrderWithCrypto(orderId, (args) =>
+                    createInvoice(args).unwrap()
+                  )
+                }
+                disabled={isPaying || isCancelling}
+                className="px-5 py-2.5 rounded-xl font-bold text-sm bg-primary text-white hover:bg-primary/90 disabled:opacity-60"
+              >
+                {isPaying ? "Starting payment…" : "Pay with crypto"}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                disabled={isCancelling || isPaying}
+                className="px-5 py-2.5 rounded-xl font-bold text-sm text-rose-600 border border-rose-200 hover:bg-rose-50 disabled:opacity-60"
+              >
+                {isCancelling ? "Cancelling…" : "Cancel order"}
+              </button>
+            </>
           )}
           {order.status === OrderStatus.COMPLETED && (
             <>

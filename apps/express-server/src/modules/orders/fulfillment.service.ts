@@ -35,9 +35,14 @@ export async function fulfillOrder(
       return order;
     }
 
-    if (order.status !== OrderStatus.PENDING) {
+    const canFulfill =
+      order.status === OrderStatus.PENDING ||
+      (order.status === OrderStatus.PROCESSING &&
+        order.paymentStatus === PaymentStatus.PAID);
+
+    if (!canFulfill) {
       throw new ApiError(
-        "Only PENDING orders can be fulfilled.",
+        "Only PENDING or paid PROCESSING orders can be fulfilled.",
         400
       );
     }

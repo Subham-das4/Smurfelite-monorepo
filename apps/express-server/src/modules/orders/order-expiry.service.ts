@@ -1,4 +1,4 @@
-import { OrderStatus, Prisma } from "../../types/prisma.js";
+import { OrderStatus, PaymentStatus, Prisma } from "../../types/prisma.js";
 import { prisma } from "../../lib/prisma.js";
 import {
   getPendingOrderExpiryCutoff,
@@ -31,7 +31,10 @@ async function cancelPendingOrderInTx(
 
   return tx.order.update({
     where: { id: order.id },
-    data: { status: OrderStatus.CANCELLED },
+    data: {
+      status: OrderStatus.CANCELLED,
+      paymentStatus: PaymentStatus.FAILED,
+    },
   });
 }
 

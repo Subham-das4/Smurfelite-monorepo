@@ -369,6 +369,8 @@ export interface OrderResponse {
   paymentStatus: PaymentStatus;
   totalAmount: number;
   paymentIntent: string | null;
+  nowpaymentsInvoiceId: string | null;
+  nowpaymentsPaymentId: string | null;
   paymentProvider: string | null;
   buyerId: string;
   createdAt: string;

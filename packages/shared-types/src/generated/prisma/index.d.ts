@@ -13052,6 +13052,8 @@ export namespace Prisma {
     paymentStatus: $Enums.PaymentStatus | null
     totalAmount: number | null
     paymentIntent: string | null
+    nowpaymentsInvoiceId: string | null
+    nowpaymentsPaymentId: string | null
     paymentProvider: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13064,6 +13066,8 @@ export namespace Prisma {
     paymentStatus: $Enums.PaymentStatus | null
     totalAmount: number | null
     paymentIntent: string | null
+    nowpaymentsInvoiceId: string | null
+    nowpaymentsPaymentId: string | null
     paymentProvider: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13076,6 +13080,8 @@ export namespace Prisma {
     paymentStatus: number
     totalAmount: number
     paymentIntent: number
+    nowpaymentsInvoiceId: number
+    nowpaymentsPaymentId: number
     paymentProvider: number
     createdAt: number
     updatedAt: number
@@ -13098,6 +13104,8 @@ export namespace Prisma {
     paymentStatus?: true
     totalAmount?: true
     paymentIntent?: true
+    nowpaymentsInvoiceId?: true
+    nowpaymentsPaymentId?: true
     paymentProvider?: true
     createdAt?: true
     updatedAt?: true
@@ -13110,6 +13118,8 @@ export namespace Prisma {
     paymentStatus?: true
     totalAmount?: true
     paymentIntent?: true
+    nowpaymentsInvoiceId?: true
+    nowpaymentsPaymentId?: true
     paymentProvider?: true
     createdAt?: true
     updatedAt?: true
@@ -13122,6 +13132,8 @@ export namespace Prisma {
     paymentStatus?: true
     totalAmount?: true
     paymentIntent?: true
+    nowpaymentsInvoiceId?: true
+    nowpaymentsPaymentId?: true
     paymentProvider?: true
     createdAt?: true
     updatedAt?: true
@@ -13221,6 +13233,8 @@ export namespace Prisma {
     paymentStatus: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent: string | null
+    nowpaymentsInvoiceId: string | null
+    nowpaymentsPaymentId: string | null
     paymentProvider: string | null
     createdAt: Date
     updatedAt: Date
@@ -13252,6 +13266,8 @@ export namespace Prisma {
     paymentStatus?: boolean
     totalAmount?: boolean
     paymentIntent?: boolean
+    nowpaymentsInvoiceId?: boolean
+    nowpaymentsPaymentId?: boolean
     paymentProvider?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13269,6 +13285,8 @@ export namespace Prisma {
     paymentStatus?: boolean
     totalAmount?: boolean
     paymentIntent?: boolean
+    nowpaymentsInvoiceId?: boolean
+    nowpaymentsPaymentId?: boolean
     paymentProvider?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13282,6 +13300,8 @@ export namespace Prisma {
     paymentStatus?: boolean
     totalAmount?: boolean
     paymentIntent?: boolean
+    nowpaymentsInvoiceId?: boolean
+    nowpaymentsPaymentId?: boolean
     paymentProvider?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13295,13 +13315,15 @@ export namespace Prisma {
     paymentStatus?: boolean
     totalAmount?: boolean
     paymentIntent?: boolean
+    nowpaymentsInvoiceId?: boolean
+    nowpaymentsPaymentId?: boolean
     paymentProvider?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     buyerId?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "paymentStatus" | "totalAmount" | "paymentIntent" | "paymentProvider" | "createdAt" | "updatedAt" | "buyerId", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "paymentStatus" | "totalAmount" | "paymentIntent" | "nowpaymentsInvoiceId" | "nowpaymentsPaymentId" | "paymentProvider" | "createdAt" | "updatedAt" | "buyerId", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     buyer?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
@@ -13330,6 +13352,8 @@ export namespace Prisma {
       paymentStatus: $Enums.PaymentStatus
       totalAmount: number
       paymentIntent: string | null
+      nowpaymentsInvoiceId: string | null
+      nowpaymentsPaymentId: string | null
       paymentProvider: string | null
       createdAt: Date
       updatedAt: Date
@@ -13766,6 +13790,8 @@ export namespace Prisma {
     readonly paymentStatus: FieldRef<"Order", 'PaymentStatus'>
     readonly totalAmount: FieldRef<"Order", 'Float'>
     readonly paymentIntent: FieldRef<"Order", 'String'>
+    readonly nowpaymentsInvoiceId: FieldRef<"Order", 'String'>
+    readonly nowpaymentsPaymentId: FieldRef<"Order", 'String'>
     readonly paymentProvider: FieldRef<"Order", 'String'>
     readonly createdAt: FieldRef<"Order", 'DateTime'>
     readonly updatedAt: FieldRef<"Order", 'DateTime'>
@@ -20090,6 +20116,8 @@ export namespace Prisma {
     paymentStatus: 'paymentStatus',
     totalAmount: 'totalAmount',
     paymentIntent: 'paymentIntent',
+    nowpaymentsInvoiceId: 'nowpaymentsInvoiceId',
+    nowpaymentsPaymentId: 'nowpaymentsPaymentId',
     paymentProvider: 'paymentProvider',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -21123,6 +21151,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
     totalAmount?: FloatFilter<"Order"> | number
     paymentIntent?: StringNullableFilter<"Order"> | string | null
+    nowpaymentsInvoiceId?: StringNullableFilter<"Order"> | string | null
+    nowpaymentsPaymentId?: StringNullableFilter<"Order"> | string | null
     paymentProvider?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
@@ -21139,6 +21169,8 @@ export namespace Prisma {
     paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrderInput | SortOrder
+    nowpaymentsInvoiceId?: SortOrderInput | SortOrder
+    nowpaymentsPaymentId?: SortOrderInput | SortOrder
     paymentProvider?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21152,6 +21184,8 @@ export namespace Prisma {
   export type OrderWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     paymentIntent?: string
+    nowpaymentsInvoiceId?: string
+    nowpaymentsPaymentId?: string
     AND?: OrderWhereInput | OrderWhereInput[]
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
@@ -21166,7 +21200,7 @@ export namespace Prisma {
     items?: OrderItemListRelationFilter
     disputes?: DisputeListRelationFilter
     walletEntries?: WalletLedgerListRelationFilter
-  }, "id" | "paymentIntent">
+  }, "id" | "paymentIntent" | "nowpaymentsInvoiceId" | "nowpaymentsPaymentId">
 
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
@@ -21174,6 +21208,8 @@ export namespace Prisma {
     paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrderInput | SortOrder
+    nowpaymentsInvoiceId?: SortOrderInput | SortOrder
+    nowpaymentsPaymentId?: SortOrderInput | SortOrder
     paymentProvider?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21194,6 +21230,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusWithAggregatesFilter<"Order"> | $Enums.PaymentStatus
     totalAmount?: FloatWithAggregatesFilter<"Order"> | number
     paymentIntent?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    nowpaymentsInvoiceId?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    nowpaymentsPaymentId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     paymentProvider?: StringNullableWithAggregatesFilter<"Order"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
@@ -22313,6 +22351,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22328,6 +22368,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22343,6 +22385,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22358,6 +22402,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22373,6 +22419,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22385,6 +22433,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22396,6 +22446,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23551,6 +23603,8 @@ export namespace Prisma {
     paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrder
+    nowpaymentsInvoiceId?: SortOrder
+    nowpaymentsPaymentId?: SortOrder
     paymentProvider?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23567,6 +23621,8 @@ export namespace Prisma {
     paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrder
+    nowpaymentsInvoiceId?: SortOrder
+    nowpaymentsPaymentId?: SortOrder
     paymentProvider?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23579,6 +23635,8 @@ export namespace Prisma {
     paymentStatus?: SortOrder
     totalAmount?: SortOrder
     paymentIntent?: SortOrder
+    nowpaymentsInvoiceId?: SortOrder
+    nowpaymentsPaymentId?: SortOrder
     paymentProvider?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -25711,6 +25769,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -25725,6 +25785,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26129,6 +26191,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
     totalAmount?: FloatFilter<"Order"> | number
     paymentIntent?: StringNullableFilter<"Order"> | string | null
+    nowpaymentsInvoiceId?: StringNullableFilter<"Order"> | string | null
+    nowpaymentsPaymentId?: StringNullableFilter<"Order"> | string | null
     paymentProvider?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
@@ -27883,6 +27947,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27897,6 +27963,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27984,6 +28052,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27998,6 +28068,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28215,6 +28287,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28229,6 +28303,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28423,6 +28499,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28437,6 +28515,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28820,6 +28900,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28834,6 +28916,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28920,6 +29004,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28934,6 +29020,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29027,6 +29115,8 @@ export namespace Prisma {
     paymentStatus?: $Enums.PaymentStatus
     totalAmount: number
     paymentIntent?: string | null
+    nowpaymentsInvoiceId?: string | null
+    nowpaymentsPaymentId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29236,6 +29326,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29250,6 +29342,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29264,6 +29358,8 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

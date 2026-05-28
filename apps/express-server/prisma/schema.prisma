@@ -234,8 +234,10 @@ model Order {
   status          OrderStatus   @default(PENDING)
   paymentStatus   PaymentStatus @default(PENDING)
   totalAmount     Float
-  paymentIntent   String?       @unique // Stripe/PayPal Payment Intent ID
-  paymentProvider String? // e.g., "paypal", "stripe"
+  paymentIntent   String?       @unique // Legacy: Stripe/PayPal external id
+  nowpaymentsInvoiceId String?  @unique
+  nowpaymentsPaymentId String?  @unique
+  paymentProvider String? // e.g., "paypal", "stripe", "nowpayments"
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 

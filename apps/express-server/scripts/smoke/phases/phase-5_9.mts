@@ -80,7 +80,7 @@ export async function runPhase5_9(ctx: SmokeContext): Promise<boolean> {
     });
 
     runner.assert(updated?.paymentStatus === PaymentStatus.PAID, "PAID from IPN");
-    runner.assert(updated?.status === OrderStatus.PROCESSING, "PROCESSING from IPN");
+    runner.assert(updated?.status === OrderStatus.COMPLETED, "COMPLETED after IPN fulfill");
 
     await prisma.order.update({
       where: { id: order.id },

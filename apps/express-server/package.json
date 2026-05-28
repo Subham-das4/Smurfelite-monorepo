@@ -61,6 +61,7 @@
     "smoke:through-10.5.3-4": "tsx --env-file=.env scripts/smoke/run.mts through 10.5.3-4",
     "smoke:phase-10.6.4": "tsx --env-file=.env scripts/smoke/run.mts phase 10.6.4",
     "smoke:through-10.6.4": "tsx --env-file=.env scripts/smoke/run.mts through 10.6.4",
+    "smoke:phase-9.1": "tsx --env-file=.env scripts/smoke/run.mts phase 9.1",
     "smoke:phase-10.9": "tsx --env-file=.env scripts/smoke/run.mts phase 10.9",
     "smoke:phase-10": "tsx --env-file=.env scripts/smoke/run.mts phase 10",
     "smoke:through-10": "tsx --env-file=.env scripts/smoke/run.mts phase 10"

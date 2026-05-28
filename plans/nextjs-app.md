@@ -164,6 +164,7 @@ sequenceDiagram
 | `CartContent` | `components/pages/cart/` | Line items + summary |
 | `CheckoutContent` | `components/pages/checkout/` | Main checkout orchestrator |
 | `OrdersContent` | `components/pages/orders/` | Table + filters (live API); auth CTA when logged out |
+| PENDING order actions | `OrderActionMenu`, `OrderDetailContent` | Pay with crypto (invoice retry), cancel |
 | `OrderCredentialsModal` | `components/pages/orders/` | COMPLETED orders — copy credentials |
 | `OrderDetailContent` | `components/pages/orders/` | `/orders/[orderId]` summary + actions |
 | `Contact` | `components/pages/home/` | Enquiry form |

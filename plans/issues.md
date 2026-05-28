@@ -43,24 +43,6 @@ Prioritized list of known bugs, gaps, and technical debt. Update this file as is
 
 ---
 
-### 🔴 ISS-005 — No order fulfillment pipeline
-
-| Field | Value |
-| ----- | ----- |
-| **Severity** | Critical |
-| **Area** | Orders |
-| **Phase fix** | Phase 2 |
-
-**Problem:** NOWPayments IPN only moves order to `PROCESSING`. Nothing transitions to `COMPLETED`, marks products sold, or delivers credentials via email.
-
-**Files:**
-- `apps/express-server/src/modules/payments/nowpayments/nowpayments.service.ts`
-- `apps/express-server/src/modules/orders/orders.services.ts`
-
-**Suggested fix:** Add fulfillment service: `PROCESSING → COMPLETED`, set product `isAvailable: false` / `ProductStatus.SOLD`, send credentials email.
-
----
-
 ### 🔴 ISS-006 — No payment bypass for local E2E testing
 
 | Field | Value |
@@ -76,23 +58,6 @@ Prioritized list of known bugs, gaps, and technical debt. Update this file as is
 - `apps/nextjs-app/src/components/pages/checkout/index.tsx`
 
 **Suggested fix:** Add `PAYMENT_BYPASS=true` env; skip invoice redirect and auto-complete order flow.
-
----
-
-### 🟠 ISS-007 — No payment failure / expiry handling
-
-| Field | Value |
-| ----- | ----- |
-| **Severity** | High |
-| **Area** | Payment / Orders |
-| **Phase fix** | Phase 2 + Phase 8 |
-
-**Problem:** IPN ignores non-`finished` statuses. Stale `PENDING` orders never auto-cancel; `transactionBlock` never released on timeout.
-
-**Files:**
-- `apps/express-server/src/modules/payments/nowpayments/nowpayments.service.ts`
-
-**Suggested fix:** Handle failed/expired IPN; cron job to cancel orders older than N minutes and release locks.
 
 ---
 
@@ -271,22 +236,6 @@ Prioritized list of known bugs, gaps, and technical debt. Update this file as is
 
 ---
 
-### 🟢 ISS-021 — paymentIntent field overloaded
-
-| Field | Value |
-| ----- | ----- |
-| **Severity** | Low |
-| **Area** | Payment |
-| **Phase fix** | Phase 9 |
-
-**Problem:** Stores invoice ID then payment ID on IPN; no separate fields.
-
-**Files:**
-- `apps/express-server/prisma/schema.prisma`
-- `apps/express-server/src/modules/payments/nowpayments/nowpayments.service.ts`
-
----
-
 ## Missing features (not bugs — tracked in roadmap)
 
 These are required by prompt.md but not yet built:
@@ -307,6 +256,18 @@ See [feature-roadmap.md](./feature-roadmap.md).
 ---
 
 ## Resolved issues
+
+### ✅ ISS-005 — No order fulfillment pipeline (2026-05-28, Phase 9.1)
+
+NOWPayments IPN `finished` triggers `fulfillOrder` → `COMPLETED`, products `SOLD`, credentials email, seller wallet credit.
+
+### ✅ ISS-007 — No payment failure / expiry handling (2026-05-28, Phase 9.1)
+
+Failed/expired IPN cancels order, sets `paymentStatus: FAILED`, releases `transactionBlock`. Cron/inline expiry also sets `paymentStatus: FAILED`.
+
+### ✅ ISS-021 — paymentIntent field overloaded (2026-05-28, Phase 9.1)
+
+Order model uses `nowpaymentsInvoiceId` and `nowpaymentsPaymentId`; IPN no longer overwrites invoice id.
 
 ### ✅ ISS-002 — Orders page uses mock data (2026-05-28, Phase 2.4)
 
