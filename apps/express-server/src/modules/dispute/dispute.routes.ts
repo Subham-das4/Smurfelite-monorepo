@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
-import { authenticate, authorize } from "../auth/auth.middleware.js";
+import {
+  authenticate,
+  authorize,
+  authorizeBuyerPortal,
+} from "../auth/auth.middleware.js";
 import { Role } from "../../types/prisma.js";
 import { validate } from "../../utils/validate.js";
 import {
@@ -29,11 +33,12 @@ router.use(authenticate);
 router.post(
   "/",
   disputeLimiter,
+  authorizeBuyerPortal(),
   validate(createDisputeSchema),
   createDisputeController
 );
 
-router.get("/mine", getMyDisputesController);
+router.get("/mine", authorizeBuyerPortal(), getMyDisputesController);
 
 router.get("/", authorize([Role.ADMIN]), getAdminDisputesController);
 

@@ -67,7 +67,7 @@ router.post("/seller/google", authLimiter, validate(googleAuthSchema), sellerGoo
 // Legacy Google — deprecated (delegates to buyer)
 router.post("/google", authLimiter, validate(googleAuthSchema), googleAuthController);
 
-router.post("/refresh", validate(refreshSchema), refreshController);
+router.post("/refresh", authLimiter, validate(refreshSchema), refreshController);
 
 router.get("/verify-email", verifyEmailController);
 

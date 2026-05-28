@@ -69,13 +69,28 @@ apps/express-server/
 | `/email` | Public | Email module status (`GET /status`) |
 | `/logs` | — | Log endpoints |
 
+### Phase 10 portal route guards (10.9)
+
+Middleware helpers in `src/modules/auth/auth.middleware.ts`:
+
+| Helper | DB `role` | `actingAs` | Routes |
+| ------ | --------- | ---------- | ------ |
+| `authorizeBuyerPortal()` | BUYER, SELLER | BUYER | `/cart`, buyer `/orders`, payments invoice, `/disputes` (buyer), `/enquiries/mine` |
+| `authorizeBuyerPortalOrAdmin()` | + ADMIN | BUYER* | `GET /orders/:orderId`, `GET /orders/:orderId/credentials` (*admin bypasses actingAs) |
+| `authorizeSellerPortal()` | SELLER | SELLER | `/products/mine`, product mutations, `/orders/seller`, `/wallets/me` |
+| `authorize([ADMIN])` | ADMIN | — | admin governance, `/products/admin`, ban/lift-ban |
+
+Cross-portal tokens are rejected at middleware (e.g. seller portal token on `GET /cart` → 403). Smoke: `pnpm smoke:phase-10.9`.
+
+CORS: `ALLOWED_CORS_ORIGINS` or `FRONTEND_URLS` (comma-separated). Auth: `POST /auth/refresh` uses `authLimiter`.
+
 ### Products (`/products`)
 
 | Method | Path | Role | Status |
 | ------ | ---- | ---- | ------ |
 | GET | `/` | Public | ✅ Pagination, filters (gameType, price, search, sort) |
 | GET | `/:productId` | Public | ✅ Masks encrypted fields |
-| POST | `/` | SELLER/ADMIN | ✅ Create with encrypted credentials |
+| POST | `/` | SELLER (`actingAs: SELLER`) | ✅ Create with encrypted credentials |
 | PUT | `/:productId` | Owner seller | ✅ Update |
 | DELETE | `/:productId` | Owner seller | ✅ Hard delete |
 

@@ -13,6 +13,17 @@ export type AuthorizeOptions = {
   actingAs?: PrismaNamespace.Role;
 };
 
+/**
+ * Portal authorization helpers (Phase 10.2+):
+ *
+ * | Helper                      | DB role              | actingAs   | Route groups                          |
+ * |-----------------------------|----------------------|------------|---------------------------------------|
+ * | authorizeBuyerPortal        | BUYER, SELLER        | BUYER      | cart, buyer orders, payments, disputes |
+ * | authorizeBuyerPortalOrAdmin | BUYER, SELLER, ADMIN | BUYER*     | order detail/credentials (*admin skip) |
+ * | authorizeSellerPortal       | SELLER               | SELLER     | /products/mine, mutations, wallet/me   |
+ * | authorize([ADMIN])          | ADMIN                | (any)      | admin governance, catalog admin paths  |
+ */
+
 function attachUserFromPayload(
   authReq: AuthenticatedRequest,
   payload: AccessTokenPayload
@@ -116,11 +127,26 @@ export const authorizeBuyerPortal = () =>
     actingAs: PrismaNamespace.Role.BUYER,
   });
 
-/** Seller portal routes. */
+/** Buyer storefront routes plus admin read access (admin bypasses actingAs). */
+export const authorizeBuyerPortalOrAdmin = () =>
+  authorize(
+    [
+      PrismaNamespace.Role.BUYER,
+      PrismaNamespace.Role.SELLER,
+      PrismaNamespace.Role.ADMIN,
+    ],
+    { actingAs: PrismaNamespace.Role.BUYER }
+  );
+
+/** Seller portal routes (SELLER with actingAs SELLER). */
 export const authorizeSellerPortal = () =>
   authorize([PrismaNamespace.Role.SELLER], {
     actingAs: PrismaNamespace.Role.SELLER,
   });
+
+/** Admin panel routes (role ADMIN only). */
+export const authorizeAdminPortal = () =>
+  authorize([PrismaNamespace.Role.ADMIN]);
 
 /**
  * Attaches user context when a valid Bearer token is present.

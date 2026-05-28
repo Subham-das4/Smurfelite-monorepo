@@ -3,6 +3,7 @@ import {
   authenticate,
   authorize,
   authorizeBuyerPortal,
+  authorizeBuyerPortalOrAdmin,
   authorizeSellerPortal,
 } from "../auth/auth.middleware.js";
 import { Role } from "../../types/prisma.js";
@@ -39,15 +40,13 @@ router.get("/all", authorize([Role.ADMIN]), getAllOrdersController);
 // GET /api/orders/seller — Seller sales lines (read-only)
 router.get("/seller", authorizeSellerPortal(), getSellerSalesController);
 
-// GET /api/orders/:orderId — Get single order (buyer owns it or admin)
-router.get("/:orderId", getOrderByIdController);
+// GET /api/orders/:orderId — Get single order (buyer portal or admin)
+router.get("/:orderId", authorizeBuyerPortalOrAdmin(), getOrderByIdController);
 
-// GET /api/orders/:orderId/credentials — Buyer or admin (COMPLETED orders only)
+// GET /api/orders/:orderId/credentials — Buyer portal or admin (COMPLETED orders only)
 router.get(
   "/:orderId/credentials",
-  authorize([Role.BUYER, Role.SELLER, Role.ADMIN], {
-    actingAs: Role.BUYER,
-  }),
+  authorizeBuyerPortalOrAdmin(),
   getOrderCredentialsController
 );
 

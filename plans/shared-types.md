@@ -162,6 +162,7 @@ Regenerate client after schema changes: `pnpm --filter=@smurfelite/express-serve
 - [x] `AccessTokenClaims`, `RefreshTokenRequest`, `RefreshTokenResponse` in `index.ts`
 - [x] `LoginResponse.actingAs` — mirrors access token portal context
 - [x] Server: `auth.token.ts`, `authorizeBuyerPortal` / `authorizeSellerPortal` middleware
+- [x] Route guards (10.9) enforce `actingAs` from access JWT on portal-scoped Express routes
 
 ### pgvector (deferred)
 

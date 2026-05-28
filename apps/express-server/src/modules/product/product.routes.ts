@@ -50,10 +50,7 @@ router.get(
 );
 router.get("/:productId", getProductDetailsController);
 
-router.use(
-  authenticate,
-  authorize([Role.ADMIN, Role.SELLER], { actingAs: Role.SELLER })
-);
+router.use(authenticate, authorizeSellerPortal());
 
 router.post("/", validate(createProductSchema), createProductController);
 

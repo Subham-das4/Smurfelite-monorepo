@@ -530,12 +530,12 @@ flowchart TB
 
 ### 10.9 Route guards & security hardening
 
-- [ ] Audit all `authorize([Role...])` usages: distinguish `role` vs `actingAs` (cart/orders/payments → buyer context)
-- [ ] Seller portal routes: require `actingAs === SELLER` and `role === SELLER`
-- [ ] Admin routes: unchanged `role === ADMIN`
-- [ ] Reject cross-portal token reuse at middleware (seller `actingAs: SELLER` token on cart → 403)
-- [ ] Update CORS if new public routes added
-- [ ] Rate limits on new login/reset endpoints (mirror existing auth limiter)
+- [x] Audit all `authorize([Role...])` usages: distinguish `role` vs `actingAs` (cart/orders/payments → buyer context)
+- [x] Seller portal routes: require `actingAs === SELLER` and `role === SELLER`
+- [x] Admin routes: unchanged `role === ADMIN`
+- [x] Reject cross-portal token reuse at middleware (seller `actingAs: SELLER` token on cart → 403)
+- [x] Update CORS if new public routes added
+- [x] Rate limits on new login/reset endpoints (mirror existing auth limiter)
 
 **Depends on:** 10.2–10.8
 

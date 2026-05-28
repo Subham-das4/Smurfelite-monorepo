@@ -39,6 +39,7 @@ app.use(express.json());
 app.use(cookieParser());
 const corsOrigins = (
   process.env.ALLOWED_CORS_ORIGINS ||
+  process.env.FRONTEND_URLS ||
   "http://localhost:3000,http://localhost:5173,http://localhost:5174"
 )
   .split(",")

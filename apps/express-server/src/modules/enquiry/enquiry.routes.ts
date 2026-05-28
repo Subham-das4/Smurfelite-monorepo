@@ -4,6 +4,7 @@ import {
   authenticate,
   authorize,
   optionalAuthenticate,
+  authorizeBuyerPortal,
 } from "../auth/auth.middleware.js";
 import { Role } from "../../types/prisma.js";
 import { validate } from "../../utils/validate.js";
@@ -36,7 +37,7 @@ router.post(
 );
 
 // GET /api/enquiries/mine — user views their own enquiries
-router.get("/mine", authenticate, getMyEnquiriesController);
+router.get("/mine", authenticate, authorizeBuyerPortal(), getMyEnquiriesController);
 
 // ---- Admin routes ----
 
