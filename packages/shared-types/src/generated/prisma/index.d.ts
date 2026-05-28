@@ -167,6 +167,14 @@ export const SellerApprovalStatus: {
 
 export type SellerApprovalStatus = (typeof SellerApprovalStatus)[keyof typeof SellerApprovalStatus]
 
+
+export const PasswordResetPurpose: {
+  BUYER: 'BUYER',
+  ADMIN: 'ADMIN'
+};
+
+export type PasswordResetPurpose = (typeof PasswordResetPurpose)[keyof typeof PasswordResetPurpose]
+
 }
 
 export type Role = $Enums.Role
@@ -196,6 +204,10 @@ export const WalletLedgerType: typeof $Enums.WalletLedgerType
 export type SellerApprovalStatus = $Enums.SellerApprovalStatus
 
 export const SellerApprovalStatus: typeof $Enums.SellerApprovalStatus
+
+export type PasswordResetPurpose = $Enums.PasswordResetPurpose
+
+export const PasswordResetPurpose: typeof $Enums.PasswordResetPurpose
 
 /**
  * ##  Prisma Client ʲˢ
@@ -5189,6 +5201,7 @@ export namespace Prisma {
     id: string | null
     token: string | null
     userId: string | null
+    purpose: $Enums.PasswordResetPurpose | null
     expiresAt: Date | null
     createdAt: Date | null
   }
@@ -5197,6 +5210,7 @@ export namespace Prisma {
     id: string | null
     token: string | null
     userId: string | null
+    purpose: $Enums.PasswordResetPurpose | null
     expiresAt: Date | null
     createdAt: Date | null
   }
@@ -5205,6 +5219,7 @@ export namespace Prisma {
     id: number
     token: number
     userId: number
+    purpose: number
     expiresAt: number
     createdAt: number
     _all: number
@@ -5215,6 +5230,7 @@ export namespace Prisma {
     id?: true
     token?: true
     userId?: true
+    purpose?: true
     expiresAt?: true
     createdAt?: true
   }
@@ -5223,6 +5239,7 @@ export namespace Prisma {
     id?: true
     token?: true
     userId?: true
+    purpose?: true
     expiresAt?: true
     createdAt?: true
   }
@@ -5231,6 +5248,7 @@ export namespace Prisma {
     id?: true
     token?: true
     userId?: true
+    purpose?: true
     expiresAt?: true
     createdAt?: true
     _all?: true
@@ -5312,6 +5330,7 @@ export namespace Prisma {
     id: string
     token: string
     userId: string
+    purpose: $Enums.PasswordResetPurpose
     expiresAt: Date
     createdAt: Date
     _count: PasswordResetTokenCountAggregateOutputType | null
@@ -5337,6 +5356,7 @@ export namespace Prisma {
     id?: boolean
     token?: boolean
     userId?: boolean
+    purpose?: boolean
     expiresAt?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -5346,6 +5366,7 @@ export namespace Prisma {
     id?: boolean
     token?: boolean
     userId?: boolean
+    purpose?: boolean
     expiresAt?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -5355,6 +5376,7 @@ export namespace Prisma {
     id?: boolean
     token?: boolean
     userId?: boolean
+    purpose?: boolean
     expiresAt?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -5364,11 +5386,12 @@ export namespace Prisma {
     id?: boolean
     token?: boolean
     userId?: boolean
+    purpose?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }
 
-  export type PasswordResetTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "token" | "userId" | "expiresAt" | "createdAt", ExtArgs["result"]["passwordResetToken"]>
+  export type PasswordResetTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "token" | "userId" | "purpose" | "expiresAt" | "createdAt", ExtArgs["result"]["passwordResetToken"]>
   export type PasswordResetTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -5388,6 +5411,7 @@ export namespace Prisma {
       id: string
       token: string
       userId: string
+      purpose: $Enums.PasswordResetPurpose
       expiresAt: Date
       createdAt: Date
     }, ExtArgs["result"]["passwordResetToken"]>
@@ -5817,6 +5841,7 @@ export namespace Prisma {
     readonly id: FieldRef<"PasswordResetToken", 'String'>
     readonly token: FieldRef<"PasswordResetToken", 'String'>
     readonly userId: FieldRef<"PasswordResetToken", 'String'>
+    readonly purpose: FieldRef<"PasswordResetToken", 'PasswordResetPurpose'>
     readonly expiresAt: FieldRef<"PasswordResetToken", 'DateTime'>
     readonly createdAt: FieldRef<"PasswordResetToken", 'DateTime'>
   }
@@ -19971,6 +19996,7 @@ export namespace Prisma {
     id: 'id',
     token: 'token',
     userId: 'userId',
+    purpose: 'purpose',
     expiresAt: 'expiresAt',
     createdAt: 'createdAt'
   };
@@ -20251,6 +20277,20 @@ export namespace Prisma {
    * Reference to a field of type 'SellerApprovalStatus[]'
    */
   export type ListEnumSellerApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SellerApprovalStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PasswordResetPurpose'
+   */
+  export type EnumPasswordResetPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PasswordResetPurpose'>
+    
+
+
+  /**
+   * Reference to a field of type 'PasswordResetPurpose[]'
+   */
+  export type ListEnumPasswordResetPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PasswordResetPurpose[]'>
     
 
 
@@ -20598,6 +20638,7 @@ export namespace Prisma {
     id?: StringFilter<"PasswordResetToken"> | string
     token?: StringFilter<"PasswordResetToken"> | string
     userId?: StringFilter<"PasswordResetToken"> | string
+    purpose?: EnumPasswordResetPurposeFilter<"PasswordResetToken"> | $Enums.PasswordResetPurpose
     expiresAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
     createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -20607,6 +20648,7 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    purpose?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -20619,6 +20661,7 @@ export namespace Prisma {
     AND?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
     OR?: PasswordResetTokenWhereInput[]
     NOT?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
+    purpose?: EnumPasswordResetPurposeFilter<"PasswordResetToken"> | $Enums.PasswordResetPurpose
     expiresAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
     createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -20628,6 +20671,7 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    purpose?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
     _count?: PasswordResetTokenCountOrderByAggregateInput
@@ -20642,6 +20686,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"PasswordResetToken"> | string
     token?: StringWithAggregatesFilter<"PasswordResetToken"> | string
     userId?: StringWithAggregatesFilter<"PasswordResetToken"> | string
+    purpose?: EnumPasswordResetPurposeWithAggregatesFilter<"PasswordResetToken"> | $Enums.PasswordResetPurpose
     expiresAt?: DateTimeWithAggregatesFilter<"PasswordResetToken"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"PasswordResetToken"> | Date | string
   }
@@ -21756,6 +21801,7 @@ export namespace Prisma {
   export type PasswordResetTokenCreateInput = {
     id?: string
     token: string
+    purpose?: $Enums.PasswordResetPurpose
     expiresAt: Date | string
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutPasswordResetTokenInput
@@ -21765,6 +21811,7 @@ export namespace Prisma {
     id?: string
     token: string
     userId: string
+    purpose?: $Enums.PasswordResetPurpose
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -21772,6 +21819,7 @@ export namespace Prisma {
   export type PasswordResetTokenUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    purpose?: EnumPasswordResetPurposeFieldUpdateOperationsInput | $Enums.PasswordResetPurpose
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPasswordResetTokenNestedInput
@@ -21781,6 +21829,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    purpose?: EnumPasswordResetPurposeFieldUpdateOperationsInput | $Enums.PasswordResetPurpose
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21789,6 +21838,7 @@ export namespace Prisma {
     id?: string
     token: string
     userId: string
+    purpose?: $Enums.PasswordResetPurpose
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -21796,6 +21846,7 @@ export namespace Prisma {
   export type PasswordResetTokenUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    purpose?: EnumPasswordResetPurposeFieldUpdateOperationsInput | $Enums.PasswordResetPurpose
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21804,6 +21855,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    purpose?: EnumPasswordResetPurposeFieldUpdateOperationsInput | $Enums.PasswordResetPurpose
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23043,10 +23095,18 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type EnumPasswordResetPurposeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PasswordResetPurpose | EnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    in?: $Enums.PasswordResetPurpose[] | ListEnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PasswordResetPurpose[] | ListEnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPasswordResetPurposeFilter<$PrismaModel> | $Enums.PasswordResetPurpose
+  }
+
   export type PasswordResetTokenCountOrderByAggregateInput = {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    purpose?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -23055,6 +23115,7 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    purpose?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -23063,8 +23124,19 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    purpose?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type EnumPasswordResetPurposeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PasswordResetPurpose | EnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    in?: $Enums.PasswordResetPurpose[] | ListEnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PasswordResetPurpose[] | ListEnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPasswordResetPurposeWithAggregatesFilter<$PrismaModel> | $Enums.PasswordResetPurpose
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPasswordResetPurposeFilter<$PrismaModel>
+    _max?: NestedEnumPasswordResetPurposeFilter<$PrismaModel>
   }
 
   export type RefreshTokenCountOrderByAggregateInput = {
@@ -24309,6 +24381,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type EnumPasswordResetPurposeFieldUpdateOperationsInput = {
+    set?: $Enums.PasswordResetPurpose
+  }
+
   export type UserUpdateOneRequiredWithoutPasswordResetTokenNestedInput = {
     create?: XOR<UserCreateWithoutPasswordResetTokenInput, UserUncheckedCreateWithoutPasswordResetTokenInput>
     connectOrCreate?: UserCreateOrConnectWithoutPasswordResetTokenInput
@@ -25220,6 +25296,23 @@ export namespace Prisma {
     _max?: NestedEnumSellerApprovalStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumPasswordResetPurposeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PasswordResetPurpose | EnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    in?: $Enums.PasswordResetPurpose[] | ListEnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PasswordResetPurpose[] | ListEnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPasswordResetPurposeFilter<$PrismaModel> | $Enums.PasswordResetPurpose
+  }
+
+  export type NestedEnumPasswordResetPurposeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PasswordResetPurpose | EnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    in?: $Enums.PasswordResetPurpose[] | ListEnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PasswordResetPurpose[] | ListEnumPasswordResetPurposeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPasswordResetPurposeWithAggregatesFilter<$PrismaModel> | $Enums.PasswordResetPurpose
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPasswordResetPurposeFilter<$PrismaModel>
+    _max?: NestedEnumPasswordResetPurposeFilter<$PrismaModel>
+  }
+
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -25747,6 +25840,7 @@ export namespace Prisma {
   export type PasswordResetTokenCreateWithoutUserInput = {
     id?: string
     token: string
+    purpose?: $Enums.PasswordResetPurpose
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -25754,6 +25848,7 @@ export namespace Prisma {
   export type PasswordResetTokenUncheckedCreateWithoutUserInput = {
     id?: string
     token: string
+    purpose?: $Enums.PasswordResetPurpose
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -26162,6 +26257,7 @@ export namespace Prisma {
   export type PasswordResetTokenUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    purpose?: EnumPasswordResetPurposeFieldUpdateOperationsInput | $Enums.PasswordResetPurpose
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26169,6 +26265,7 @@ export namespace Prisma {
   export type PasswordResetTokenUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    purpose?: EnumPasswordResetPurposeFieldUpdateOperationsInput | $Enums.PasswordResetPurpose
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

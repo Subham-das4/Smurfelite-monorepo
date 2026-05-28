@@ -5,6 +5,7 @@ import logger from "../../utils/logger.js";
 import { sendEmail, type SendEmailResult } from "../email.service.js";
 import { getEmailSenderProfile } from "../email.config.js";
 import {
+  buildAdminPasswordResetEmailHtml,
   buildPasswordResetEmailHtml,
   buildPurchaseCredentialsEmailHtml,
   buildVerificationEmailHtml,
@@ -13,6 +14,14 @@ import {
 
 function getFrontendBase(): string {
   const raw = process.env.FRONTEND_URL?.trim() || "http://localhost:3000";
+  return raw.replace(/\/$/, "");
+}
+
+function getAdminFrontendBase(): string {
+  const raw =
+    process.env.ADMIN_FRONTEND_URL?.trim() ||
+    process.env.ADMIN_PANEL_URL?.trim() ||
+    "http://localhost:5173";
   return raw.replace(/\/$/, "");
 }
 
@@ -62,6 +71,26 @@ export async function sendPasswordResetEmail(params: {
     subject: "Reset your SmurfElite password",
     html,
     text: `Hi ${params.name}, reset your password: ${resetUrl}`,
+  });
+}
+
+export async function sendAdminPasswordResetEmail(params: {
+  to: string;
+  name: string;
+  token: string;
+}): Promise<SendEmailResult> {
+  const resetUrl = `${getAdminFrontendBase()}/reset-password?token=${encodeURIComponent(params.token)}`;
+  const html = buildAdminPasswordResetEmailHtml({
+    name: params.name,
+    resetUrl,
+  });
+
+  return sendEmail({
+    from: "help",
+    to: params.to,
+    subject: "Reset your SmurfElite admin password",
+    html,
+    text: `Hi ${params.name}, reset your admin password: ${resetUrl}`,
   });
 }
 

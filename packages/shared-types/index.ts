@@ -43,6 +43,16 @@ export interface LoginRequest {
   password: string;
 }
 
+/** Portal-specific login (Phase 10.3) — same body as LoginRequest. */
+export type PortalLoginRequest = LoginRequest;
+
+export interface PortalLoginResponse {
+  user: Omit<User, "password">;
+  accessToken: string;
+  actingAs?: Role;
+  message: string;
+}
+
 export interface BaseResponse {
   success: boolean;
 }

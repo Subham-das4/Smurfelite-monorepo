@@ -150,6 +150,13 @@ Regenerate client after schema changes: `pnpm --filter=@smurfelite/express-serve
 
 **Note:** `ProductStatus.PENDING_VERIFICATION` is **not** used for seller onboarding. Storefront gating in Phase 10.5 uses `User.sellerApprovalStatus === APPROVED`.
 
+### Phase 10.3 — Portal auth APIs (2026-05-28)
+
+- [x] Endpoints: `/auth/buyer/login`, `/auth/seller/login`, `/auth/admin/login`
+- [x] Password reset: `/auth/buyer/forgot-password`, `/auth/buyer/reset-password`, `/auth/admin/forgot-password`, `/auth/admin/reset-password`
+- [x] `PortalLoginRequest`, `PortalLoginResponse` in `index.ts`
+- [x] Smoke: `phase-10_3.mts` — `pnpm smoke:phase-10.3`
+
 ### Phase 10.2 — JWT `actingAs` (2026-05-28)
 
 - [x] `AccessTokenClaims`, `RefreshTokenRequest`, `RefreshTokenResponse` in `index.ts`

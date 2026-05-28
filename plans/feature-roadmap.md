@@ -391,30 +391,30 @@ flowchart TB
 
 #### 10.3.1 Role-scoped login (replace shared login for portals)
 
-- [ ] `POST /auth/buyer/login` — allow `role === BUYER` OR `role === SELLER`; issue `actingAs: BUYER`
-- [ ] `POST /auth/seller/login` — allow `role === SELLER` only; issue `actingAs: SELLER` (pending sellers may login to manage drafts)
-- [ ] `POST /auth/admin/login` — allow `role === ADMIN` only; no `actingAs`
-- [ ] Reject wrong portal with explicit errors (e.g. admin email on buyer login → 403, not generic 401)
-- [ ] Keep `POST /auth/google` only for buyer/seller paths still supported; **exclude** from admin routes
-- [ ] Deprecation plan: mark `POST /auth/login` deprecated → 410 after portal migrations (document timeline)
-- [ ] Zod schemas in `auth.schemas.ts`; controllers in `auth.controller.ts`
+- [x] `POST /auth/buyer/login` — allow `role === BUYER` OR `role === SELLER`; issue `actingAs: BUYER`
+- [x] `POST /auth/seller/login` — allow `role === SELLER` only; issue `actingAs: SELLER` (pending sellers may login to manage drafts)
+- [x] `POST /auth/admin/login` — allow `role === ADMIN` only; no `actingAs`
+- [x] Reject wrong portal with explicit errors (e.g. admin email on buyer login → 403, not generic 401)
+- [x] `POST /auth/buyer/google` + `POST /auth/seller/google`; legacy `/auth/google` → buyer
+- [x] Deprecation: `POST /auth/login` returns `Deprecation` header (410 after portal UI migration in 10.6–10.8)
+- [x] Zod schemas + controllers in `auth.controller.ts` / `auth.routes.ts`
 
 #### 10.3.2 Buyer password reset (existing, hardened)
 
-- [ ] `POST /auth/buyer/forgot-password` — only emails where user is `BUYER` or `SELLER` (not `ADMIN`)
-- [ ] `POST /auth/buyer/reset-password` — same scope; link targets Next.js `FRONTEND_URL/reset-password`
-- [ ] Block reset if email belongs to `ADMIN` only
+- [x] `POST /auth/buyer/forgot-password` — only `BUYER`/`SELLER`; ignores `ADMIN`
+- [x] `POST /auth/buyer/reset-password` — `purpose: BUYER`; `FRONTEND_URL/reset-password`
+- [x] Legacy `/auth/forgot-password` + `/auth/reset-password` delegate to buyer + `Deprecation` header
 
 #### 10.3.3 Admin password reset (new, isolated)
 
-- [ ] `POST /auth/admin/forgot-password` — `ADMIN` emails only
-- [ ] `POST /auth/admin/reset-password` — admin panel URL (`ADMIN_FRONTEND_URL` env)
-- [ ] Separate email template branding (help@ vs admin-specific sender if needed)
-- [ ] Ensure buyer reset tokens cannot reset admin passwords (separate token table or `purpose` column on `PasswordResetToken`)
+- [x] `POST /auth/admin/forgot-password` — `ADMIN` emails only
+- [x] `POST /auth/admin/reset-password` — `ADMIN_FRONTEND_URL` / admin panel reset link
+- [x] `buildAdminPasswordResetEmailHtml` + `sendAdminPasswordResetEmail`
+- [x] `PasswordResetToken.purpose` enum isolates buyer vs admin reset tokens
 
 #### 10.3.4 Register hardening
 
-- [ ] `POST /auth/register` (buyer) — reject if email already used by `ADMIN`
+- [x] `POST /auth/register` — reject if email already used by `ADMIN` (`409 ADMIN_EMAIL_RESERVED`)
 - [ ] Seller self-apply (10.5.1) — reject if email is `ADMIN`; define buyer → seller pending upgrade path
 
 **Depends on:** 10.1–10.2  

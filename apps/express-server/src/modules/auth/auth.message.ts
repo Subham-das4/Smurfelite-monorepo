@@ -11,4 +11,13 @@ export const AuthErrorMessages = {
   INVALID_VERIFICATION_TOKEN: "Invalid verification token.",
   INVALID_GOOGLE_PROFILE: "Google profile missing email.",
   INVALID_PORTAL_CONTEXT: "Invalid login context for this account.",
+  WRONG_BUYER_PORTAL: "This account cannot sign in on the buyer site.",
+  WRONG_SELLER_PORTAL: "This account cannot sign in on the seller portal.",
+  WRONG_ADMIN_PORTAL: "This account cannot sign in on the admin panel.",
+  ADMIN_EMAIL_RESERVED:
+    "This email is reserved for admin accounts and cannot be used for registration.",
+  INVALID_PASSWORD_RESET_TOKEN: "Invalid or expired password reset token.",
 };
+
+export const PASSWORD_RESET_GENERIC_MESSAGE =
+  "If that email is registered, a reset link has been sent.";

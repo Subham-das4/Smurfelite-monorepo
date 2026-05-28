@@ -1,7 +1,6 @@
 import * as PrismaNamespace from "../../types/prisma.js";
 import prisma from "../../lib/prisma.js";
 import ApiError from "../../utils/errors.js";
-import { AuthErrorMessages } from "./auth.message.js";
 import bcrypt from "bcrypt";
 import { RefreshTokenPayload, UserRegistrationInput } from "../../types/auth.types.js";
 import {
@@ -13,7 +12,12 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 import logger from "../../utils/logger.js";
 import { createCart } from "../cart/cart.service.js";
-import { sendPasswordResetEmail, sendVerificationEmail } from "../../services/email/transactional.service.js";
+import {
+  sendAdminPasswordResetEmail,
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+} from "../../services/email/transactional.service.js";
+import { AuthErrorMessages, PASSWORD_RESET_GENERIC_MESSAGE } from "./auth.message.js";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS!);
@@ -54,17 +58,15 @@ export function generateTokens(
   return { accessToken, refreshToken, actingAs: accessPayload.actingAs };
 }
 
-const checkIfUserExists = async (email: string): Promise<boolean> => {
-  const user = await prisma.user.findUnique({ where: { email } });
-  return !!user;
-};
-
 export const registerUser = async (
   userRegistrationInput: UserRegistrationInput
 ): Promise<Omit<PrismaNamespace.User, "password">> => {
   const { email, password, name } = userRegistrationInput;
-  const existingUser = await checkIfUserExists(email);
-  if (existingUser) {
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing) {
+    if (existing.role === PrismaNamespace.Role.ADMIN) {
+      throw new ApiError(AuthErrorMessages.ADMIN_EMAIL_RESERVED, 409);
+    }
     throw new ApiError(AuthErrorMessages.USER_ALREADY_EXISTS, 409);
   }
 
@@ -88,31 +90,80 @@ export const registerUser = async (
   return userWithoutPassword;
 };
 
-export const loginUser = async (
+async function authenticateCredentials(
   email: string,
   password: string
-): Promise<Omit<PrismaNamespace.User, "password">> => {
-  // Find user
+): Promise<PrismaNamespace.User> {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     throw new ApiError(AuthErrorMessages.INVALID_CREDENTIALS, 401);
   }
 
-  // Compare password
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
     throw new ApiError(AuthErrorMessages.INVALID_CREDENTIALS, 401);
   }
 
-  const updatedUser = await prisma.user.update({
-    where: { id: user.id },
+  return user;
+}
+
+async function touchLastLogin(userId: string) {
+  return prisma.user.update({
+    where: { id: userId },
     data: { lastLoginAt: new Date() },
   });
+}
 
-  // Remove password before returning
-  const { password: _, ...userWithoutPassword } = updatedUser;
-
+function stripPassword(
+  user: PrismaNamespace.User
+): Omit<PrismaNamespace.User, "password"> {
+  const { password: _, ...userWithoutPassword } = user;
   return userWithoutPassword;
+}
+
+export const loginUser = async (
+  email: string,
+  password: string
+): Promise<Omit<PrismaNamespace.User, "password">> => {
+  const user = await authenticateCredentials(email, password);
+  const updatedUser = await touchLastLogin(user.id);
+  return stripPassword(updatedUser);
+};
+
+export async function loginBuyerPortal(
+  email: string,
+  password: string
+): Promise<Omit<PrismaNamespace.User, "password">> {
+  const user = await authenticateCredentials(email, password);
+  if (user.role === PrismaNamespace.Role.ADMIN) {
+    throw new ApiError(AuthErrorMessages.WRONG_BUYER_PORTAL, 403);
+  }
+  const updatedUser = await touchLastLogin(user.id);
+  return stripPassword(updatedUser);
+}
+
+export async function loginSellerPortal(
+  email: string,
+  password: string
+): Promise<Omit<PrismaNamespace.User, "password">> {
+  const user = await authenticateCredentials(email, password);
+  if (user.role !== PrismaNamespace.Role.SELLER) {
+    throw new ApiError(AuthErrorMessages.WRONG_SELLER_PORTAL, 403);
+  }
+  const updatedUser = await touchLastLogin(user.id);
+  return stripPassword(updatedUser);
+}
+
+export async function loginAdminPortal(
+  email: string,
+  password: string
+): Promise<Omit<PrismaNamespace.User, "password">> {
+  const user = await authenticateCredentials(email, password);
+  if (user.role !== PrismaNamespace.Role.ADMIN) {
+    throw new ApiError(AuthErrorMessages.WRONG_ADMIN_PORTAL, 403);
+  }
+  const updatedUser = await touchLastLogin(user.id);
+  return stripPassword(updatedUser);
 };
 
 async function generateAndSaveVerificationToken(
@@ -246,20 +297,24 @@ export async function logoutUser(refreshToken: string): Promise<void> {
   await prisma.refreshToken.deleteMany({ where: { token: refreshToken } });
 }
 
-export async function forgotPassword(email: string): Promise<string> {
+export async function forgotPasswordBuyer(email: string): Promise<string> {
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
-    // Return silently to avoid email enumeration attacks
-    return "If that email is registered, a reset link has been sent.";
+  if (!user || user.role === PrismaNamespace.Role.ADMIN) {
+    return PASSWORD_RESET_GENERIC_MESSAGE;
   }
 
   const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
   await prisma.passwordResetToken.upsert({
     where: { userId: user.id },
-    update: { token, expiresAt },
-    create: { token, userId: user.id, expiresAt },
+    update: { token, expiresAt, purpose: PrismaNamespace.PasswordResetPurpose.BUYER },
+    create: {
+      token,
+      userId: user.id,
+      expiresAt,
+      purpose: PrismaNamespace.PasswordResetPurpose.BUYER,
+    },
   });
 
   try {
@@ -268,24 +323,30 @@ export async function forgotPassword(email: string): Promise<string> {
       name: user.name,
       token,
     });
-    logger.info(`Password reset email sent to ${email}`);
+    logger.info(`Buyer password reset email sent to ${email}`);
   } catch (err) {
-    logger.error(`Failed to send password reset email to ${email}:`, err);
+    logger.error(`Failed to send buyer password reset email to ${email}:`, err);
   }
 
-  return "If that email is registered, a reset link has been sent.";
+  return PASSWORD_RESET_GENERIC_MESSAGE;
 }
 
-export async function resetPassword(
+export async function resetPasswordBuyer(
   token: string,
   newPassword: string
 ): Promise<void> {
   const record = await prisma.passwordResetToken.findUnique({
     where: { token },
+    include: { user: { select: { role: true } } },
   });
 
-  if (!record || record.expiresAt < new Date()) {
-    throw new ApiError("Invalid or expired password reset token.", 400);
+  if (
+    !record ||
+    record.expiresAt < new Date() ||
+    record.purpose !== PrismaNamespace.PasswordResetPurpose.BUYER ||
+    record.user.role === PrismaNamespace.Role.ADMIN
+  ) {
+    throw new ApiError(AuthErrorMessages.INVALID_PASSWORD_RESET_TOKEN, 400);
   }
 
   const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
@@ -297,6 +358,82 @@ export async function resetPassword(
     }),
     prisma.passwordResetToken.delete({ where: { token } }),
   ]);
+}
+
+export async function forgotPasswordAdmin(email: string): Promise<string> {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user || user.role !== PrismaNamespace.Role.ADMIN) {
+    return PASSWORD_RESET_GENERIC_MESSAGE;
+  }
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+  await prisma.passwordResetToken.upsert({
+    where: { userId: user.id },
+    update: { token, expiresAt, purpose: PrismaNamespace.PasswordResetPurpose.ADMIN },
+    create: {
+      token,
+      userId: user.id,
+      expiresAt,
+      purpose: PrismaNamespace.PasswordResetPurpose.ADMIN,
+    },
+  });
+
+  try {
+    await sendAdminPasswordResetEmail({
+      to: user.email,
+      name: user.name,
+      token,
+    });
+    logger.info(`Admin password reset email sent to ${email}`);
+  } catch (err) {
+    logger.error(`Failed to send admin password reset email to ${email}:`, err);
+  }
+
+  return PASSWORD_RESET_GENERIC_MESSAGE;
+}
+
+export async function resetPasswordAdmin(
+  token: string,
+  newPassword: string
+): Promise<void> {
+  const record = await prisma.passwordResetToken.findUnique({
+    where: { token },
+    include: { user: { select: { role: true } } },
+  });
+
+  if (
+    !record ||
+    record.expiresAt < new Date() ||
+    record.purpose !== PrismaNamespace.PasswordResetPurpose.ADMIN ||
+    record.user.role !== PrismaNamespace.Role.ADMIN
+  ) {
+    throw new ApiError(AuthErrorMessages.INVALID_PASSWORD_RESET_TOKEN, 400);
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: record.userId },
+      data: { password: hashedPassword },
+    }),
+    prisma.passwordResetToken.delete({ where: { token } }),
+  ]);
+}
+
+/** @deprecated Use forgotPasswordBuyer — legacy /auth/forgot-password */
+export async function forgotPassword(email: string): Promise<string> {
+  return forgotPasswordBuyer(email);
+}
+
+/** @deprecated Use resetPasswordBuyer — legacy /auth/reset-password */
+export async function resetPassword(
+  token: string,
+  newPassword: string
+): Promise<void> {
+  return resetPasswordBuyer(token, newPassword);
 }
 
 export async function verifyGoogleOAuth(credential: string): Promise<PrismaNamespace.User> {
@@ -371,6 +508,29 @@ export async function verifyGoogleOAuth(credential: string): Promise<PrismaNames
     },
   });
   logger.info(`Google OAuth login for user: ${user.email}`);
+
+  return user;
+}
+
+export type GoogleOAuthPortal = "buyer" | "seller";
+
+/** Google sign-in with portal-specific role gate (new users always register as BUYER). */
+export async function verifyGoogleOAuthForPortal(
+  credential: string,
+  portal: GoogleOAuthPortal
+): Promise<PrismaNamespace.User> {
+  const user = await verifyGoogleOAuth(credential);
+
+  if (portal === "buyer") {
+    if (user.role === PrismaNamespace.Role.ADMIN) {
+      throw new ApiError(AuthErrorMessages.WRONG_BUYER_PORTAL, 403);
+    }
+    return user;
+  }
+
+  if (user.role !== PrismaNamespace.Role.SELLER) {
+    throw new ApiError(AuthErrorMessages.WRONG_SELLER_PORTAL, 403);
+  }
 
   return user;
 }

@@ -40,6 +40,25 @@ export function buildVerificationEmailHtml(params: {
   );
 }
 
+export function buildAdminPasswordResetEmailHtml(params: {
+  name: string;
+  resetUrl: string;
+}): string {
+  const name = escapeHtml(params.name);
+  const resetUrl = escapeHtml(params.resetUrl);
+  return emailLayout(
+    "Reset your admin password",
+    `<h1 style="font-size:22px;margin:0 0 16px;">Reset your admin password</h1>
+<p>Hi ${name},</p>
+<p>We received a request to reset your SmurfElite <strong>admin panel</strong> password.</p>
+<p style="margin:24px 0;">
+  <a href="${resetUrl}" style="background:#6c47ff;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:bold;display:inline-block;">Reset admin password</a>
+</p>
+<p style="font-size:13px;color:#756189;">Or copy this link:<br><span style="word-break:break-all;">${resetUrl}</span></p>
+<p style="font-size:13px;color:#756189;">This link expires in 1 hour.</p>`
+  );
+}
+
 export function buildPasswordResetEmailHtml(params: {
   name: string;
   resetUrl: string;

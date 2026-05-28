@@ -162,14 +162,105 @@ export async function createBuyerContext(): Promise<SmokeContext> {
   return { apiBase, buyerToken: accessToken, buyerId: userId };
 }
 
+async function portalLogin(
+  apiBase: string,
+  portal: "buyer" | "seller" | "admin",
+  email: string,
+  password: string
+): Promise<{ status: number; result?: LoginResult; body: unknown }> {
+  const res = await fetch(`${apiBase}/auth/${portal}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const text = await res.text();
+  let body: unknown = {};
+  try {
+    body = text ? JSON.parse(text) : {};
+  } catch {
+    body = text;
+  }
+
+  if (!res.ok) {
+    return { status: res.status, body };
+  }
+
+  const data = body as {
+    accessToken?: string;
+    actingAs?: Role;
+    user?: { id?: string };
+  };
+
+  if (!data.accessToken || !data.user?.id) {
+    throw new Error(`${portal} login response missing accessToken or user.id`);
+  }
+
+  return {
+    status: res.status,
+    body,
+    result: {
+      accessToken: data.accessToken,
+      userId: data.user.id,
+      actingAs:
+        data.actingAs ?? decodeAccessTokenClaims(data.accessToken)?.actingAs,
+    },
+  };
+}
+
+export async function loginBuyerPortal(
+  apiBase: string,
+  email: string,
+  password: string
+): Promise<LoginResult> {
+  const { status, result, body } = await portalLogin(apiBase, "buyer", email, password);
+  if (status !== 200 || !result) {
+    throw new Error(`Buyer portal login failed (${status}): ${JSON.stringify(body)}`);
+  }
+  return result;
+}
+
+export async function loginSellerPortal(
+  apiBase: string,
+  email: string,
+  password: string
+): Promise<LoginResult> {
+  const { status, result, body } = await portalLogin(apiBase, "seller", email, password);
+  if (status !== 200 || !result) {
+    throw new Error(`Seller portal login failed (${status}): ${JSON.stringify(body)}`);
+  }
+  return result;
+}
+
+export async function loginAdminPortal(
+  apiBase: string,
+  email: string,
+  password: string
+): Promise<LoginResult> {
+  const { status, result, body } = await portalLogin(apiBase, "admin", email, password);
+  if (status !== 200 || !result) {
+    throw new Error(`Admin portal login failed (${status}): ${JSON.stringify(body)}`);
+  }
+  return result;
+}
+
+export async function tryPortalLogin(
+  apiBase: string,
+  portal: "buyer" | "seller" | "admin",
+  email: string,
+  password: string
+) {
+  return portalLogin(apiBase, portal, email, password);
+}
+
 export async function loginSeller(apiBase: string) {
   const email = process.env.SMOKE_SELLER_EMAIL?.trim() || "seller@seller.com";
   const password = process.env.SMOKE_SELLER_PASSWORD?.trim() || "seller123";
-  return login(apiBase, email, password);
+  return loginSellerPortal(apiBase, email, password);
 }
 
 export async function loginAdmin(apiBase: string) {
   const email = process.env.SMOKE_ADMIN_EMAIL?.trim() || "admin@admin.com";
   const password = process.env.SMOKE_ADMIN_PASSWORD?.trim() || "admin123";
-  return login(apiBase, email, password);
+  return loginAdminPortal(apiBase, email, password);
 }

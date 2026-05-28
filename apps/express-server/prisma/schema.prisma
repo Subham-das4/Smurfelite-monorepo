@@ -116,14 +116,20 @@ model VerificationToken {
   createdAt DateTime @default(now())
 }
 
+enum PasswordResetPurpose {
+  BUYER
+  ADMIN
+}
+
 // --- Password Reset Token ---
 model PasswordResetToken {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  userId    String   @unique // One reset token per user at a time
-  user      User     @relation(fields: [userId], references: [id])
+  id        String               @id @default(uuid())
+  token     String               @unique
+  userId    String               @unique // One reset token per user at a time
+  user      User                 @relation(fields: [userId], references: [id])
+  purpose   PasswordResetPurpose @default(BUYER)
   expiresAt DateTime
-  createdAt DateTime @default(now())
+  createdAt DateTime             @default(now())
 }
 
 // --- Refresh Token Storage ---

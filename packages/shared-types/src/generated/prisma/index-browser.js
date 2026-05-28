@@ -153,6 +153,7 @@ exports.Prisma.PasswordResetTokenScalarFieldEnum = {
   id: 'id',
   token: 'token',
   userId: 'userId',
+  purpose: 'purpose',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 };
@@ -321,6 +322,11 @@ exports.SellerApprovalStatus = exports.$Enums.SellerApprovalStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED'
+};
+
+exports.PasswordResetPurpose = exports.$Enums.PasswordResetPurpose = {
+  BUYER: 'BUYER',
+  ADMIN: 'ADMIN'
 };
 
 exports.ProductStatus = exports.$Enums.ProductStatus = {
