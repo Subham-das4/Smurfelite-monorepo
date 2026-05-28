@@ -74,7 +74,6 @@ export function UserDetailPage() {
           >
             <option value="BUYER">BUYER</option>
             <option value="SELLER">SELLER</option>
-            <option value="ADMIN">ADMIN</option>
           </select>
           <Button variant="danger" onClick={() => setConfirmDelete(true)}>
             Delete user

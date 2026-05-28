@@ -424,23 +424,23 @@ flowchart TB
 
 #### 10.4.1 Admin user CRUD (no promote-via-role)
 
-- [ ] `POST /admins` (admin-only) — create admin: email, name; auto-generate password; hash + save
-- [ ] Send transactional email with one-time password + admin login URL
-- [ ] `GET /admins` — paginated list (email, name, lastLoginAt, createdAt)
-- [ ] `DELETE /admins/:id` — remove admin (guard: cannot delete last admin; cannot self-delete without fallback)
-- [ ] `PATCH /admins/:id` — optional: deactivate instead of hard delete (pick one in implementation PR)
+- [x] `POST /admins` (admin-only) — create admin: email, name; auto-generate password; hash + save
+- [x] Send transactional email with one-time password + admin login URL
+- [x] `GET /admins` — paginated list (email, name, lastLoginAt, createdAt)
+- [x] `DELETE /admins/:id` — remove admin (guard: cannot delete last admin; cannot self-delete without fallback)
+- [x] `PATCH /admins/:id` — skipped (hard delete chosen; no deactivate endpoint)
 
 #### 10.4.2 Email exclusivity rules
 
-- [ ] On `POST /admins`: reject if email exists with `role` in (`BUYER`, `SELLER`)
-- [ ] On buyer/seller register/apply: reject if email exists with `role === ADMIN`
-- [ ] Remove `ADMIN` from `updateRoleSchema` and `updateUserRole`
+- [x] On `POST /admins`: reject if email exists with `role` in (`BUYER`, `SELLER`)
+- [x] On buyer/seller register/apply: reject if email exists with `role === ADMIN` (register in 10.3; seller apply in 10.5)
+- [x] Remove `ADMIN` from `updateRoleSchema` and `updateUserRole`
 
 #### 10.4.3 Remove legacy promote-to-admin
 
-- [ ] Remove `ADMIN` option from admin-app user role dropdown (`UserDetailPage.tsx`)
-- [ ] Server: `updateUserRole` rejects `role: ADMIN` (admins only via `POST /admins`)
-- [ ] Update smoke tests that set role to ADMIN via `PATCH /users/:id/role`
+- [x] Remove `ADMIN` option from admin-app user role dropdown (`UserDetailPage.tsx`)
+- [x] Server: `updateUserRole` rejects `role: ADMIN` (admins only via `POST /admins`)
+- [x] Update smoke tests that set role to ADMIN via `PATCH /users/:id/role`
 
 **Depends on:** Phase 3 (email), 10.3  
 **Unblocks:** 10.6

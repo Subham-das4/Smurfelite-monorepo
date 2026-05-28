@@ -110,6 +110,34 @@ export interface RegisterResponse {
   user: Omit<User, "password">;
 }
 
+// ─────────────────────────────────────────
+// Admin provisioning (Phase 10.4)
+// ─────────────────────────────────────────
+
+export interface AdminListItem {
+  id: string;
+  email: string;
+  name: string;
+  lastLoginAt: string | null;
+  createdAt: string;
+  adminInvitedAt?: string | null;
+  createdByAdminId?: string | null;
+}
+
+export interface CreateAdminRequest {
+  email: string;
+  name: string;
+}
+
+export interface CreateAdminResponse {
+  admin: AdminListItem & { role: Role };
+}
+
+export interface AdminListResponse {
+  admins: AdminListItem[];
+  meta: PaginationMeta;
+}
+
 export interface GoogleOAuthResponse {
   iss: string;
   azp: string;

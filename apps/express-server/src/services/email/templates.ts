@@ -40,6 +40,28 @@ export function buildVerificationEmailHtml(params: {
   );
 }
 
+export function buildAdminInviteEmailHtml(params: {
+  name: string;
+  loginUrl: string;
+  temporaryPassword: string;
+}): string {
+  const name = escapeHtml(params.name);
+  const loginUrl = escapeHtml(params.loginUrl);
+  const temporaryPassword = escapeHtml(params.temporaryPassword);
+  return emailLayout(
+    "Your SmurfElite admin account",
+    `<h1 style="font-size:22px;margin:0 0 16px;">Your admin account is ready</h1>
+<p>Hi ${name},</p>
+<p>An administrator created your SmurfElite <strong>admin panel</strong> account. Sign in with the temporary password below, then change it from your account settings or via password reset.</p>
+<p style="margin:16px 0;padding:12px 16px;background:#f4f0fa;border-radius:8px;font-family:monospace;font-size:14px;"><strong>Temporary password:</strong> ${temporaryPassword}</p>
+<p style="margin:24px 0;">
+  <a href="${loginUrl}" style="background:#6c47ff;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:bold;display:inline-block;">Open admin panel</a>
+</p>
+<p style="font-size:13px;color:#756189;">Login URL:<br><span style="word-break:break-all;">${loginUrl}</span></p>
+<p style="font-size:13px;color:#756189;">Keep this password private. Do not share it by email reply.</p>`
+  );
+}
+
 export function buildAdminPasswordResetEmailHtml(params: {
   name: string;
   resetUrl: string;

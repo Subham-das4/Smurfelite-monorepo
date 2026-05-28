@@ -251,6 +251,13 @@ export const getUserProductsAdmin = async (
 };
 
 export const updateUserRole = async (userId: string, role: Role) => {
+  if (role === Role.ADMIN) {
+    throw new ApiError(
+      "Admin accounts can only be created via POST /admins.",
+      400
+    );
+  }
+
   if (!Object.values(Role).includes(role)) {
     throw new ApiError(
       `Invalid role. Must be one of: ${Object.values(Role).join(", ")}`,

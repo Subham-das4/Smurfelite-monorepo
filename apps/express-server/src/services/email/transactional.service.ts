@@ -5,6 +5,7 @@ import logger from "../../utils/logger.js";
 import { sendEmail, type SendEmailResult } from "../email.service.js";
 import { getEmailSenderProfile } from "../email.config.js";
 import {
+  buildAdminInviteEmailHtml,
   buildAdminPasswordResetEmailHtml,
   buildPasswordResetEmailHtml,
   buildPurchaseCredentialsEmailHtml,
@@ -71,6 +72,27 @@ export async function sendPasswordResetEmail(params: {
     subject: "Reset your SmurfElite password",
     html,
     text: `Hi ${params.name}, reset your password: ${resetUrl}`,
+  });
+}
+
+export async function sendAdminInviteEmail(params: {
+  to: string;
+  name: string;
+  temporaryPassword: string;
+}): Promise<SendEmailResult> {
+  const loginUrl = `${getAdminFrontendBase()}/login`;
+  const html = buildAdminInviteEmailHtml({
+    name: params.name,
+    loginUrl,
+    temporaryPassword: params.temporaryPassword,
+  });
+
+  return sendEmail({
+    from: "help",
+    to: params.to,
+    subject: "Your SmurfElite admin account",
+    html,
+    text: `Hi ${params.name}, your admin account is ready. Temporary password: ${params.temporaryPassword}. Sign in: ${loginUrl}`,
   });
 }
 
