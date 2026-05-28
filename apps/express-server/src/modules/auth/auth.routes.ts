@@ -17,6 +17,7 @@ import {
   googleAuthSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  refreshSchema,
 } from "../../schemas/auth.schemas.js";
 
 const router = Router();
@@ -39,7 +40,7 @@ router.post("/login", authLimiter, validate(loginSchema), loginController);
 router.post("/google", authLimiter, validate(googleAuthSchema), googleAuthController);
 
 // POST /api/auth/refresh — rotate refresh token
-router.post("/refresh", refreshController);
+router.post("/refresh", validate(refreshSchema), refreshController);
 
 // GET /api/auth/verify-email?token=...
 router.get("/verify-email", verifyEmailController);

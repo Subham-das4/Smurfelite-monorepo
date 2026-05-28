@@ -378,11 +378,11 @@ flowchart TB
 
 ### 10.2 JWT & middleware contracts
 
-- [ ] Extend access JWT payload: `{ id, role, actingAs? }` (`actingAs` required for buyer/seller portal logins)
-- [ ] Update `authenticate` / `authorize` to accept `actingAs` where routes are portal-scoped (e.g. cart/orders → `actingAs === BUYER`)
-- [ ] Refresh flow: re-issue access token preserving `actingAs` from cookie/session or explicit refresh body
-- [ ] Export new types in `packages/shared-types/index.ts`
-- [ ] Update smoke auth helpers under `apps/express-server/scripts/smoke/`
+- [x] Extend access JWT payload: `{ id, role, actingAs? }` (`actingAs` required for buyer/seller portal logins)
+- [x] Update `authenticate` / `authorize` to accept `actingAs` where routes are portal-scoped (e.g. cart/orders → `actingAs === BUYER`)
+- [x] Refresh flow: re-issue access token preserving `actingAs` from refresh JWT or explicit `POST /auth/refresh` body
+- [x] Export new types in `packages/shared-types/index.ts` (`AccessTokenClaims`, `RefreshTokenRequest/Response`)
+- [x] Update smoke auth helpers — `phase-10_2.mts`, `loginWithActingAs` in `http.mts`
 
 **Depends on:** Phase 1 (User model)  
 **Unblocks:** 10.3–10.6

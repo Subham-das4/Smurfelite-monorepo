@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticate, authorize } from "../../auth/auth.middleware.js";
+import { authenticate, authorizeBuyerPortal } from "../../auth/auth.middleware.js";
 import { Role } from "../../../types/prisma.js";
 import { validate } from "../../../utils/validate.js";
 import { completeBypassPaymentSchema } from "../../../schemas/payment.schemas.js";
@@ -15,7 +15,7 @@ router.get("/status", bypassStatusController);
 router.post(
   "/complete",
   authenticate,
-  authorize([Role.BUYER]),
+  authorizeBuyerPortal(),
   validate(completeBypassPaymentSchema),
   completeBypassPaymentController
 );

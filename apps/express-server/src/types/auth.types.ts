@@ -1,10 +1,25 @@
 import * as PrismaNamespace from "./prisma.js";
 import { Request } from "express";
 
-export interface JwtPayload {
+/** Access JWT claims (Bearer token). */
+export interface AccessTokenPayload {
   id: string;
-  email: string;
   role: PrismaNamespace.Role;
+  /** Portal context: BUYER (storefront) or SELLER (seller portal). Omitted for ADMIN. */
+  actingAs?: PrismaNamespace.Role;
+  email?: string;
+}
+
+/** Refresh JWT claims (HTTP-only cookie). */
+export interface RefreshTokenPayload {
+  id: string;
+  jti: string;
+  actingAs?: PrismaNamespace.Role;
+}
+
+/** @deprecated Use AccessTokenPayload — kept for loginUser legacy path. */
+export interface JwtPayload extends AccessTokenPayload {
+  email: string;
 }
 
 export type UserRegistrationInput = Omit<
@@ -35,11 +50,12 @@ export type UserRegistrationInput = Omit<
   | "usersCreatedByAdmin"
 >;
 
-// Extend the Request interface to include user data
-// This allows TypeScript to recognize req.user
+export interface AuthenticatedUser {
+  id: string;
+  role: PrismaNamespace.Role;
+  actingAs?: PrismaNamespace.Role;
+}
+
 export interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-    role: PrismaNamespace.Role;
-  };
+  user: AuthenticatedUser;
 }

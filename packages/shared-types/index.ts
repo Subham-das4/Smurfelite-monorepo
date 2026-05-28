@@ -47,10 +47,31 @@ export interface BaseResponse {
   success: boolean;
 }
 
+/** Access JWT claims issued by express-server (Phase 10.2). */
+export interface AccessTokenClaims {
+  id: string;
+  role: Role;
+  /** Portal context: BUYER (storefront) or SELLER (seller portal). Omitted for ADMIN. */
+  actingAs?: Role;
+}
+
+export interface RefreshTokenRequest {
+  /** Optional: re-issue access token for buyer vs seller portal (sellers only). */
+  actingAs?: "BUYER" | "SELLER";
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+  actingAs?: Role;
+  message: string;
+}
+
 export interface LoginResponse {
   user: Omit<User, "password">;
   accessToken: string;
   refreshToken: string;
+  /** Portal context embedded in accessToken (Phase 10.2). */
+  actingAs?: Role;
   message: string;
 }
 

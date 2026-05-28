@@ -2,7 +2,27 @@ import * as PrismaNamespace from "../../types/prisma.js";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import logger from "../../utils/logger.js";
-import { AuthenticatedRequest, JwtPayload } from "../../types/auth.types.js";
+import {
+  AuthenticatedRequest,
+  AccessTokenPayload,
+} from "../../types/auth.types.js";
+import { resolveEffectiveActingAs } from "./auth.token.js";
+
+export type AuthorizeOptions = {
+  /** Require this portal context on the access token (ADMIN bypasses). */
+  actingAs?: PrismaNamespace.Role;
+};
+
+function attachUserFromPayload(
+  authReq: AuthenticatedRequest,
+  payload: AccessTokenPayload
+) {
+  authReq.user = {
+    id: payload.id,
+    role: payload.role as PrismaNamespace.Role,
+    actingAs: payload.actingAs as PrismaNamespace.Role | undefined,
+  };
+}
 
 /**
  * Middleware to verify the JWT Access Token and authenticate the user.
@@ -13,7 +33,6 @@ export const authenticate = (
   next: NextFunction
 ) => {
   const authReq = req as AuthenticatedRequest;
-  // 1. Check for Authorization header
   const authHeader = authReq.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -25,65 +44,83 @@ export const authenticate = (
       .json({ message: "Access Denied. No token provided." });
   }
 
-  // 2. Extract the token
   const token = authHeader.split(" ")[1];
 
   try {
-    // 3. Verify the token using the secret
-    const payload: JwtPayload = jwt.verify(
+    const payload = jwt.verify(
       token,
-      process.env.JWT_SECRET!,
-      // { algorithms: ['RS256'] }
-    ) as JwtPayload;
+      process.env.JWT_SECRET!
+    ) as AccessTokenPayload;
 
-    // Check if required data exists in payload
     if (!payload.id || !payload.role) {
-      console.log(payload)
       throw new Error("Invalid token payload.");
     }
 
-    // 4. Attach user information to the request object
-    authReq.user = {
-      id: payload.id,
-      role: payload.role as PrismaNamespace.Role,
-    };
-
-    // 5. Proceed to the next middleware or controller
+    attachUserFromPayload(authReq, payload);
     next();
-  } catch (error: any) {
-    logger.warn(`Authentication failed: ${error.message}`);
-
-    // Generic unauthorized response
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    logger.warn(`Authentication failed: ${message}`);
     return res.status(401).json({ message: "Unauthorized access." });
   }
 };
 
-export const authorize = (roles: PrismaNamespace.Role[]) => {
+export const authorize = (
+  roles: PrismaNamespace.Role[],
+  options?: AuthorizeOptions
+) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const authReq = req as AuthenticatedRequest;
-    // Check if user object was attached by the authenticate middleware
-    if (!authReq.user || !authReq.user.role) {
-      // This should ideally not happen if 'authenticate' runs first
+    if (!authReq.user?.role) {
       logger.error("Authorization failed: User object missing from request.");
       return res
         .status(403)
         .json({ message: "Forbidden: Missing authentication context." });
     }
 
-    // Check if the user's role is included in the allowed roles list
-    if (!roles.includes(authReq.user.role)) {
+    const { role, actingAs } = authReq.user;
+
+    if (!roles.includes(role)) {
       logger.warn(
-        `Authorization failed for user ${authReq.user.id}: Role ${authReq.user.role} not permitted.`
+        `Authorization failed for user ${authReq.user.id}: Role ${role} not permitted.`
       );
       return res
         .status(403)
         .json({ message: "Forbidden: Insufficient permissions." });
     }
 
-    // Role is permitted, continue
+    if (role === PrismaNamespace.Role.ADMIN) {
+      return next();
+    }
+
+    const requiredActingAs = options?.actingAs;
+    if (requiredActingAs) {
+      const effective = resolveEffectiveActingAs(role, actingAs);
+      if (effective !== requiredActingAs) {
+        logger.warn(
+          `Authorization failed for user ${authReq.user.id}: actingAs ${effective ?? "none"} !== ${requiredActingAs}.`
+        );
+        return res
+          .status(403)
+          .json({ message: "Forbidden: Invalid portal context for this route." });
+      }
+    }
+
     next();
   };
 };
+
+/** Buyer storefront routes (BUYER or SELLER shopping as buyer). */
+export const authorizeBuyerPortal = () =>
+  authorize([PrismaNamespace.Role.BUYER, PrismaNamespace.Role.SELLER], {
+    actingAs: PrismaNamespace.Role.BUYER,
+  });
+
+/** Seller portal routes. */
+export const authorizeSellerPortal = () =>
+  authorize([PrismaNamespace.Role.SELLER], {
+    actingAs: PrismaNamespace.Role.SELLER,
+  });
 
 /**
  * Attaches user context when a valid Bearer token is present.
@@ -104,19 +141,16 @@ export const optionalAuthenticate = (
   const token = authHeader.split(" ")[1];
 
   try {
-    const payload: JwtPayload = jwt.verify(
+    const payload = jwt.verify(
       token,
       process.env.JWT_SECRET!
-    ) as JwtPayload;
+    ) as AccessTokenPayload;
 
     if (!payload.id || !payload.role) {
       return next();
     }
 
-    authReq.user = {
-      id: payload.id,
-      role: payload.role as PrismaNamespace.Role,
-    };
+    attachUserFromPayload(authReq, payload);
   } catch {
     // Invalid token on a public route — proceed as guest
   }

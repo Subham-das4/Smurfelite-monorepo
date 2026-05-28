@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { getCartController, addToCartController, removeFromCartController, clearCartController } from "./cart.controller.js";
-import { authenticate, authorize } from "../auth/auth.middleware.js";
-import { Role } from "../../types/prisma.js";
+import { authenticate, authorizeBuyerPortal } from "../auth/auth.middleware.js";
 
 const router = Router();
 
-router.use(authenticate, authorize([Role.BUYER]));
+router.use(authenticate, authorizeBuyerPortal());
 
 router.get("/", getCartController);
 

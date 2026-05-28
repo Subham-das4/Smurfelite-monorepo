@@ -23,3 +23,8 @@ export const resetPasswordSchema = z.object({
   token: z.string().min(1, "Reset token is required."),
   newPassword: z.string().min(8, "New password must be at least 8 characters."),
 });
+
+/** Optional portal context when refreshing (e.g. seller switching to buyer storefront). */
+export const refreshSchema = z.object({
+  actingAs: z.enum(["BUYER", "SELLER"]).optional(),
+});

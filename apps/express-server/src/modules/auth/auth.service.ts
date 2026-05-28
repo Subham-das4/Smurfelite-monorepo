@@ -3,7 +3,12 @@ import prisma from "../../lib/prisma.js";
 import ApiError from "../../utils/errors.js";
 import { AuthErrorMessages } from "./auth.message.js";
 import bcrypt from "bcrypt";
-import { JwtPayload, UserRegistrationInput } from "../../types/auth.types.js";
+import { RefreshTokenPayload, UserRegistrationInput } from "../../types/auth.types.js";
+import {
+  buildAccessTokenPayload,
+  buildRefreshTokenPayload,
+  defaultActingAsForRole,
+} from "./auth.token.js";
 import jwt, { SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 import logger from "../../utils/logger.js";
@@ -19,20 +24,34 @@ if (!JWT_SECRET || !SALT_ROUNDS || isNaN(SALT_ROUNDS) || !TOKEN_EXPIRATION) {
   throw new Error("Missing or invalid authentication environment variables.");
 }
 
-export function generateTokens(userId: string, userRole: string) {
-  const accessToken = jwt.sign({ id: userId, role: userRole }, JWT_SECRET, {
+export function generateTokens(
+  userId: string,
+  userRole: string,
+  actingAs?: PrismaNamespace.Role
+) {
+  const role = userRole as PrismaNamespace.Role;
+  const effectiveActingAs =
+    actingAs ?? defaultActingAsForRole(role);
+
+  const accessPayload = buildAccessTokenPayload(
+    userId,
+    role,
+    effectiveActingAs
+  );
+  const accessToken = jwt.sign(accessPayload, JWT_SECRET, {
     expiresIn: TOKEN_EXPIRATION,
   } as jwt.SignOptions);
 
-  const refreshToken = jwt.sign(
-    { id: userId, jti: crypto.randomUUID() },
-    JWT_SECRET,
-    {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || "7d",
-    } as jwt.SignOptions
+  const refreshPayload = buildRefreshTokenPayload(
+    userId,
+    role,
+    effectiveActingAs
   );
+  const refreshToken = jwt.sign(refreshPayload, JWT_SECRET, {
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || "7d",
+  } as jwt.SignOptions);
 
-  return { accessToken, refreshToken };
+  return { accessToken, refreshToken, actingAs: accessPayload.actingAs };
 }
 
 const checkIfUserExists = async (email: string): Promise<boolean> => {
@@ -89,16 +108,6 @@ export const loginUser = async (
     where: { id: user.id },
     data: { lastLoginAt: new Date() },
   });
-
-  // Create JWT Payload
-  const payload: JwtPayload = {
-    id: updatedUser.id,
-    email: updatedUser.email,
-    role: updatedUser.role,
-  };
-
-  // Generate Token (expires in 24 hours)
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
 
   // Remove password before returning
   const { password: _, ...userWithoutPassword } = updatedUser;
@@ -157,9 +166,12 @@ export async function saveRefreshToken(userId: string, token: string) {
   });
 }
 
-export async function refreshTokens(refreshToken: string) {
+export async function refreshTokens(
+  refreshToken: string,
+  options?: { actingAs?: PrismaNamespace.Role }
+) {
   // 1. Verify refresh token signature
-  const payload = jwt.verify(refreshToken, JWT_SECRET) as JwtPayload;
+  const payload = jwt.verify(refreshToken, JWT_SECRET) as RefreshTokenPayload;
   const userId = payload.id;
 
   // 2. Check if the token exists and is valid in the database
@@ -180,9 +192,11 @@ export async function refreshTokens(refreshToken: string) {
     throw new Error("User not found.");
   }
 
-  // 5. Generate NEW tokens
-  const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-    generateTokens(userId, user.role);
+  const actingAs = options?.actingAs ?? payload.actingAs;
+
+  // 5. Generate NEW tokens (preserve or override portal context)
+  const { accessToken: newAccessToken, refreshToken: newRefreshToken, actingAs: issuedActingAs } =
+    generateTokens(userId, user.role, actingAs);
 
   // 6. Save the NEW refresh token
   await saveRefreshToken(userId, newRefreshToken);
@@ -190,6 +204,7 @@ export async function refreshTokens(refreshToken: string) {
   return {
     accessToken: newAccessToken,
     refreshToken: newRefreshToken,
+    actingAs: issuedActingAs,
   };
 }
 

@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { authenticate, authorize } from "../auth/auth.middleware.js";
+import {
+  authenticate,
+  authorize,
+  authorizeBuyerPortal,
+  authorizeSellerPortal,
+} from "../auth/auth.middleware.js";
 import { Role } from "../../types/prisma.js";
 import { validate } from "../../utils/validate.js";
 import {
@@ -23,16 +28,16 @@ const router = Router();
 router.use(authenticate);
 
 // POST /api/orders — Buyer creates a new order from productIds
-router.post("/", authorize([Role.BUYER]), validate(createOrderSchema), createOrderController);
+router.post("/", authorizeBuyerPortal(), validate(createOrderSchema), createOrderController);
 
 // GET /api/orders — Buyer gets their own orders
-router.get("/", authorize([Role.BUYER]), getBuyerOrdersController);
+router.get("/", authorizeBuyerPortal(), getBuyerOrdersController);
 
 // GET /api/orders/all — Admin gets all orders
 router.get("/all", authorize([Role.ADMIN]), getAllOrdersController);
 
 // GET /api/orders/seller — Seller sales lines (read-only)
-router.get("/seller", authorize([Role.SELLER]), getSellerSalesController);
+router.get("/seller", authorizeSellerPortal(), getSellerSalesController);
 
 // GET /api/orders/:orderId — Get single order (buyer owns it or admin)
 router.get("/:orderId", getOrderByIdController);
@@ -40,7 +45,9 @@ router.get("/:orderId", getOrderByIdController);
 // GET /api/orders/:orderId/credentials — Buyer or admin (COMPLETED orders only)
 router.get(
   "/:orderId/credentials",
-  authorize([Role.BUYER, Role.ADMIN]),
+  authorize([Role.BUYER, Role.SELLER, Role.ADMIN], {
+    actingAs: Role.BUYER,
+  }),
   getOrderCredentialsController
 );
 
@@ -53,6 +60,6 @@ router.patch(
 );
 
 // PATCH /api/orders/:orderId/cancel — Buyer cancels a PENDING order
-router.patch("/:orderId/cancel", authorize([Role.BUYER]), cancelOrderController);
+router.patch("/:orderId/cancel", authorizeBuyerPortal(), cancelOrderController);
 
 export default router;

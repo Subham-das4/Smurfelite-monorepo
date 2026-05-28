@@ -60,7 +60,10 @@ export async function loginController(
     }
 
     const user = await loginUser(email, password);
-    const { accessToken, refreshToken } = generateTokens(user.id, user.role);
+    const { accessToken, refreshToken, actingAs } = generateTokens(
+      user.id,
+      user.role
+    );
 
     // Set refresh token in an HTTP-only cookie for security
     res.cookie("refreshToken", refreshToken, {
@@ -77,6 +80,7 @@ export async function loginController(
     res.status(200).json({
       message: "Login successful.",
       accessToken,
+      actingAs,
       user,
     });
   } catch (error) {
@@ -85,7 +89,10 @@ export async function loginController(
 }
 
 async function sendAuthTokens(res: Response, user: User) {
-  const { accessToken, refreshToken } = generateTokens(user.id, user.role);
+  const { accessToken, refreshToken, actingAs } = generateTokens(
+    user.id,
+    user.role
+  );
 
   // 1. Save Refresh Token to DB
   await saveRefreshToken(user.id, refreshToken);
@@ -108,6 +115,7 @@ async function sendAuthTokens(res: Response, user: User) {
       googleProfilePicture: user.googleProfilePicture,
     },
     accessToken: accessToken,
+    actingAs,
     message: "Authentication successful.",
   });
 }
@@ -138,7 +146,11 @@ export async function refreshController(
   }
 
   try {
-    const result = await refreshTokens(refreshToken);
+    const actingAs =
+      req.body?.actingAs === Role.BUYER || req.body?.actingAs === Role.SELLER
+        ? req.body.actingAs
+        : undefined;
+    const result = await refreshTokens(refreshToken, { actingAs });
 
     // Set the NEW refresh token in an HTTP-only cookie
     res.cookie("refreshToken", result.refreshToken, {
@@ -150,6 +162,7 @@ export async function refreshController(
 
     return res.status(200).json({
       accessToken: result.accessToken,
+      actingAs: result.actingAs,
       message: "Tokens refreshed successfully.",
     });
   } catch (error: any) {

@@ -150,6 +150,12 @@ Regenerate client after schema changes: `pnpm --filter=@smurfelite/express-serve
 
 **Note:** `ProductStatus.PENDING_VERIFICATION` is **not** used for seller onboarding. Storefront gating in Phase 10.5 uses `User.sellerApprovalStatus === APPROVED`.
 
+### Phase 10.2 — JWT `actingAs` (2026-05-28)
+
+- [x] `AccessTokenClaims`, `RefreshTokenRequest`, `RefreshTokenResponse` in `index.ts`
+- [x] `LoginResponse.actingAs` — mirrors access token portal context
+- [x] Server: `auth.token.ts`, `authorizeBuyerPortal` / `authorizeSellerPortal` middleware
+
 ### pgvector (deferred)
 
 - [ ] `embedding vector(1536)` on Product — run `prisma/migrations/optional_pgvector_embedding.sql` when PostgreSQL has pgvector installed

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticate, authorize } from "../../auth/auth.middleware.js";
+import { authenticate, authorizeBuyerPortal } from "../../auth/auth.middleware.js";
 import { Role } from "../../../types/prisma.js";
 import { validate } from "../../../utils/validate.js";
 import { createNowPaymentsInvoiceSchema } from "../../../schemas/payment.schemas.js";
@@ -15,7 +15,7 @@ router.post(
   "/create-invoice",
   nowPaymentsInvoiceLimiter,
   authenticate,
-  authorize([Role.BUYER]),
+  authorizeBuyerPortal(),
   validate(createNowPaymentsInvoiceSchema),
   createNowPaymentsInvoiceController
 );

@@ -23,6 +23,7 @@ import { runPhase5_6 } from "./phases/phase-5_6.mts";
 import { runPhase5_8 } from "./phases/phase-5_8.mts";
 import { runPhase5_9 } from "./phases/phase-5_9.mts";
 import { runPhase5_10 } from "./phases/phase-5_10.mts";
+import { runPhase10_2 } from "./phases/phase-10_2.mts";
 
 export type SmokePhase =
   | "1"
@@ -44,7 +45,8 @@ export type SmokePhase =
   | "5.6"
   | "5.8"
   | "5.9"
-  | "5.10";
+  | "5.10"
+  | "10.2";
 
 const PHASE_ORDER: SmokePhase[] = [
   "1",
@@ -67,6 +69,7 @@ const PHASE_ORDER: SmokePhase[] = [
   "5.8",
   "5.9",
   "5.10",
+  "10.2",
 ];
 
 const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
@@ -90,6 +93,7 @@ const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
   "5.8": runPhase5_8,
   "5.9": runPhase5_9,
   "5.10": runPhase5_10,
+  "10.2": runPhase10_2,
 };
 
 function printUsage(): void {
@@ -121,6 +125,7 @@ Phases:
   5.8  Auth hardening — BUYER-only register, promote seller
   5.9  Payment status — IPN mapping + order paymentStatus
   5.10 Portal API — products/mine, products/admin, orders/seller, wallet ledger, admin credentials
+  10.2 JWT actingAs — portal context on tokens, buyer/seller route guards, refresh
 
 Examples:
   pnpm smoke:through-1      # Phase 1 only
@@ -152,6 +157,7 @@ Examples:
   pnpm smoke:phase-5.6      # Phase 5.6 only
   pnpm smoke:phase-5.8      # Phase 5.8 only
   pnpm smoke:phase-5.9      # Phase 5.9 only
+  pnpm smoke:phase-10.2     # Phase 10.2 only (JWT actingAs)
 
 Environment:
   SMOKE_API_BASE     API base URL (default: http://localhost:\${PORT}/api)

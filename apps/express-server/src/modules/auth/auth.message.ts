@@ -10,4 +10,5 @@ export const AuthErrorMessages = {
     "Email not verified. Please verify your email before logging in.",
   INVALID_VERIFICATION_TOKEN: "Invalid verification token.",
   INVALID_GOOGLE_PROFILE: "Google profile missing email.",
+  INVALID_PORTAL_CONTEXT: "Invalid login context for this account.",
 };

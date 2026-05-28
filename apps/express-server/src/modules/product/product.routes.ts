@@ -14,7 +14,11 @@ import {
   banProductController,
   liftBanProductController,
 } from "./product.controller.js";
-import { authenticate, authorize } from "../auth/auth.middleware.js";
+import {
+  authenticate,
+  authorize,
+  authorizeSellerPortal,
+} from "../auth/auth.middleware.js";
 import { Role } from "../../types/prisma.js";
 import { verifySeller } from "./product.middleware.js";
 import { validate } from "../../utils/validate.js";
@@ -29,7 +33,7 @@ router.get("/", getAllProductsController);
 router.get(
   "/mine",
   authenticate,
-  authorize([Role.SELLER]),
+  authorizeSellerPortal(),
   getMyProductsController
 );
 router.get(
@@ -46,7 +50,10 @@ router.get(
 );
 router.get("/:productId", getProductDetailsController);
 
-router.use(authenticate, authorize([Role.ADMIN, Role.SELLER]));
+router.use(
+  authenticate,
+  authorize([Role.ADMIN, Role.SELLER], { actingAs: Role.SELLER })
+);
 
 router.post("/", validate(createProductSchema), createProductController);
 

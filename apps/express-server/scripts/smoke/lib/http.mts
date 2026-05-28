@@ -1,9 +1,20 @@
+import jwt from "jsonwebtoken";
+import { Role } from "../../../src/types/prisma.js";
 import type { SmokeContext } from "./runner.mts";
 
 export type LoginResult = {
   accessToken: string;
   userId: string;
+  actingAs?: Role;
 };
+
+export function decodeAccessTokenClaims(token: string) {
+  return jwt.decode(token) as {
+    id?: string;
+    role?: Role;
+    actingAs?: Role;
+  } | null;
+}
 
 export function getApiBase(): string {
   const port = process.env.PORT?.trim() || "8080";
@@ -31,6 +42,7 @@ export async function login(
 
   const data = (await res.json()) as {
     accessToken?: string;
+    actingAs?: Role;
     user?: { id?: string };
   };
 
@@ -38,7 +50,69 @@ export async function login(
     throw new Error("Login response missing accessToken or user.id");
   }
 
-  return { accessToken: data.accessToken, userId: data.user.id };
+  return {
+    accessToken: data.accessToken,
+    userId: data.user.id,
+    actingAs: data.actingAs ?? decodeAccessTokenClaims(data.accessToken)?.actingAs,
+  };
+}
+
+/** Login then refresh with explicit portal context (Phase 10.2). */
+export async function loginWithActingAs(
+  apiBase: string,
+  email: string,
+  password: string,
+  actingAs: Role.BUYER | Role.SELLER
+): Promise<LoginResult> {
+  const loginRes = await fetch(`${apiBase}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  if (!loginRes.ok) {
+    const body = await loginRes.text();
+    throw new Error(`Login failed (${loginRes.status}): ${body}`);
+  }
+
+  const loginData = (await loginRes.json()) as {
+    user?: { id?: string };
+  };
+
+  const setCookie = loginRes.headers.get("set-cookie") ?? "";
+  const refreshCookie = setCookie
+    .split(",")
+    .map((c) => c.trim())
+    .find((c) => c.startsWith("refreshToken="));
+  if (!refreshCookie) {
+    throw new Error("Login response missing refreshToken cookie");
+  }
+
+  const refreshRes = await fetch(`${apiBase}/auth/refresh`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: refreshCookie.split(";")[0],
+    },
+    body: JSON.stringify({ actingAs }),
+  });
+  if (!refreshRes.ok) {
+    const body = await refreshRes.text();
+    throw new Error(`Refresh failed (${refreshRes.status}): ${body}`);
+  }
+
+  const data = (await refreshRes.json()) as {
+    accessToken?: string;
+    actingAs?: Role;
+  };
+  if (!data.accessToken || !loginData.user?.id) {
+    throw new Error("Refresh response missing accessToken or user.id");
+  }
+
+  return {
+    accessToken: data.accessToken,
+    userId: loginData.user.id,
+    actingAs: data.actingAs,
+  };
 }
 
 export async function apiRequest<T = unknown>(

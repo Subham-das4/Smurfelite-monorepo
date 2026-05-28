@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { authenticate, authorize } from "../auth/auth.middleware.js";
+import {
+  authenticate,
+  authorize,
+  authorizeSellerPortal,
+} from "../auth/auth.middleware.js";
 import { Role } from "../../types/prisma.js";
 import { validate } from "../../utils/validate.js";
 import { recordPayoutSchema } from "../../schemas/wallet.schemas.js";
@@ -16,8 +20,8 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get("/me", authorize([Role.SELLER]), getMyWalletController);
-router.get("/me/ledger", authorize([Role.SELLER]), getMyWalletLedgerController);
+router.get("/me", authorizeSellerPortal(), getMyWalletController);
+router.get("/me/ledger", authorizeSellerPortal(), getMyWalletLedgerController);
 
 router.get("/", authorize([Role.ADMIN]), listAdminWalletsController);
 
