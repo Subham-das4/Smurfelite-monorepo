@@ -14,6 +14,7 @@ import prisma, {
 import apiRouter from "./lib/route.js";
 import { globalErrorHandler } from "./utils/errors.js";
 import logger from "./utils/logger.js";
+import { handlePayPalWebhookRaw } from "./modules/payments/paypal/paypal.webhook.js";
 
 // Ensure logs/ directory exists before opening streams
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -31,6 +32,15 @@ const PORT = process.env.PORT || 8080;
 // Security Middleware
 // ----------------------------------------
 app.use(helmet());
+
+// ----------------------------------------
+// PayPal webhook (raw body — must run before express.json())
+// ----------------------------------------
+app.post(
+  "/api/payments/paypal/webhook",
+  express.raw({ type: "application/json" }),
+  handlePayPalWebhookRaw
+);
 
 // ----------------------------------------
 // Core Middleware

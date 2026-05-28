@@ -8,10 +8,14 @@ import {
 import { cancelPendingOrderInTransaction } from "./order-expiry.service.js";
 import { fulfillOrder } from "./fulfillment.service.js";
 
-export type NowPaymentsIpnOptions = {
+export type PaymentLifecycleOptions = {
   paymentProvider?: string;
   nowpaymentsPaymentId?: string;
+  paypalOrderId?: string;
 };
+
+/** @deprecated Use PaymentLifecycleOptions */
+export type NowPaymentsIpnOptions = PaymentLifecycleOptions;
 
 async function loadOrderWithItems(orderId: string) {
   return prisma.order.findUnique({
@@ -23,7 +27,7 @@ async function loadOrderWithItems(orderId: string) {
 /** Cancel PENDING/PROCESSING order due to failed/expired payment; unlock products. */
 export async function cancelOrderDueToPaymentFailure(
   orderId: string,
-  options?: NowPaymentsIpnOptions
+  options?: PaymentLifecycleOptions
 ) {
   const order = await loadOrderWithItems(orderId);
   if (!order) return null;
@@ -56,7 +60,7 @@ export async function cancelOrderDueToPaymentFailure(
 /** Mark a completed order as refunded (wallet reversal deferred). */
 export async function applyPaymentRefund(
   orderId: string,
-  options?: NowPaymentsIpnOptions
+  options?: PaymentLifecycleOptions
 ) {
   const order = await prisma.order.findUnique({ where: { id: orderId } });
   if (!order) return null;
@@ -90,7 +94,7 @@ export async function applyPaymentRefund(
 /** PAID IPN: PROCESSING then fulfill to COMPLETED. Idempotent. */
 export async function applyPaymentSuccessAndFulfill(
   orderId: string,
-  options?: NowPaymentsIpnOptions
+  options?: PaymentLifecycleOptions
 ) {
   const order = await loadOrderWithItems(orderId);
   if (!order) return null;
@@ -134,7 +138,10 @@ export async function applyPaymentSuccessAndFulfill(
     });
   }
 
-  return fulfillOrder(orderId, options?.paymentProvider ?? "nowpayments");
+  return fulfillOrder(
+    orderId,
+    options?.paymentProvider ?? "nowpayments"
+  );
 }
 
 /**

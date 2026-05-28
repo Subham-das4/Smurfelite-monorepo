@@ -3,27 +3,41 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { OrderStatus } from "@smurfelite/types";
 import {
   useGetOrderByIdQuery,
   useCancelOrderMutation,
   useCreateNowPaymentsInvoiceMutation,
+  useCreatePayPalOrderMutation,
+  useGetPayPalStatusQuery,
 } from "@/api";
 import { getApiErrorMessage } from "@/lib/apiError";
 import { payOrderWithCrypto } from "@/lib/payWithCrypto";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { OrderCredentialsModal } from "./OrderCredentialsModal";
+import { OrderPayPalModal } from "./OrderPayPalModal";
 
 export function OrderDetailContent() {
   const params = useParams<{ orderId: string }>();
+  const router = useRouter();
   const orderId = params.orderId;
   const { data: order, isLoading, isError } = useGetOrderByIdQuery(orderId);
   const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
-  const [createInvoice, { isLoading: isPaying }] =
+  const [createInvoice, { isLoading: isPayingCrypto }] =
     useCreateNowPaymentsInvoiceMutation();
+  const [createPayPalOrder, { isLoading: isPayingPayPal }] =
+    useCreatePayPalOrderMutation();
+  const { data: paypalStatus } = useGetPayPalStatusQuery();
   const [credentialsOpen, setCredentialsOpen] = useState(false);
+  const [paypalModal, setPaypalModal] = useState<{
+    paypalOrderId: string;
+  } | null>(null);
+
+  const paypalEnabled =
+    Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.trim()) &&
+    (paypalStatus?.enabled ?? false);
 
   const handleCancel = async () => {
     if (!order || order.status !== OrderStatus.PENDING) return;
@@ -65,6 +79,16 @@ export function OrderDetailContent() {
         orderId={orderId}
         open={credentialsOpen}
         onClose={() => setCredentialsOpen(false)}
+      />
+      <OrderPayPalModal
+        internalOrderId={orderId}
+        paypalOrderId={paypalModal?.paypalOrderId ?? ""}
+        open={paypalModal !== null}
+        onClose={() => setPaypalModal(null)}
+        onSuccess={() => {
+          toast.success("Payment complete.");
+          router.push(`/checkout/success?orderId=${encodeURIComponent(orderId)}`);
+        }}
       />
 
       <div className="w-full max-w-[800px] space-y-6">
@@ -130,6 +154,29 @@ export function OrderDetailContent() {
         <div className="flex flex-wrap gap-3">
           {order.status === OrderStatus.PENDING && (
             <>
+              {paypalEnabled && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      const result = await createPayPalOrder({
+                        internalOrderId: orderId,
+                      }).unwrap();
+                      setPaypalModal({
+                        paypalOrderId: result.paypalOrderId,
+                      });
+                    } catch (err) {
+                      toast.error(
+                        getApiErrorMessage(err, "Could not start PayPal payment.")
+                      );
+                    }
+                  }}
+                  disabled={isPayingPayPal || isPayingCrypto || isCancelling}
+                  className="px-5 py-2.5 rounded-xl font-bold text-sm border border-[#e0dbe6] dark:border-border-dark hover:bg-[#f2f0f4] dark:hover:bg-white/10 disabled:opacity-60"
+                >
+                  {isPayingPayPal ? "Starting PayPal…" : "Pay with PayPal"}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() =>
@@ -137,15 +184,17 @@ export function OrderDetailContent() {
                     createInvoice(args).unwrap()
                   )
                 }
-                disabled={isPaying || isCancelling}
+                disabled={isPayingCrypto || isPayingPayPal || isCancelling}
                 className="px-5 py-2.5 rounded-xl font-bold text-sm bg-primary text-white hover:bg-primary/90 disabled:opacity-60"
               >
-                {isPaying ? "Starting payment…" : "Pay with crypto"}
+                {isPayingCrypto ? "Starting payment…" : "Pay with crypto"}
               </button>
               <button
                 type="button"
                 onClick={handleCancel}
-                disabled={isCancelling || isPaying}
+                disabled={
+                  isCancelling || isPayingCrypto || isPayingPayPal
+                }
                 className="px-5 py-2.5 rounded-xl font-bold text-sm text-rose-600 border border-rose-200 hover:bg-rose-50 disabled:opacity-60"
               >
                 {isCancelling ? "Cancelling…" : "Cancel order"}

@@ -246,6 +246,19 @@ From `prisma/schema.prisma`:
 - IPN sets `nowpaymentsPaymentId` without overwriting `nowpaymentsInvoiceId`
 - Pending order expiry (inline + cron) sets `paymentStatus: FAILED` when auto-cancelled
 
+### PayPal (`/payments/paypal`)
+
+| Method | Path | Auth | Notes |
+| ------ | ---- | ---- | ----- |
+| GET | `/status` | Public | `{ enabled: boolean }` |
+| POST | `/create-order` | Buyer portal | Creates PayPal order; stores `paypalOrderId` |
+| POST | `/capture-order` | Buyer portal | Captures after buyer approval; fulfills to `COMPLETED` |
+| POST | `/webhook` | Public (raw body) | Signature verified; backup fulfillment / failure / refund |
+
+Webhook events: `PAYMENT.CAPTURE.COMPLETED` (fulfill), failure events (cancel + unlock), `PAYMENT.CAPTURE.REFUNDED`.
+
+Env: `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_MODE`, `PAYPAL_WEBHOOK_ID`. Webhook mounted before `express.json()` for raw body verification.
+
 ---
 
 ## Environment variables

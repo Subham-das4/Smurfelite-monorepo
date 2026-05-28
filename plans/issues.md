@@ -163,22 +163,6 @@ Prioritized list of known bugs, gaps, and technical debt. Update this file as is
 
 ---
 
-### 🟡 ISS-016 — PayPal integration disabled but code remains
-
-| Field | Value |
-| ----- | ----- |
-| **Severity** | Medium |
-| **Area** | Payment |
-| **Phase fix** | Phase 9 |
-
-**Problem:** PayPal routes commented out in `route.ts`; frontend still has RTK mutations.
-
-**Files:**
-- `apps/express-server/src/lib/route.ts`
-- `apps/nextjs-app/src/api/payments.ts`
-
----
-
 ### 🟡 ISS-017 — No lastLoginAt on User
 
 | Field | Value |
@@ -264,6 +248,10 @@ NOWPayments IPN `finished` triggers `fulfillOrder` → `COMPLETED`, products `SO
 ### ✅ ISS-007 — No payment failure / expiry handling (2026-05-28, Phase 9.1)
 
 Failed/expired IPN cancels order, sets `paymentStatus: FAILED`, releases `transactionBlock`. Cron/inline expiry also sets `paymentStatus: FAILED`.
+
+### ✅ ISS-016 — PayPal integration disabled (2026-05-28, Phase 9.3)
+
+PayPal routes mounted at `/payments/paypal`; create/capture use buyer portal auth + `payment-lifecycle` fulfillment; verified webhooks; checkout PayPal Buttons and orders retry UI.
 
 ### ✅ ISS-021 — paymentIntent field overloaded (2026-05-28, Phase 9.1)
 

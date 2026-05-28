@@ -90,6 +90,10 @@ interface PaymentFormProps {
   submitDisabled?: boolean;
   submitDisabledReason?: string;
   paymentBypassEnabled?: boolean;
+  paypalEnabled?: boolean;
+  selectedMethod?: PaymentMethod;
+  onMethodChange?: (method: PaymentMethod) => void;
+  hideSubmit?: boolean;
 }
 
 const PAYMENT_OPTIONS: Omit<
@@ -107,8 +111,6 @@ const PAYMENT_OPTIONS: Omit<
         <span className="text-[#009cde]">Pal</span>
       </span>
     ),
-    disabled: true,
-    disabledReason: "Coming soon",
   },
   {
     id: "card",
@@ -141,9 +143,30 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
   submitDisabled = false,
   submitDisabledReason,
   paymentBypassEnabled = false,
+  paypalEnabled = false,
+  selectedMethod: controlledMethod,
+  onMethodChange,
+  hideSubmit = false,
 }) => {
-  const [selectedMethod, setSelectedMethod] =
-    useState<PaymentMethod>("crypto");
+  const [internalMethod, setInternalMethod] = useState<PaymentMethod>(
+    paypalEnabled ? "paypal" : "crypto"
+  );
+  const selectedMethod = controlledMethod ?? internalMethod;
+  const setSelectedMethod = (method: PaymentMethod) => {
+    if (onMethodChange) onMethodChange(method);
+    else setInternalMethod(method);
+  };
+
+  const paymentOptions = PAYMENT_OPTIONS.map((option) => {
+    if (option.id === "paypal") {
+      return {
+        ...option,
+        disabled: !paypalEnabled,
+        disabledReason: paypalEnabled ? undefined : "Coming soon",
+      };
+    }
+    return option;
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,7 +208,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
         </p>
 
         <div className="flex flex-col gap-4">
-          {PAYMENT_OPTIONS.map((option) => (
+          {paymentOptions.map((option) => (
             <PaymentOption
               key={option.id}
               {...option}
@@ -209,23 +232,25 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border-light dark:border-border-dark">
-        <Link
-          href="/cart"
-          className="flex items-center gap-2 text-primary font-medium hover:text-primary/80 transition-colors py-2"
-        >
-          <MdArrowBack className="text-lg" />
-          Back to cart
-        </Link>
-        <button
-          type="submit"
-          disabled={isSubmitting || submitDisabled}
-          className="w-full sm:w-auto bg-primary hover:bg-primary/90 active:scale-95 text-white rounded-xl h-14 px-8 text-base font-bold tracking-wide shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:pointer-events-none"
-        >
-          <span>{submitLabel}</span>
-          <MdArrowForward className="text-lg" />
-        </button>
-      </div>
+      {!hideSubmit && (
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border-light dark:border-border-dark">
+          <Link
+            href="/cart"
+            className="flex items-center gap-2 text-primary font-medium hover:text-primary/80 transition-colors py-2"
+          >
+            <MdArrowBack className="text-lg" />
+            Back to cart
+          </Link>
+          <button
+            type="submit"
+            disabled={isSubmitting || submitDisabled}
+            className="w-full sm:w-auto bg-primary hover:bg-primary/90 active:scale-95 text-white rounded-xl h-14 px-8 text-base font-bold tracking-wide shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:pointer-events-none"
+          >
+            <span>{submitLabel}</span>
+            <MdArrowForward className="text-lg" />
+          </button>
+        </div>
+      )}
     </form>
   );
 };

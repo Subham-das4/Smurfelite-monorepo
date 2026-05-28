@@ -601,8 +601,8 @@ After E2E passes with bypass.
 
 ### 9.3 PayPal cleanup (optional)
 
-- [ ] Re-enable or remove PayPal code paths
-- [ ] Remove unused RTK mutations if dropped
+- [x] Re-enable PayPal code paths
+- [x] Wire RTK mutations + PayPal JS Buttons in checkout and orders retry
 
 **Depends on:** Phase 2 E2E validated
 

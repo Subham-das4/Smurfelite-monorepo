@@ -13054,6 +13054,7 @@ export namespace Prisma {
     paymentIntent: string | null
     nowpaymentsInvoiceId: string | null
     nowpaymentsPaymentId: string | null
+    paypalOrderId: string | null
     paymentProvider: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13068,6 +13069,7 @@ export namespace Prisma {
     paymentIntent: string | null
     nowpaymentsInvoiceId: string | null
     nowpaymentsPaymentId: string | null
+    paypalOrderId: string | null
     paymentProvider: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13082,6 +13084,7 @@ export namespace Prisma {
     paymentIntent: number
     nowpaymentsInvoiceId: number
     nowpaymentsPaymentId: number
+    paypalOrderId: number
     paymentProvider: number
     createdAt: number
     updatedAt: number
@@ -13106,6 +13109,7 @@ export namespace Prisma {
     paymentIntent?: true
     nowpaymentsInvoiceId?: true
     nowpaymentsPaymentId?: true
+    paypalOrderId?: true
     paymentProvider?: true
     createdAt?: true
     updatedAt?: true
@@ -13120,6 +13124,7 @@ export namespace Prisma {
     paymentIntent?: true
     nowpaymentsInvoiceId?: true
     nowpaymentsPaymentId?: true
+    paypalOrderId?: true
     paymentProvider?: true
     createdAt?: true
     updatedAt?: true
@@ -13134,6 +13139,7 @@ export namespace Prisma {
     paymentIntent?: true
     nowpaymentsInvoiceId?: true
     nowpaymentsPaymentId?: true
+    paypalOrderId?: true
     paymentProvider?: true
     createdAt?: true
     updatedAt?: true
@@ -13235,6 +13241,7 @@ export namespace Prisma {
     paymentIntent: string | null
     nowpaymentsInvoiceId: string | null
     nowpaymentsPaymentId: string | null
+    paypalOrderId: string | null
     paymentProvider: string | null
     createdAt: Date
     updatedAt: Date
@@ -13268,6 +13275,7 @@ export namespace Prisma {
     paymentIntent?: boolean
     nowpaymentsInvoiceId?: boolean
     nowpaymentsPaymentId?: boolean
+    paypalOrderId?: boolean
     paymentProvider?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13287,6 +13295,7 @@ export namespace Prisma {
     paymentIntent?: boolean
     nowpaymentsInvoiceId?: boolean
     nowpaymentsPaymentId?: boolean
+    paypalOrderId?: boolean
     paymentProvider?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13302,6 +13311,7 @@ export namespace Prisma {
     paymentIntent?: boolean
     nowpaymentsInvoiceId?: boolean
     nowpaymentsPaymentId?: boolean
+    paypalOrderId?: boolean
     paymentProvider?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13317,13 +13327,14 @@ export namespace Prisma {
     paymentIntent?: boolean
     nowpaymentsInvoiceId?: boolean
     nowpaymentsPaymentId?: boolean
+    paypalOrderId?: boolean
     paymentProvider?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     buyerId?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "paymentStatus" | "totalAmount" | "paymentIntent" | "nowpaymentsInvoiceId" | "nowpaymentsPaymentId" | "paymentProvider" | "createdAt" | "updatedAt" | "buyerId", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "paymentStatus" | "totalAmount" | "paymentIntent" | "nowpaymentsInvoiceId" | "nowpaymentsPaymentId" | "paypalOrderId" | "paymentProvider" | "createdAt" | "updatedAt" | "buyerId", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     buyer?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
@@ -13354,6 +13365,7 @@ export namespace Prisma {
       paymentIntent: string | null
       nowpaymentsInvoiceId: string | null
       nowpaymentsPaymentId: string | null
+      paypalOrderId: string | null
       paymentProvider: string | null
       createdAt: Date
       updatedAt: Date
@@ -13792,6 +13804,7 @@ export namespace Prisma {
     readonly paymentIntent: FieldRef<"Order", 'String'>
     readonly nowpaymentsInvoiceId: FieldRef<"Order", 'String'>
     readonly nowpaymentsPaymentId: FieldRef<"Order", 'String'>
+    readonly paypalOrderId: FieldRef<"Order", 'String'>
     readonly paymentProvider: FieldRef<"Order", 'String'>
     readonly createdAt: FieldRef<"Order", 'DateTime'>
     readonly updatedAt: FieldRef<"Order", 'DateTime'>
@@ -20118,6 +20131,7 @@ export namespace Prisma {
     paymentIntent: 'paymentIntent',
     nowpaymentsInvoiceId: 'nowpaymentsInvoiceId',
     nowpaymentsPaymentId: 'nowpaymentsPaymentId',
+    paypalOrderId: 'paypalOrderId',
     paymentProvider: 'paymentProvider',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -21153,6 +21167,7 @@ export namespace Prisma {
     paymentIntent?: StringNullableFilter<"Order"> | string | null
     nowpaymentsInvoiceId?: StringNullableFilter<"Order"> | string | null
     nowpaymentsPaymentId?: StringNullableFilter<"Order"> | string | null
+    paypalOrderId?: StringNullableFilter<"Order"> | string | null
     paymentProvider?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
@@ -21171,6 +21186,7 @@ export namespace Prisma {
     paymentIntent?: SortOrderInput | SortOrder
     nowpaymentsInvoiceId?: SortOrderInput | SortOrder
     nowpaymentsPaymentId?: SortOrderInput | SortOrder
+    paypalOrderId?: SortOrderInput | SortOrder
     paymentProvider?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21186,6 +21202,7 @@ export namespace Prisma {
     paymentIntent?: string
     nowpaymentsInvoiceId?: string
     nowpaymentsPaymentId?: string
+    paypalOrderId?: string
     AND?: OrderWhereInput | OrderWhereInput[]
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
@@ -21200,7 +21217,7 @@ export namespace Prisma {
     items?: OrderItemListRelationFilter
     disputes?: DisputeListRelationFilter
     walletEntries?: WalletLedgerListRelationFilter
-  }, "id" | "paymentIntent" | "nowpaymentsInvoiceId" | "nowpaymentsPaymentId">
+  }, "id" | "paymentIntent" | "nowpaymentsInvoiceId" | "nowpaymentsPaymentId" | "paypalOrderId">
 
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
@@ -21210,6 +21227,7 @@ export namespace Prisma {
     paymentIntent?: SortOrderInput | SortOrder
     nowpaymentsInvoiceId?: SortOrderInput | SortOrder
     nowpaymentsPaymentId?: SortOrderInput | SortOrder
+    paypalOrderId?: SortOrderInput | SortOrder
     paymentProvider?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21232,6 +21250,7 @@ export namespace Prisma {
     paymentIntent?: StringNullableWithAggregatesFilter<"Order"> | string | null
     nowpaymentsInvoiceId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     nowpaymentsPaymentId?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    paypalOrderId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     paymentProvider?: StringNullableWithAggregatesFilter<"Order"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
@@ -22353,6 +22372,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22370,6 +22390,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22387,6 +22408,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22404,6 +22426,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22421,6 +22444,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22435,6 +22459,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22448,6 +22473,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23605,6 +23631,7 @@ export namespace Prisma {
     paymentIntent?: SortOrder
     nowpaymentsInvoiceId?: SortOrder
     nowpaymentsPaymentId?: SortOrder
+    paypalOrderId?: SortOrder
     paymentProvider?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23623,6 +23650,7 @@ export namespace Prisma {
     paymentIntent?: SortOrder
     nowpaymentsInvoiceId?: SortOrder
     nowpaymentsPaymentId?: SortOrder
+    paypalOrderId?: SortOrder
     paymentProvider?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23637,6 +23665,7 @@ export namespace Prisma {
     paymentIntent?: SortOrder
     nowpaymentsInvoiceId?: SortOrder
     nowpaymentsPaymentId?: SortOrder
+    paypalOrderId?: SortOrder
     paymentProvider?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -25771,6 +25800,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -25787,6 +25817,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26193,6 +26224,7 @@ export namespace Prisma {
     paymentIntent?: StringNullableFilter<"Order"> | string | null
     nowpaymentsInvoiceId?: StringNullableFilter<"Order"> | string | null
     nowpaymentsPaymentId?: StringNullableFilter<"Order"> | string | null
+    paypalOrderId?: StringNullableFilter<"Order"> | string | null
     paymentProvider?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
@@ -27949,6 +27981,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27965,6 +27998,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28054,6 +28088,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28070,6 +28105,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28289,6 +28325,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28305,6 +28342,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28501,6 +28539,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28517,6 +28556,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28902,6 +28942,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28918,6 +28959,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29006,6 +29048,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29022,6 +29065,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29117,6 +29161,7 @@ export namespace Prisma {
     paymentIntent?: string | null
     nowpaymentsInvoiceId?: string | null
     nowpaymentsPaymentId?: string | null
+    paypalOrderId?: string | null
     paymentProvider?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29328,6 +29373,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29344,6 +29390,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29360,6 +29407,7 @@ export namespace Prisma {
     paymentIntent?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsInvoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     nowpaymentsPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paypalOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProvider?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

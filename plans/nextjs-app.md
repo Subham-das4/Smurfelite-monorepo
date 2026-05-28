@@ -82,7 +82,7 @@ Base URL from `NEXT_PUBLIC_EXPRESS_SERVER_API` (see `baseApi.ts`).
 | `products.ts` | list, getById, create, update, delete | ✅ Browse/detail; CRUD unused in UI |
 | `cart.ts` | get, add, remove | ✅ Cart page, header badge |
 | `orders.ts` | create, getMine, getById, cancel, credentials | ✅ Checkout, orders table, detail, credentials modal |
-| `payments.ts` | nowpayments invoice, paypal (unused) | ✅ Checkout crypto |
+| `payments.ts` | nowpayments invoice, PayPal create/capture, bypass | ✅ Checkout crypto + PayPal |
 | `enquiries.ts` | send, getMine | ⚠️ Contact form (broken payload) |
 | `user.ts` | getMe, updateMe | ✅ Profile slice |
 
@@ -133,7 +133,7 @@ sequenceDiagram
 | -------- | --------------- |
 | `components/pages/products/detail/data.ts` | Reviews, seller stats |
 | `CheckoutOrderSummary.tsx` | Promo code (no backend) |
-| `PaymentForm.tsx` | PayPal, card, Skrill disabled; crypto only |
+| `PaymentForm.tsx` | PayPal + crypto when configured; card, Skrill disabled |
 
 ---
 
@@ -164,7 +164,8 @@ sequenceDiagram
 | `CartContent` | `components/pages/cart/` | Line items + summary |
 | `CheckoutContent` | `components/pages/checkout/` | Main checkout orchestrator |
 | `OrdersContent` | `components/pages/orders/` | Table + filters (live API); auth CTA when logged out |
-| PENDING order actions | `OrderActionMenu`, `OrderDetailContent` | Pay with crypto (invoice retry), cancel |
+| PENDING order actions | `OrderActionMenu`, `OrderDetailContent` | Pay with crypto / PayPal, cancel |
+| `PayPalCheckoutButtons` | `components/pages/checkout/` | PayPal JS SDK after server create-order |
 | `OrderCredentialsModal` | `components/pages/orders/` | COMPLETED orders — copy credentials |
 | `OrderDetailContent` | `components/pages/orders/` | `/orders/[orderId]` summary + actions |
 | `Contact` | `components/pages/home/` | Enquiry form |

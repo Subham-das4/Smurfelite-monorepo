@@ -11,11 +11,18 @@ import {
   MdCancel,
   MdCurrencyBitcoin,
 } from "react-icons/md";
+import { FaPaypal } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { OrderStatus } from "@smurfelite/types";
-import { useCancelOrderMutation, useCreateNowPaymentsInvoiceMutation } from "@/api";
+import {
+  useCancelOrderMutation,
+  useCreateNowPaymentsInvoiceMutation,
+  useCreatePayPalOrderMutation,
+  useGetPayPalStatusQuery,
+} from "@/api";
 import { getApiErrorMessage } from "@/lib/apiError";
 import { payOrderWithCrypto } from "@/lib/payWithCrypto";
+import { OrderPayPalModal } from "./OrderPayPalModal";
 import type { OrderStatus as OrderStatusType } from "./types";
 
 interface MenuItem {
@@ -35,8 +42,11 @@ function getMenuItems(
     onViewCredentials: () => void;
     onCancel: () => void;
     onPayWithCrypto: () => void;
+    onPayWithPayPal: () => void;
+    paypalEnabled: boolean;
     isCancelling: boolean;
     isPaying: boolean;
+    isPayingPayPal: boolean;
   }
 ): MenuItem[] {
   const items: MenuItem[] = [
@@ -69,19 +79,34 @@ function getMenuItems(
   });
 
   if (status === OrderStatus.PENDING) {
+    if (handlers.paypalEnabled) {
+      items.push({
+        label: handlers.isPayingPayPal ? "Starting PayPal…" : "Pay with PayPal",
+        icon: <FaPaypal className="text-base shrink-0" />,
+        onClick: handlers.onPayWithPayPal,
+        disabled:
+          handlers.isPayingPayPal ||
+          handlers.isPaying ||
+          handlers.isCancelling,
+      });
+    }
     items.push(
       {
         label: handlers.isPaying ? "Starting payment…" : "Pay with crypto",
         icon: <MdCurrencyBitcoin className="text-base shrink-0" />,
         onClick: handlers.onPayWithCrypto,
-        disabled: handlers.isPaying || handlers.isCancelling,
+        disabled:
+          handlers.isPaying ||
+          handlers.isPayingPayPal ||
+          handlers.isCancelling,
       },
       {
         label: handlers.isCancelling ? "Cancelling…" : "Cancel Order",
         icon: <MdCancel className="text-base shrink-0" />,
         onClick: handlers.onCancel,
         variant: "danger",
-        disabled: handlers.isCancelling || handlers.isPaying,
+        disabled:
+          handlers.isCancelling || handlers.isPaying || handlers.isPayingPayPal,
       }
     );
   }
@@ -107,6 +132,16 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
   const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
   const [createInvoice, { isLoading: isPaying }] =
     useCreateNowPaymentsInvoiceMutation();
+  const [createPayPalOrder, { isLoading: isPayingPayPal }] =
+    useCreatePayPalOrderMutation();
+  const { data: paypalStatus } = useGetPayPalStatusQuery();
+  const [paypalModal, setPaypalModal] = useState<{
+    paypalOrderId: string;
+  } | null>(null);
+
+  const paypalEnabled =
+    Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.trim()) &&
+    (paypalStatus?.enabled ?? false);
 
   useEffect(() => {
     if (!open) return;
@@ -142,15 +177,37 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
     );
   };
 
+  const handlePayWithPayPal = async () => {
+    try {
+      const result = await createPayPalOrder({
+        internalOrderId: orderId,
+      }).unwrap();
+      setPaypalModal({ paypalOrderId: result.paypalOrderId });
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, "Could not start PayPal payment."));
+    }
+  };
+
   const menuItems = getMenuItems(orderId, productId, status, {
     onViewCredentials: () => onViewCredentials(orderId),
     onCancel: () => void handleCancel(),
     onPayWithCrypto: handlePayWithCrypto,
+    onPayWithPayPal: () => void handlePayWithPayPal(),
+    paypalEnabled,
     isCancelling,
     isPaying,
+    isPayingPayPal,
   });
 
   return (
+    <>
+      <OrderPayPalModal
+        internalOrderId={orderId}
+        paypalOrderId={paypalModal?.paypalOrderId ?? ""}
+        open={paypalModal !== null}
+        onClose={() => setPaypalModal(null)}
+        onSuccess={() => toast.success("Payment complete.")}
+      />
     <div ref={containerRef} className="relative flex justify-end">
       <button
         type="button"
@@ -204,5 +261,6 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
         </div>
       )}
     </div>
+    </>
   );
 };

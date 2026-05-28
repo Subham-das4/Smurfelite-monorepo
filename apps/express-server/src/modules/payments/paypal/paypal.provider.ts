@@ -1,28 +1,27 @@
-// import {
-//     Client,
-//     Environment,
-//     LogLevel
-// } from '@paypal/paypal-server-sdk';
+import * as PayPalSdk from "@paypal/paypal-server-sdk";
+import {
+  assertPayPalConfigured,
+  getPayPalSdkEnvironment,
+} from "../../../lib/paypal-config.js";
 
-// const clientId = process.env.PAYPAL_CLIENT_ID!;
-// const clientSecret = process.env.PAYPAL_CLIENT_SECRET!;
+let cachedClient: PayPalSdk.Client | null = null;
 
-// export const paypalClient = new Client({
-//     clientCredentialsAuthCredentials: {
-//         oAuthClientId: clientId,
-//         oAuthClientSecret: clientSecret,
-//     },
-//     environment: Environment.Sandbox, // Change to Environment.Production when live
-//     logging: {
-//         logLevel: LogLevel.Info,
-//         logRequest: {
-//             includeQueryInPath: true,
-//             logBody: true,
-//             logHeaders: true,
-//         },
-//         logResponse: {
-//             logBody: true,
-//             logHeaders: true,
-//         },
-//     },
-// });
+function toSdkEnvironment(mode: "Production" | "Sandbox"): PayPalSdk.Environment {
+  return mode === "Production"
+    ? PayPalSdk.Environment.Production
+    : PayPalSdk.Environment.Sandbox;
+}
+
+export function getPayPalClient(): PayPalSdk.Client {
+  assertPayPalConfigured();
+  if (!cachedClient) {
+    cachedClient = new PayPalSdk.Client({
+      clientCredentialsAuthCredentials: {
+        oAuthClientId: process.env.PAYPAL_CLIENT_ID!.trim(),
+        oAuthClientSecret: process.env.PAYPAL_CLIENT_SECRET!.trim(),
+      },
+      environment: toSdkEnvironment(getPayPalSdkEnvironment()),
+    });
+  }
+  return cachedClient;
+}

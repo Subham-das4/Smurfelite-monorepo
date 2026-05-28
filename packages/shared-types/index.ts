@@ -371,6 +371,7 @@ export interface OrderResponse {
   paymentIntent: string | null;
   nowpaymentsInvoiceId: string | null;
   nowpaymentsPaymentId: string | null;
+  paypalOrderId: string | null;
   paymentProvider: string | null;
   buyerId: string;
   createdAt: string;
@@ -414,6 +415,10 @@ export interface CapturePayPalOrderRequest {
 export interface CapturePayPalOrderResponse {
   message: string;
   order: OrderResponse;
+}
+
+export interface PaymentPayPalStatusResponse {
+  enabled: boolean;
 }
 
 // ─────────────────────────────────────────

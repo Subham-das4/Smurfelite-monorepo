@@ -18,6 +18,13 @@ Database:
 
 Manual checks: valid signature + `payment_status` `finished` fulfills order to `COMPLETED`; `failed`/`expired` cancels and unlocks products; `refunded` on completed order sets `REFUNDED`; invalid signature returns `401`; duplicate IPN is idempotent; PENDING orders on `/orders` can retry via Pay with crypto; cancel URL returns the user to `/checkout/cancel`.
 
+## Payments (PayPal, sandbox)
+
+1. Set `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_MODE=sandbox`, and `NEXT_PUBLIC_PAYPAL_CLIENT_ID` (same client id) in express-server and nextjs-app env.
+2. Register webhook URL `POST /api/payments/paypal/webhook` in PayPal Developer Dashboard; set `PAYPAL_WEBHOOK_ID`.
+3. Checkout: select PayPal → create order → approve in PayPal buttons → order `COMPLETED`.
+4. PENDING orders: **Pay with PayPal** on `/orders` reuses create-order + modal buttons.
+
 <!-- ****************************************** -->
 <!-- ****************************************** -->
 <!-- ********** Postman script **************** -->

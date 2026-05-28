@@ -1,41 +1,37 @@
-// import { Router } from "express";
-// import { authenticate, authorize } from "../../auth/auth.middleware.js";
-// import { Role } from "@smurfelite/types";
-// import { validate } from "../../../utils/validate.js";
-// import {
-//   createPayPalOrderSchema,
-//   capturePayPalOrderSchema,
-// } from "../../../schemas/order.schemas.js";
-// import {
-//   createPayPalOrderController,
-//   capturePayPalOrderController,
-//   paypalWebhookController,
-//   paymentLimiter,
-// } from "./paypal.controller.js";
+import { Router } from "express";
+import { authenticate, authorizeBuyerPortal } from "../../auth/auth.middleware.js";
+import { validate } from "../../../utils/validate.js";
+import {
+  createPayPalOrderSchema,
+  capturePayPalOrderSchema,
+} from "../../../schemas/payment.schemas.js";
+import {
+  capturePayPalOrderController,
+  createPayPalOrderController,
+  paypalPaymentLimiter,
+  paypalStatusController,
+} from "./paypal.controller.js";
 
-// const router = Router();
+const router = Router();
 
-// // POST /api/payments/paypal/create-order — Buyer initiates PayPal checkout
-// router.post(
-//   "/paypal/create-order",
-//   paymentLimiter,
-//   authenticate,
-//   authorize([Role.BUYER]),
-//   validate(createPayPalOrderSchema),
-//   createPayPalOrderController
-// );
+router.get("/status", paypalStatusController);
 
-// // POST /api/payments/paypal/capture-order — Buyer captures after PayPal approval
-// router.post(
-//   "/paypal/capture-order",
-//   paymentLimiter,
-//   authenticate,
-//   authorize([Role.BUYER]),
-//   validate(capturePayPalOrderSchema),
-//   capturePayPalOrderController
-// );
+router.post(
+  "/create-order",
+  paypalPaymentLimiter,
+  authenticate,
+  authorizeBuyerPortal(),
+  validate(createPayPalOrderSchema),
+  createPayPalOrderController
+);
 
-// // POST /api/payments/paypal/webhook — PayPal server-to-server events
-// router.post("/paypal/webhook", paypalWebhookController);
+router.post(
+  "/capture-order",
+  paypalPaymentLimiter,
+  authenticate,
+  authorizeBuyerPortal(),
+  validate(capturePayPalOrderSchema),
+  capturePayPalOrderController
+);
 
-// export default router;
+export default router;

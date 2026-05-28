@@ -243,6 +243,7 @@ model Order {
   paymentIntent        String?       @unique // Legacy: Stripe/PayPal external id
   nowpaymentsInvoiceId String?       @unique
   nowpaymentsPaymentId String?       @unique
+  paypalOrderId        String?       @unique
   paymentProvider      String? // e.g., "paypal", "stripe", "nowpayments"
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt

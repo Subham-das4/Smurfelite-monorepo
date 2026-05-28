@@ -32,6 +32,7 @@ import { runPhase10_6_4 } from "./phases/phase-10_6_4.mts";
 import { runPhase10_9 } from "./phases/phase-10_9.mts";
 import { runPhase10 } from "./phases/phase-10.mts";
 import { runPhase9_1 } from "./phases/phase-9_1.mts";
+import { runPhase9_3 } from "./phases/phase-9_3.mts";
 
 /** Cumulative Phase 10 epic (orchestrates 10.3–10.9); not in PHASE_ORDER. */
 export type SmokeCumulativePhase = "10";
@@ -64,7 +65,8 @@ export type SmokePhase =
   | "10.5.3-4"
   | "10.6.4"
   | "10.9"
-  | "9.1";
+  | "9.1"
+  | "9.3";
 
 const PHASE_ORDER: SmokePhase[] = [
   "1",
@@ -95,6 +97,7 @@ const PHASE_ORDER: SmokePhase[] = [
   "10.6.4",
   "10.9",
   "9.1",
+  "9.3",
 ];
 
 const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
@@ -126,6 +129,7 @@ const RUNNERS: Record<SmokePhase, (ctx: SmokeContext) => Promise<boolean>> = {
   "10.6.4": runPhase10_6_4,
   "10.9": runPhase10_9,
   "9.1": runPhase9_1,
+  "9.3": runPhase9_3,
 };
 
 function printUsage(): void {
@@ -165,6 +169,7 @@ Phases:
   10.6.4 Admin seller UI contract — APPROVED/REJECTED lists, governance guards
   10.9 Route guards — cross-portal token rejection matrix
   9.1  NOWPayments hardening — IPN failure/success/refund, invoice ids, fulfillment
+  9.3  PayPal re-enable — create/capture, webhooks, checkout buttons
   10    Cumulative Phase 10 (10.3 + 10.4 + 10.5 + 10.5.3-4 + 10.9)
 
 Examples:
