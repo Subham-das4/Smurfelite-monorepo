@@ -1,4 +1,5 @@
 import "./auth";
+import "./admins";
 import "./users";
 import "./products";
 import "./orders";

@@ -49,7 +49,9 @@ export function UserDetailPage() {
           {user.role === "BUYER" && (
             <Button
               variant="secondary"
-              onClick={() => navigate({ to: "/sellers" })}
+              onClick={() => {
+                window.location.assign("/sellers");
+              }}
             >
               Invite / manage sellers
             </Button>

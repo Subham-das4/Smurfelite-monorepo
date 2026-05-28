@@ -25,8 +25,7 @@ No dashboard in v1 — default route is `/users`.
 
 - All routes except `/login`, `/forgot-password`, `/reset-password` require `Role.ADMIN` JWT
 - BUYER/SELLER tokens: logout + clear error message
-- **Phase 7 (current):** `POST /auth/login`, `POST /auth/google`, refresh flow
-- **Phase 10.6 (planned):** `POST /auth/admin/login` only — no Google OAuth; admin password reset via `/auth/admin/forgot-password` and `/auth/admin/reset-password` (isolated from buyer reset)
+- **Phase 10.6.1–10.6.3 (shipped):** `POST /auth/admin/login` only — no Google OAuth; admin password reset via `/auth/admin/forgot-password` and `/auth/admin/reset-password` (isolated from buyer reset)
 - Admins are provisioned only via `POST /admins` (Phase 10.4) — not via user role dropdown
 - Production: optional subdomain `admin.smurfelite.store`
 
@@ -123,7 +122,12 @@ apps/admin-app/
 
 ## Phase 10 checklist
 
-See [feature-roadmap.md](./feature-roadmap.md) §10.6 — admin auth cleanup, `/admins`, `/sellers`, password reset pages.
+See [feature-roadmap.md](./feature-roadmap.md) §10.6.
+
+- [x] 10.6.1 — Admin login (`/auth/admin/login`), Google OAuth removed
+- [x] 10.6.2 — `/admins` management screen
+- [x] 10.6.3 — `/forgot-password`, `/reset-password`
+- [ ] 10.6.4 — `/sellers` approval screen
 
 ---
 

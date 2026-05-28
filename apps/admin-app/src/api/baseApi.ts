@@ -22,8 +22,9 @@ const baseQuery = fetchBaseQuery({
 });
 
 const NO_REAUTH = new Set([
-  "/auth/login",
-  "/auth/google",
+  "/auth/admin/login",
+  "/auth/admin/forgot-password",
+  "/auth/admin/reset-password",
   "/auth/refresh",
   "/auth/logout",
 ]);
@@ -73,6 +74,7 @@ export const baseApi = createApi({
     "Platforms",
     "Wallets",
     "Ledger",
+    "Admins",
   ],
   endpoints: () => ({}),
 });

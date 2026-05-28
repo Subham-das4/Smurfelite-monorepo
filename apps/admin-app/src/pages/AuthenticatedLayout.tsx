@@ -5,6 +5,7 @@ import { useLogoutMutation } from "@/api/auth";
 import type { RootState } from "@/store/store";
 
 const NAV = [
+  { to: "/admins", label: "Admins" },
   { to: "/users", label: "Users" },
   { to: "/products", label: "Products" },
   { to: "/orders", label: "Orders" },

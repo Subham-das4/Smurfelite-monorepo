@@ -17,11 +17,11 @@ export const productsApi = baseApi.injectEndpoints({
       query: (id) => `/products/admin/${id}`,
       providesTags: (_r, _e, id) => [{ type: "Product", id }],
     }),
-    banProduct: builder.mutation<ProductListItem, string>({
+    banProduct: builder.mutation<AdminProductListItem, string>({
       query: (id) => ({ url: `/products/${id}/ban`, method: "PATCH" }),
       invalidatesTags: ["Products", "Product"],
     }),
-    liftBanProduct: builder.mutation<ProductListItem, string>({
+    liftBanProduct: builder.mutation<AdminProductListItem, string>({
       query: (id) => ({ url: `/products/${id}/lift-ban`, method: "PATCH" }),
       invalidatesTags: ["Products", "Product"],
     }),

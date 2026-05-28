@@ -481,22 +481,22 @@ flowchart TB
 
 #### 10.6.1 Auth cleanup
 
-- [ ] Remove Google OAuth from `main.tsx` and `LoginPage.tsx`
-- [ ] Remove `VITE_GOOGLE_CLIENT_ID` from `.env.example` and `plans/admin-app.md`
-- [ ] Point login to `POST /auth/admin/login` in `api/auth.ts`
+- [x] Remove Google OAuth from `main.tsx` and `LoginPage.tsx`
+- [x] Remove `VITE_GOOGLE_CLIENT_ID` from `.env.example` and `plans/admin-app.md`
+- [x] Point login to `POST /auth/admin/login` in `api/auth.ts`
 
 #### 10.6.2 Admin management screen
 
-- [ ] New route `/admins` — list, add (email + name), remove
-- [ ] RTK endpoints: `GET/POST/DELETE /admins`
-- [ ] AppShell nav item “Admins”
-- [ ] Confirm dialogs for delete; surface API errors (email already buyer/seller)
+- [x] New route `/admins` — list, add (email + name), remove
+- [x] RTK endpoints: `GET/POST/DELETE /admins`
+- [x] AppShell nav item “Admins”
+- [x] Confirm dialogs for delete; surface API errors (email already buyer/seller)
 
 #### 10.6.3 Admin password reset UI
 
-- [ ] `/forgot-password` + `/reset-password` pages (public routes)
-- [ ] Wire to `POST /auth/admin/forgot-password` and `POST /auth/admin/reset-password`
-- [ ] Link from login page
+- [x] `/forgot-password` + `/reset-password` pages (public routes)
+- [x] Wire to `POST /auth/admin/forgot-password` and `POST /auth/admin/reset-password`
+- [x] Link from login page
 
 #### 10.6.4 Seller approval screen
 

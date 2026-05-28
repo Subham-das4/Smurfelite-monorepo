@@ -7,7 +7,10 @@ import {
 } from "@tanstack/react-router";
 import { store, type RootState } from "@/store/store";
 import { LoginPage } from "@/pages/LoginPage";
+import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage";
+import { ResetPasswordPage } from "@/pages/ResetPasswordPage";
 import { AuthenticatedLayout } from "@/pages/AuthenticatedLayout";
+import { AdminsPage } from "@/pages/AdminsPage";
 import { UsersPage } from "@/pages/UsersPage";
 import { UserDetailPage } from "@/pages/UserDetailPage";
 import { ProductsPage } from "@/pages/ProductsPage";
@@ -21,6 +24,16 @@ import { PlatformsPage } from "@/pages/PlatformsPage";
 import { WalletsPage } from "@/pages/WalletsPage";
 
 export type RouterContext = { store: typeof store };
+
+function redirectIfAdminAuthenticated(context: RouterContext) {
+  const state = context.store.getState() as RootState;
+  if (
+    state.auth.isAuthenticated &&
+    state.user.profile?.role === "ADMIN"
+  ) {
+    throw redirect({ to: "/users" });
+  }
+}
 
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => <Outlet />,
@@ -37,16 +50,25 @@ const indexRoute = createRoute({
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/login",
-  beforeLoad: ({ context }) => {
-    const state = context.store.getState() as RootState;
-    if (
-      state.auth.isAuthenticated &&
-      state.user.profile?.role === "ADMIN"
-    ) {
-      throw redirect({ to: "/users" });
-    }
-  },
+  beforeLoad: ({ context }) => redirectIfAdminAuthenticated(context),
   component: LoginPage,
+});
+
+const forgotPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/forgot-password",
+  beforeLoad: ({ context }) => redirectIfAdminAuthenticated(context),
+  component: ForgotPasswordPage,
+});
+
+const resetPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/reset-password",
+  validateSearch: (search: Record<string, unknown>) => ({
+    token: typeof search.token === "string" ? search.token : undefined,
+  }),
+  beforeLoad: ({ context }) => redirectIfAdminAuthenticated(context),
+  component: ResetPasswordPage,
 });
 
 const authLayoutRoute = createRoute({
@@ -58,6 +80,12 @@ const authLayoutRoute = createRoute({
     if (state.user.profile?.role !== "ADMIN") throw redirect({ to: "/login" });
   },
   component: AuthenticatedLayout,
+});
+
+const adminsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: "/admins",
+  component: AdminsPage,
 });
 
 const usersRoute = createRoute({
@@ -129,7 +157,10 @@ const walletsRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
+  forgotPasswordRoute,
+  resetPasswordRoute,
   authLayoutRoute.addChildren([
+    adminsRoute,
     usersRoute,
     userDetailRoute,
     productsRoute,
