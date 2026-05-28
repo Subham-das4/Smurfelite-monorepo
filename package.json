@@ -37,9 +37,10 @@
     "smoke:phase-4.2": "pnpm --filter=@smurfelite/express-server smoke:phase-4.2",
     "smoke:phase-4.3": "pnpm --filter=@smurfelite/express-server smoke:phase-4.3",
     "smoke:phase-4.4": "pnpm --filter=@smurfelite/express-server smoke:phase-4.4",
-    "docker:build": "docker compose --env-file docker/.env build",
-    "docker:up": "docker compose --env-file docker/.env up -d",
-    "docker:down": "docker compose --env-file docker/.env down"
+    "docker:build": "docker compose -p smurfelite --env-file docker/.env build",
+    "docker:up": "docker compose -p smurfelite --env-file docker/.env up -d",
+    "docker:down": "docker compose -p smurfelite --env-file docker/.env down",
+    "docker:logs": "docker compose -p smurfelite --env-file docker/.env logs -f"
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,13 @@
-# Variable substitution: copy docker/.env.example to docker/.env, then run:
-#   docker compose --env-file docker/.env up -d
+# SmurfElite stack — isolated compose project (name: smurfelite).
+#
+# Shared VPS (80/443 already in use): nginx binds localhost only; point your edge
+# proxy (e.g. another project's nginx) at 127.0.0.1:8001 — see docker/nginx/host-edge-snippet.conf
+#
+# Local dev with direct port 80: copy docker-compose.override.example.yml → docker-compose.override.yml
+#
+#   docker compose -p smurfelite --env-file docker/.env up -d
+
+name: smurfelite
 
 services:
   postgres:
@@ -64,7 +72,7 @@ services:
       context: .
       dockerfile: apps/nextjs-app/Dockerfile
       args:
-        NEXT_PUBLIC_EXPRESS_SERVER_API: ${NEXT_PUBLIC_EXPRESS_SERVER_API:-http://api.smurfelite.store/api}
+        NEXT_PUBLIC_EXPRESS_SERVER_API: ${NEXT_PUBLIC_EXPRESS_SERVER_API:-https://api.smurfelite.store/api}
         NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID:-}
         NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${NEXT_PUBLIC_PAYPAL_CLIENT_ID:-}
     restart: unless-stopped
@@ -80,7 +88,7 @@ services:
       context: .
       dockerfile: apps/admin-app/Dockerfile
       args:
-        VITE_EXPRESS_SERVER_API: ${VITE_EXPRESS_SERVER_API:-http://api.smurfelite.store/api}
+        VITE_EXPRESS_SERVER_API: ${VITE_EXPRESS_SERVER_API:-https://api.smurfelite.store/api}
         VITE_APP_NAME: ${VITE_APP_NAME_ADMIN:-Admin Panel}
         VITE_PERSIST_SECRET: ${VITE_PERSIST_SECRET:-change-me}
     restart: unless-stopped
@@ -92,7 +100,7 @@ services:
       context: .
       dockerfile: apps/seller-app/Dockerfile
       args:
-        VITE_EXPRESS_SERVER_API: ${VITE_EXPRESS_SERVER_API:-http://api.smurfelite.store/api}
+        VITE_EXPRESS_SERVER_API: ${VITE_EXPRESS_SERVER_API:-https://api.smurfelite.store/api}
         VITE_APP_NAME: ${VITE_APP_NAME_SELLER:-Seller Portal}
         VITE_PERSIST_SECRET: ${VITE_PERSIST_SECRET:-change-me}
         VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
@@ -104,7 +112,8 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     ports:
-      - "80:80"
+      # Localhost only — safe alongside another stack on host :80/:443
+      - "${SMURFELITE_NGINX_BIND:-127.0.0.1:8001}:80"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro

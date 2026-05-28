@@ -1,13 +1,14 @@
-# Optional local overrides — copy to docker-compose.override.yml
-# Use when testing with HTTPS via mkcert or exposing postgres for debugging.
+# Local-only overrides — copy to docker-compose.override.yml (gitignored if you add it)
+#
+# Use on a machine where ports 80/443 are free (binds SmurfElite nginx to the host).
 
+services:
+  nginx:
+    ports:
+      - "80:80"
+
+# Optional: expose Postgres for local debugging
 # services:
 #   postgres:
 #     ports:
-#       - "5432:5432"
-#   nginx:
-#     ports:
-#       - "80:80"
-#       - "443:443"
-#     volumes:
-#       - ./docker/certs:/etc/nginx/certs:ro
+#       - "127.0.0.1:5433:5432"

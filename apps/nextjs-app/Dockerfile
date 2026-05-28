@@ -5,7 +5,7 @@ FROM node:22-alpine AS build
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@10.25.0 --activate
 
-ARG NEXT_PUBLIC_EXPRESS_SERVER_API=http://api.smurfelite.store/api
+ARG NEXT_PUBLIC_EXPRESS_SERVER_API=https://api.smurfelite.store/api
 ARG NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID=
 ARG NEXT_PUBLIC_PAYPAL_CLIENT_ID=
 

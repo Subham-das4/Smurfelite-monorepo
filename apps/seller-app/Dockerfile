@@ -5,7 +5,7 @@ FROM node:22-alpine AS build
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@10.25.0 --activate
 
-ARG VITE_EXPRESS_SERVER_API=http://api.smurfelite.store/api
+ARG VITE_EXPRESS_SERVER_API=https://api.smurfelite.store/api
 ARG VITE_APP_NAME=Seller Portal
 ARG VITE_PERSIST_SECRET=change-me
 ARG VITE_GOOGLE_CLIENT_ID=

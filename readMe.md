@@ -5,42 +5,33 @@ Repo level scripts:
 
 ## Docker (full stack)
 
-Subdomains via nginx: `www`, `api`, `admin`, `seller` on `.smurfelite.store`.
+Compose project name: **`smurfelite`**. Subdomains: `www`, `api`, `admin`, `seller` on `.smurfelite.store`.
 
-### 1. Hosts file (local)
+### Local machine (ports 80 free)
 
-Add to `C:\Windows\System32\drivers\etc\hosts` or `/etc/hosts`:
+1. Hosts file — `127.0.0.1 www.smurfelite.store api.smurfelite.store admin.smurfelite.store seller.smurfelite.store`
+2. `cp docker/.env.example docker/.env` — use `http://` URLs for local if needed
+3. `cp docker-compose.override.example.yml docker-compose.override.yml` — binds nginx to host `:80`
+4. `pnpm docker:build && pnpm docker:up`
 
-```
-127.0.0.1 www.smurfelite.store api.smurfelite.store admin.smurfelite.store seller.smurfelite.store
-```
+### Shared VPS (another stack already on :80 / :443)
 
-### 2. Environment
+SmurfElite nginx binds **`127.0.0.1:8001`** only. Route domains from your **existing edge nginx** using [`docker/nginx/host-edge-snippet.conf`](docker/nginx/host-edge-snippet.conf).
 
-```bash
-cp docker/.env.example docker/.env
-# Edit POSTGRES_PASSWORD, JWT_SECRET, VITE_PERSIST_SECRET, etc.
-```
-
-Default URLs use **HTTP** on port 80. For production HTTPS, update origins in `docker/.env` to `https://...` and mount TLS certs on nginx (see `docker-compose.override.example.yml`).
-
-### 3. Run
+Full guide: [`docker/DEPLOY-SHARED-VPS.md`](docker/DEPLOY-SHARED-VPS.md).
 
 ```bash
-docker compose --env-file docker/.env build
-docker compose --env-file docker/.env up -d
+cp docker/.env.example docker/.env   # https:// URLs for production
+pnpm docker:build
+pnpm docker:up
+# Add host-edge-snippet.conf to other project's nginx conf.d, then reload that nginx
 ```
 
-- API: `http://api.smurfelite.store/api`
-- Buyer: `http://www.smurfelite.store`
-- Admin: `http://admin.smurfelite.store`
-- Seller: `http://seller.smurfelite.store`
+Migrations run on `express-server` startup (`prisma migrate deploy`).
 
-Migrations run automatically on `express-server` startup (`prisma migrate deploy`).
+Payment webhooks: `https://api.smurfelite.store/api/payments/...`
 
-Payment webhooks (NOWPayments / PayPal): register `https://api.smurfelite.store/api/payments/...` on a **public** HTTPS origin (tunnel or production DNS).
-
-### 4. Per-app Dockerfiles
+### Per-app Dockerfiles
 
 | App | Dockerfile |
 |-----|------------|
