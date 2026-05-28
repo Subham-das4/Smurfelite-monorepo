@@ -55,7 +55,7 @@ flowchart LR
 | Router | `@tanstack/react-router` |
 | Tables | `@tanstack/react-table` via `@smurfelite/ui` |
 | State | RTK + RTK Query + redux-persist (encrypted auth) |
-| OAuth | `@react-oauth/google` → `POST /auth/google` |
+| OAuth | `@react-oauth/google` → `POST /auth/seller/google` |
 | Types | `@smurfelite/types` |
 
 **Dev port:** `5174` (`pnpm dev:seller`)
@@ -77,17 +77,14 @@ flowchart LR
 ```
 apps/seller-app/
 ├── src/
-│   ├── routes/                 # TanStack Router file routes
-│   │   ├── __root.tsx
-│   │   ├── login.tsx
-│   │   ├── _authenticated.tsx
-│   │   ├── _authenticated/products/
-│   │   ├── _authenticated/products/new.tsx
-│   │   ├── _authenticated/products/$id.edit.tsx
-│   │   ├── _authenticated/sales.tsx
-│   │   ├── _authenticated/wallet.tsx
-│   │   └── _authenticated/disputes.tsx
-│   ├── api/                    # RTK Query injectEndpoints
+│   ├── pages/                  # Route components (wired in router.tsx)
+│   │   ├── LoginPage.tsx
+│   │   ├── ApplyPage.tsx
+│   │   ├── AuthenticatedLayout.tsx  # pending/rejected approval banners
+│   │   ├── ProductsPage.tsx, ProductFormPage.tsx
+│   │   ├── SalesPage.tsx, WalletPage.tsx, DisputesPage.tsx
+│   ├── router.tsx              # TanStack Router
+│   ├── api/                    # RTK Query (seller portal endpoints)
 │   ├── store/
 │   └── main.tsx
 ├── index.html
@@ -101,7 +98,7 @@ apps/seller-app/
 | Route | Features | API |
 | ----- | -------- | --- |
 | `/` | Redirect → `/products` | — |
-| `/login` | Email/password + Google; SELLER gate | `/auth/seller/login`, `/auth/google` |
+| `/login` | Email/password + Google; SELLER gate | `POST /auth/seller/login`, `POST /auth/seller/google` |
 | `/apply` | Seller registration / upgrade to PENDING | `POST /auth/seller/apply` |
 | `/products` | Table, status/search filters, publish/delist/reactivate/delete | `GET /products/mine` |
 | `/products/new` | Create form, publish immediately checkbox | `POST /products`, `GET /game-categories` |
@@ -111,6 +108,10 @@ apps/seller-app/
 | `/disputes` | Read-only list + detail drawer | `GET /disputes/mine` |
 
 **Sidebar nav:** Products, Sales, Wallet, Disputes, Logout.
+
+**Approval UX (10.7):** Pending/rejected banners in `AuthenticatedLayout`; publish disabled until `sellerApprovalStatus === APPROVED`. Sellers shop on nextjs-app via buyer portal login (`actingAs: BUYER`).
+
+**Refresh:** Seller portal should pass `{ actingAs: "SELLER" }` on `POST /auth/refresh` when implementing explicit portal context (see [express-server.md](./express-server.md)).
 
 ---
 

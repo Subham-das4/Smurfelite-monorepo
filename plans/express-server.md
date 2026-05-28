@@ -10,7 +10,7 @@ Backend REST API for SmurfElite. Express + TypeScript + Prisma + PostgreSQL.
 
 ## Purpose
 
-- Authentication (JWT + refresh tokens, Google OAuth)
+- Portal authentication (JWT + `actingAs`, refresh tokens; optional Google per app)
 - Product catalog CRUD with encrypted credentials
 - Cart, orders, payments
 - User and enquiry management
@@ -80,9 +80,13 @@ Middleware helpers in `src/modules/auth/auth.middleware.ts`:
 | `authorizeSellerPortal()` | SELLER | SELLER | `/products/mine`, product mutations, `/orders/seller`, `/wallets/me` |
 | `authorize([ADMIN])` | ADMIN | — | admin governance, `/products/admin`, ban/lift-ban |
 
-Cross-portal tokens are rejected at middleware (e.g. seller portal token on `GET /cart` → 403). Smoke: `pnpm smoke:phase-10.9`.
+Cross-portal tokens are rejected at middleware (e.g. seller portal token on `GET /cart` → 403). Smoke: `pnpm smoke:phase-10.9`, cumulative `pnpm smoke:phase-10`.
 
 CORS: `ALLOWED_CORS_ORIGINS` or `FRONTEND_URLS` (comma-separated). Auth: `POST /auth/refresh` uses `authLimiter`.
+
+### Development seeds
+
+On startup (non-production only), `ensureAdminUser`, `ensureBuyerUser`, and `ensureSellerUser` in [`src/lib/prisma.ts`](apps/express-server/src/lib/prisma.ts) create default accounts if missing. Configure via `DEFAULT_ADMIN_*`, `DEFAULT_BUYER_*`, `DEFAULT_SELLER_*` in `.env`. **Production:** seeds are skipped; provision admins via `POST /admins`.
 
 ### Products (`/products`)
 
@@ -127,18 +131,32 @@ CORS: `ALLOWED_CORS_ORIGINS` or `FRONTEND_URLS` (comma-separated). Auth: `POST /
 
 ### Auth (`/auth`)
 
-| Method | Path | Status |
-| ------ | ---- | ------ |
-| POST | `/register` | ✅ Creates verification token (email not sent) |
-| POST | `/login` | ✅ Returns user (token in controller) |
-| POST | `/google` | ✅ OAuth upsert |
-| POST | `/refresh` | ✅ Rotate refresh token |
-| GET | `/verify-email` | ✅ |
-| POST | `/logout` | ✅ |
-| POST | `/forgot-password` | ✅ Token logged, not emailed |
-| POST | `/reset-password` | ✅ |
+#### Portal auth (Phase 10.3+)
 
-**Gaps:** Role escalation on register; no lastLoginAt update.
+| Method | Path | Portal | `actingAs` in access JWT |
+| ------ | ---- | ------ | ------------------------ |
+| POST | `/auth/buyer/login` | Storefront (nextjs-app) | `BUYER` |
+| POST | `/auth/seller/login` | Seller app | `SELLER` |
+| POST | `/auth/admin/login` | Admin app | — (ADMIN, no `actingAs`) |
+| POST | `/auth/buyer/google` | Storefront | `BUYER` |
+| POST | `/auth/seller/google` | Seller app | `SELLER` |
+| POST | `/auth/refresh` | All portals | Re-issue; body `{ actingAs?: "BUYER" \| "SELLER" }` for sellers |
+| POST | `/auth/buyer/forgot-password`, `/auth/buyer/reset-password` | Storefront | — |
+| POST | `/auth/admin/forgot-password`, `/auth/admin/reset-password` | Admin (`ADMIN_FRONTEND_URL`) | — |
+| POST | `/auth/seller/apply` | Seller onboarding | — |
+| POST | `/auth/register` | New buyers | `BUYER` (rejects reserved admin emails) |
+| GET | `/auth/verify-email` | Email verify | — |
+| POST | `/auth/logout` | Cookie clear | — |
+
+**JWT types:** `AccessTokenClaims`, `RefreshTokenRequest`, `RefreshTokenResponse` in [`packages/shared-types/index.ts`](packages/shared-types/index.ts).
+
+#### Legacy (deprecated)
+
+| Method | Path | Notes |
+| ------ | ---- | ----- |
+| POST | `/auth/login`, `/auth/google`, `/auth/forgot-password`, `/auth/reset-password` | `Deprecation` header; delegate to buyer portal where applicable |
+
+**Smoke:** `pnpm smoke:phase-10` (cumulative 10.3 + 10.4 + 10.5 + 10.5.3-4 + 10.9); per-phase `smoke:phase-10.3`, etc.
 
 ### Users (`/users`)
 

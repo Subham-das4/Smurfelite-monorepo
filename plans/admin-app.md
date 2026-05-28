@@ -55,16 +55,20 @@ Same as [seller-app.md](./seller-app.md). Shared UI from `packages/ui`.
 ```
 apps/admin-app/
 ├── src/
-│   ├── routes/
-│   │   ├── login.tsx
-│   │   ├── _authenticated/
-│   │   │   ├── users/
-│   │   │   ├── products/
-│   │   │   ├── orders/
-│   │   │   ├── enquiries.tsx
-│   │   │   ├── disputes.tsx
-│   │   │   ├── categories.tsx
-│   │   │   └── wallets.tsx
+│   ├── pages/
+│   │   ├── LoginPage.tsx
+│   │   ├── ForgotPasswordPage.tsx
+│   │   ├── ResetPasswordPage.tsx
+│   │   ├── AdminsPage.tsx
+│   │   ├── SellersPage.tsx
+│   │   ├── UsersPage.tsx, UserDetailPage.tsx
+│   │   ├── ProductsPage.tsx, ProductDetailPage.tsx
+│   │   ├── OrdersPage.tsx, OrderDetailPage.tsx
+│   │   ├── EnquiriesPage.tsx, DisputesPage.tsx
+│   │   ├── GamesPage.tsx, PlatformsPage.tsx
+│   │   ├── WalletsPage.tsx
+│   │   └── AuthenticatedLayout.tsx
+│   ├── router.tsx
 │   ├── api/
 │   └── store/
 └── package.json
@@ -93,9 +97,9 @@ apps/admin-app/
 | `/categories` | CRUD + restrict toggle | `/game-categories` |
 | `/wallets` | Seller balances, ledger drawer, record payout | `GET /wallets`, `POST .../payout` |
 
-**Sidebar nav (Phase 7):** Users, Products, Orders, Enquiries, Disputes, Categories, Wallets, Logout.
+**Sidebar nav:** Users, Products, Orders, Enquiries, Disputes, Categories (Games/Platforms), Wallets, **Admins**, **Sellers**, Logout.
 
-**Sidebar nav (Phase 10):** add **Admins**, **Sellers**; remove promote-to-admin and promote-to-seller from user detail.
+No Google OAuth (10.6.1). User detail has no promote-to-admin or promote-to-seller actions.
 
 ---
 

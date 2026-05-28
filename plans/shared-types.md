@@ -164,6 +164,10 @@ Regenerate client after schema changes: `pnpm --filter=@smurfelite/express-serve
 - [x] Server: `auth.token.ts`, `authorizeBuyerPortal` / `authorizeSellerPortal` middleware
 - [x] Route guards (10.9) enforce `actingAs` from access JWT on portal-scoped Express routes
 
+### Phase 10.10 — Docs, smoke, cleanup (2026-05-28)
+
+- [x] Cumulative smoke `pnpm smoke:phase-10` — buyer/seller/admin portal clients should pass `actingAs` on `POST /auth/refresh` when switching portal context (see [express-server.md](./express-server.md))
+
 ### pgvector (deferred)
 
 - [ ] `embedding vector(1536)` on Product — run `prisma/migrations/optional_pgvector_embedding.sql` when PostgreSQL has pgvector installed

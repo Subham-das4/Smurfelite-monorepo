@@ -30,6 +30,10 @@ import { runPhase10_5 } from "./phases/phase-10_5.mts";
 import { runPhase10_5_3_4 } from "./phases/phase-10_5_3-4.mts";
 import { runPhase10_6_4 } from "./phases/phase-10_6_4.mts";
 import { runPhase10_9 } from "./phases/phase-10_9.mts";
+import { runPhase10 } from "./phases/phase-10.mts";
+
+/** Cumulative Phase 10 epic (orchestrates 10.3–10.9); not in PHASE_ORDER. */
+export type SmokeCumulativePhase = "10";
 
 export type SmokePhase =
   | "1"
@@ -156,6 +160,7 @@ Phases:
   10.5.3-4 Promote removal + storefront listing gate
   10.6.4 Admin seller UI contract — APPROVED/REJECTED lists, governance guards
   10.9 Route guards — cross-portal token rejection matrix
+  10    Cumulative Phase 10 (10.3 + 10.4 + 10.5 + 10.5.3-4 + 10.9)
 
 Examples:
   pnpm smoke:through-1      # Phase 1 only
@@ -198,6 +203,8 @@ Examples:
   pnpm smoke:phase-10.6.4     # Phase 10.6.4 only (seller governance UI contract)
   pnpm smoke:through-10.6.4   # Phase 1 through 10.6.4
   pnpm smoke:phase-10.9       # Phase 10.9 only (route guards)
+  pnpm smoke:phase-10         # Cumulative Phase 10 epic (not phases 1–5)
+  pnpm smoke:through-10       # Alias for smoke:phase-10
 
 Environment:
   SMOKE_API_BASE     API base URL (default: http://localhost:\${PORT}/api)
@@ -214,7 +221,9 @@ Requires: express-server running and PostgreSQL seeded with buyer@buyer.com
 `);
 }
 
-function parseTargetPhase(args: string[]): SmokePhase {
+function parseTargetPhase(
+  args: string[]
+): SmokePhase | SmokeCumulativePhase {
   const mode = args[0];
   const phaseArg = args[1];
 
@@ -226,6 +235,10 @@ function parseTargetPhase(args: string[]): SmokePhase {
   if ((mode !== "through" && mode !== "phase") || !phaseArg) {
     printUsage();
     process.exit(1);
+  }
+
+  if (phaseArg === "10") {
+    return "10";
   }
 
   if (!PHASE_ORDER.includes(phaseArg as SmokePhase)) {
@@ -244,12 +257,19 @@ function phasesUpTo(target: SmokePhase): SmokePhase[] {
 async function main(): Promise<void> {
   const mode = process.argv[2];
   const target = parseTargetPhase(process.argv.slice(2));
-  const toRun =
-    mode === "phase" ? [target] : phasesUpTo(target);
 
   console.log("SmurfElite smoke tests");
   console.log(`API: ${getApiBase()}`);
-  console.log(`Running phases: ${toRun.join(" → ")}`);
+
+  if (target === "10") {
+    console.log(
+      "Running phases: 10 (cumulative: 10.3 → 10.4 → 10.5 → 10.5.3-4 → 10.9)"
+    );
+  } else {
+    const toRun =
+      mode === "phase" ? [target] : phasesUpTo(target);
+    console.log(`Running phases: ${toRun.join(" → ")}`);
+  }
 
   await prepareSmokeEnvironment();
   const purchasable = await countPurchasableProducts();
@@ -263,12 +283,23 @@ async function main(): Promise<void> {
   const ctx = await createBuyerContext();
 
   const results: boolean[] = [];
-  for (const phase of toRun) {
+  if (target === "10") {
     try {
-      results.push(await RUNNERS[phase](ctx));
+      results.push(await runPhase10(ctx));
     } catch (err) {
-      console.error(`\nPhase ${phase} crashed:`, err);
+      console.error("\nPhase 10 cumulative crashed:", err);
       results.push(false);
+    }
+  } else {
+    const toRun =
+      mode === "phase" ? [target] : phasesUpTo(target);
+    for (const phase of toRun) {
+      try {
+        results.push(await RUNNERS[phase](ctx));
+      } catch (err) {
+        console.error(`\nPhase ${phase} crashed:`, err);
+        results.push(false);
+      }
     }
   }
 

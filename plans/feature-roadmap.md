@@ -347,6 +347,8 @@ Role-separated login APIs, admin provisioning (no promote-to-admin), seller appr
 - Seller portal uses `POST /auth/seller/login` → `actingAs: SELLER`.
 - Storefront listing visibility requires `sellerApprovalStatus === APPROVED` (user-level; `ProductStatus.PENDING_VERIFICATION` stays unused).
 
+**Phase 10 smoke & docs:** Cumulative API regression: `pnpm --filter @smurfelite/express-server smoke:phase-10` (split login, reset isolation, admin create, seller approve, listing gate, route guards). Portal logins: buyer `/auth/buyer/login`, seller `/auth/seller/login`, admin `/auth/admin/login`. See [express-server.md](./express-server.md) portal auth table.
+
 ```mermaid
 flowchart TB
   subgraph portals [Portals]
@@ -541,12 +543,12 @@ flowchart TB
 
 ### 10.10 Docs, smoke, cleanup
 
-- [ ] New smoke phase `phase-10` (admin create, seller approve, listing visibility, split login, reset isolation)
-- [ ] Update feature quick reference (this file) — done in Phase 10 rollout
-- [ ] Update `plans/seller-app.md` onboarding diagram
-- [ ] Update `plans/admin-app.md`: remove Google, add `/admins`, `/sellers`, reset pages
-- [ ] `.env.example`: `ADMIN_FRONTEND_URL`; document `actingAs` in API docs if present
-- [ ] Restrict `ensureAdminUser` dev seed to non-production only (document)
+- [x] New smoke phase `phase-10` (admin create, seller approve, listing visibility, split login, reset isolation)
+- [x] Update feature quick reference (this file) — done in Phase 10 rollout
+- [x] Update `plans/seller-app.md` onboarding diagram
+- [x] Update `plans/admin-app.md`: remove Google, add `/admins`, `/sellers`, reset pages
+- [x] `.env.example`: `ADMIN_FRONTEND_URL`; document `actingAs` in API docs if present
+- [x] Restrict `ensureAdminUser` dev seed to non-production only (document)
 
 **Depends on:** 10.1–10.9  
 **Requirement mapping:** (1) 10.6.1, (2) 10.4.1+10.6.2, (3) 10.4.1, (4) 10.3.3+10.6.3, (5) 10.4.3+10.6.4, (6) 10.4.2, (7) 10.3.1, (8) 10.2+10.3.1+10.8, (9) 10.5.4, (10) 10.5.2+10.6.4

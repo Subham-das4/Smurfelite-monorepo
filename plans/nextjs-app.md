@@ -141,7 +141,7 @@ sequenceDiagram
 - Login/register modal in header; public `/forgot-password` and `/reset-password?token=...` (email reset links)
 - Buyer portal: `POST /auth/buyer/login`, `POST /auth/buyer/google`, `POST /auth/buyer/forgot-password`, `POST /auth/buyer/reset-password`
 - Register unchanged: `POST /auth/register` (new buyers); sellers use seller-app apply + buyer login here
-- Redux `auth.actingAs` persisted (defaults to `BUYER` on login); refresh sends `{ actingAs: "BUYER" }`
+- Redux `auth.actingAs` persisted (defaults to `BUYER` on login); refresh sends `{ actingAs: "BUYER" }` (see [express-server.md](./express-server.md) portal auth table)
 - Google OAuth via `@react-oauth/google`
 - Unauthenticated add-to-cart opens login modal
 - Checkout requires auth (opens modal if not logged in)
