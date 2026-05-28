@@ -3,6 +3,55 @@ Repo level scripts:
 1. build: pnpm build
 2. run: pnpm start:dev
 
+## Docker (full stack)
+
+Subdomains via nginx: `www`, `api`, `admin`, `seller` on `.smurfelite.store`.
+
+### 1. Hosts file (local)
+
+Add to `C:\Windows\System32\drivers\etc\hosts` or `/etc/hosts`:
+
+```
+127.0.0.1 www.smurfelite.store api.smurfelite.store admin.smurfelite.store seller.smurfelite.store
+```
+
+### 2. Environment
+
+```bash
+cp docker/.env.example docker/.env
+# Edit POSTGRES_PASSWORD, JWT_SECRET, VITE_PERSIST_SECRET, etc.
+```
+
+Default URLs use **HTTP** on port 80. For production HTTPS, update origins in `docker/.env` to `https://...` and mount TLS certs on nginx (see `docker-compose.override.example.yml`).
+
+### 3. Run
+
+```bash
+docker compose --env-file docker/.env build
+docker compose --env-file docker/.env up -d
+```
+
+- API: `http://api.smurfelite.store/api`
+- Buyer: `http://www.smurfelite.store`
+- Admin: `http://admin.smurfelite.store`
+- Seller: `http://seller.smurfelite.store`
+
+Migrations run automatically on `express-server` startup (`prisma migrate deploy`).
+
+Payment webhooks (NOWPayments / PayPal): register `https://api.smurfelite.store/api/payments/...` on a **public** HTTPS origin (tunnel or production DNS).
+
+### 4. Per-app Dockerfiles
+
+| App | Dockerfile |
+|-----|------------|
+| express-server | `apps/express-server/Dockerfile` |
+| cron-server | `apps/cron-server/Dockerfile` |
+| nextjs-app | `apps/nextjs-app/Dockerfile` |
+| admin-app | `apps/admin-app/Dockerfile` |
+| seller-app | `apps/seller-app/Dockerfile` |
+
+Build context is always the **monorepo root**.
+
 Database:
 
 1. App-> pgadmin

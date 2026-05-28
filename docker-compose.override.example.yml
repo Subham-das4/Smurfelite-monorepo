@@ -1,0 +1,13 @@
+# Optional local overrides — copy to docker-compose.override.yml
+# Use when testing with HTTPS via mkcert or exposing postgres for debugging.
+
+# services:
+#   postgres:
+#     ports:
+#       - "5432:5432"
+#   nginx:
+#     ports:
+#       - "80:80"
+#       - "443:443"
+#     volumes:
+#       - ./docker/certs:/etc/nginx/certs:ro
