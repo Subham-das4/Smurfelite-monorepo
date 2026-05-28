@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { useCreateDisputeMutation, useGetOrderByIdQuery } from "@/api";
-import { mapApiOrderStatus } from "@/lib/orderTableRows";
+import { OrderStatus } from "@smurfelite/types";
 
 const DISPUTE_REASONS = [
   "Credentials do not work",
@@ -33,8 +33,7 @@ export default function OpenDisputePage() {
     initialProductId,
   );
 
-  const orderStatus = order ? mapApiOrderStatus(order.status) : null;
-  const canDispute = orderStatus === "completed";
+  const canDispute = order?.status === OrderStatus.COMPLETED;
 
   const selectedItem = useMemo(() => {
     if (!order) return undefined;

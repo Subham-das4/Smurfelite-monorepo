@@ -1,6 +1,7 @@
 import React from "react";
 import { MdBlock } from "react-icons/md";
-import type { OrderStatus } from "./types";
+import { OrderStatus } from "@smurfelite/types";
+import type { OrderStatus as OrderStatusType } from "./types";
 
 interface StatusConfig {
   className: string;
@@ -8,16 +9,16 @@ interface StatusConfig {
   label: string;
 }
 
-const STATUS_CONFIG: Record<OrderStatus, StatusConfig> = {
-  completed: {
+const STATUS_CONFIG: Record<OrderStatusType, StatusConfig> = {
+  [OrderStatus.PENDING]: {
     className:
-      "bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800",
+      "bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800/50 dark:text-slate-300 dark:border-slate-600",
     dot: (
-      <span className="size-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+      <span className="size-1.5 rounded-full bg-slate-500 dark:bg-slate-400" />
     ),
-    label: "Completed",
+    label: "Pending",
   },
-  processing: {
+  [OrderStatus.PROCESSING]: {
     className:
       "bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800",
     dot: (
@@ -25,16 +26,30 @@ const STATUS_CONFIG: Record<OrderStatus, StatusConfig> = {
     ),
     label: "Processing",
   },
-  cancelled: {
+  [OrderStatus.COMPLETED]: {
+    className:
+      "bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800",
+    dot: (
+      <span className="size-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+    ),
+    label: "Completed",
+  },
+  [OrderStatus.CANCELLED]: {
     className:
       "bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:border-rose-800",
     dot: <MdBlock className="text-[14px]" />,
     label: "Cancelled",
   },
+  [OrderStatus.REFUNDED]: {
+    className:
+      "bg-violet-100 text-violet-700 border border-violet-200 dark:bg-violet-900/30 dark:text-violet-300 dark:border-violet-800",
+    dot: <MdBlock className="text-[14px]" />,
+    label: "Refunded",
+  },
 };
 
 interface OrderStatusBadgeProps {
-  status: OrderStatus;
+  status: OrderStatusType;
 }
 
 export const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({

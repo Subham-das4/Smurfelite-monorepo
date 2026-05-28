@@ -1,5 +1,4 @@
-import type { OrderResponse, OrderStatus as ApiOrderStatus } from "@smurfelite/types";
-import type { OrderStatus } from "@/components/pages/orders/types";
+import type { OrderResponse, OrderStatus } from "@smurfelite/types";
 
 export interface OrderTableRow {
   orderId: string;
@@ -17,18 +16,6 @@ export interface OrderTableRow {
   };
 }
 
-export function mapApiOrderStatus(status: ApiOrderStatus): OrderStatus {
-  switch (status) {
-    case "COMPLETED":
-      return "completed";
-    case "CANCELLED":
-    case "REFUNDED":
-      return "cancelled";
-    default:
-      return "processing";
-  }
-}
-
 export function flattenOrdersForTable(orders: OrderResponse[]): OrderTableRow[] {
   return orders.flatMap((order) =>
     order.items.map((item) => ({
@@ -36,7 +23,7 @@ export function flattenOrdersForTable(orders: OrderResponse[]): OrderTableRow[] 
       productId: item.productId,
       priceAtPurchase: item.priceAtPurchase,
       quantity: item.quantity,
-      orderStatus: mapApiOrderStatus(order.status),
+      orderStatus: order.status,
       createdAt: order.createdAt,
       product: item.product
         ? {

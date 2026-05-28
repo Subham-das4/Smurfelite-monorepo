@@ -2,13 +2,16 @@
 
 import React from "react";
 import { MdFilterList, MdExpandMore } from "react-icons/md";
+import { OrderStatus } from "@smurfelite/types";
 import type { OrderStatusFilter, OrderSortOption } from "./types";
 
 const STATUS_TABS: { id: OrderStatusFilter; label: string }[] = [
   { id: "all", label: "All Orders" },
-  { id: "completed", label: "Completed" },
-  { id: "processing", label: "Processing" },
-  { id: "cancelled", label: "Cancelled" },
+  { id: OrderStatus.PENDING, label: "Pending" },
+  { id: OrderStatus.PROCESSING, label: "Processing" },
+  { id: OrderStatus.COMPLETED, label: "Completed" },
+  { id: OrderStatus.CANCELLED, label: "Cancelled" },
+  { id: OrderStatus.REFUNDED, label: "Refunded" },
 ];
 
 const SORT_OPTIONS: { value: OrderSortOption; label: string }[] = [
@@ -33,11 +36,10 @@ export const OrdersFilters: React.FC<OrdersFiltersProps> = ({
 }) => {
   return (
     <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white dark:bg-surface-dark p-2 rounded-2xl border border-[#e0dbe6] dark:border-border-dark">
-      {/* Status tabs */}
       <div className="flex gap-1 overflow-x-auto w-full md:w-auto p-1 no-scrollbar">
         {STATUS_TABS.map((tab) => (
           <button
-            key={tab.id}
+            key={String(tab.id)}
             onClick={() => onFilterChange(tab.id)}
             className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-xl px-4 transition-colors ${
               activeFilter === tab.id
@@ -45,14 +47,17 @@ export const OrdersFilters: React.FC<OrdersFiltersProps> = ({
                 : "bg-transparent hover:bg-[#f2f0f4] dark:hover:bg-white/10 text-[#756189] dark:text-gray-400 hover:text-[#141118] dark:hover:text-white"
             }`}
           >
-            <p className={`text-sm ${activeFilter === tab.id ? "font-bold" : "font-medium"}`}>
+            <p
+              className={`text-sm whitespace-nowrap ${
+                activeFilter === tab.id ? "font-bold" : "font-medium"
+              }`}
+            >
               {tab.label}
             </p>
           </button>
         ))}
       </div>
 
-      {/* Sort dropdown */}
       <div className="flex items-center gap-3 w-full md:w-auto pr-2">
         <div className="relative w-full md:w-64">
           <MdFilterList className="absolute left-3 top-1/2 -translate-y-1/2 text-[#756189] text-xl pointer-events-none" />

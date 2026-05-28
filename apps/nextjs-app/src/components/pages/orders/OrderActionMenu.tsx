@@ -5,14 +5,16 @@ import Link from "next/link";
 import {
   MdMoreVert,
   MdOpenInNew,
-  MdRadar,
   MdKey,
-  MdDownload,
   MdHelpOutline,
   MdReportProblem,
   MdCancel,
 } from "react-icons/md";
-import type { OrderStatus } from "./types";
+import { toast } from "react-toastify";
+import { OrderStatus } from "@smurfelite/types";
+import { useCancelOrderMutation } from "@/api";
+import { getApiErrorMessage } from "@/lib/apiError";
+import type { OrderStatus as OrderStatusType } from "./types";
 
 interface MenuItem {
   label: string;
@@ -20,12 +22,18 @@ interface MenuItem {
   href?: string;
   onClick?: () => void;
   variant?: "default" | "danger";
+  disabled?: boolean;
 }
 
 function getMenuItems(
   orderId: string,
   productId: string,
-  status: OrderStatus,
+  status: OrderStatusType,
+  handlers: {
+    onViewCredentials: () => void;
+    onCancel: () => void;
+    isCancelling: boolean;
+  }
 ): MenuItem[] {
   const items: MenuItem[] = [
     {
@@ -35,46 +43,34 @@ function getMenuItems(
     },
   ];
 
-  if (status === "processing") {
-    items.push({
-      label: "Track Status",
-      icon: <MdRadar className="text-base shrink-0" />,
-      href: `/orders/${orderId}/track`,
-    });
-  }
-
-  if (status === "completed") {
+  if (status === OrderStatus.COMPLETED) {
     items.push(
       {
-        label: "Resend Credentials",
+        label: "View Credentials",
         icon: <MdKey className="text-base shrink-0" />,
-        href: `/orders/${orderId}/credentials`,
-      },
-      {
-        label: "Download Receipt",
-        icon: <MdDownload className="text-base shrink-0" />,
-        href: `/orders/${orderId}/receipt`,
+        onClick: handlers.onViewCredentials,
       },
       {
         label: "Open Dispute",
         icon: <MdReportProblem className="text-base shrink-0" />,
         href: `/orders/${orderId}/dispute?productId=${productId}`,
-      },
+      }
     );
   }
 
   items.push({
     label: "Get Help with Order",
     icon: <MdHelpOutline className="text-base shrink-0" />,
-    href: `/#contact_us`,
+    href: "/#contact_us",
   });
 
-  if (status === "processing") {
+  if (status === OrderStatus.PENDING) {
     items.push({
-      label: "Cancel Order",
+      label: handlers.isCancelling ? "Cancelling…" : "Cancel Order",
       icon: <MdCancel className="text-base shrink-0" />,
-      href: `/orders/${orderId}/cancel`,
+      onClick: handlers.onCancel,
       variant: "danger",
+      disabled: handlers.isCancelling,
     });
   }
 
@@ -84,16 +80,19 @@ function getMenuItems(
 interface OrderActionMenuProps {
   orderId: string;
   productId: string;
-  status: OrderStatus;
+  status: OrderStatusType;
+  onViewCredentials: (orderId: string) => void;
 }
 
 export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
   orderId,
   productId,
   status,
+  onViewCredentials,
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
 
   useEffect(() => {
     if (!open) return;
@@ -109,7 +108,25 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
-  const menuItems = getMenuItems(orderId, productId, status);
+  const handleCancel = async () => {
+    const confirmed = window.confirm(
+      "Cancel this pending order? Reserved products will be released."
+    );
+    if (!confirmed) return;
+
+    try {
+      await cancelOrder(orderId).unwrap();
+      toast.success("Order cancelled.");
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, "Could not cancel order."));
+    }
+  };
+
+  const menuItems = getMenuItems(orderId, productId, status, {
+    onViewCredentials: () => onViewCredentials(orderId),
+    onCancel: () => void handleCancel(),
+    isCancelling,
+  });
 
   return (
     <div ref={containerRef} className="relative flex justify-end">
@@ -124,7 +141,7 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 z-50 w-52 bg-white dark:bg-[#1e1829] rounded-xl border border-[#e0dbe6] dark:border-border-dark shadow-lg shadow-black/10 dark:shadow-black/40 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-100">
+        <div className="absolute right-0 top-full mt-1 z-50 w-52 bg-white dark:bg-[#1e1829] rounded-xl border border-[#e0dbe6] dark:border-border-dark shadow-lg shadow-black/10 dark:shadow-black/40 overflow-hidden">
           <ul className="py-1">
             {menuItems.map((item) => (
               <li key={item.label}>
@@ -144,11 +161,12 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
                 ) : (
                   <button
                     type="button"
+                    disabled={item.disabled}
                     onClick={() => {
                       item.onClick?.();
                       setOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors disabled:opacity-50 ${
                       item.variant === "danger"
                         ? "text-rose-500 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10"
                         : "text-[#141118] dark:text-gray-200 hover:bg-[#f2f0f4] dark:hover:bg-white/10"

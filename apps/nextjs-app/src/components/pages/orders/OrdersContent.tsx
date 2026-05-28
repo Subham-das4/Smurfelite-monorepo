@@ -10,8 +10,11 @@ import { OrderStatusBadge } from "./OrderStatusBadge";
 import { OrderActionMenu } from "./OrderActionMenu";
 import { OrdersFilters } from "./OrdersFilters";
 import { OrdersHelpSection } from "./OrdersHelpSection";
+import { OrderCredentialsModal } from "./OrderCredentialsModal";
 import type { OrderStatusFilter, OrderSortOption } from "./types";
 import { useGetMyOrdersQuery } from "@/api";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { setIsLoginModalOpen } from "@/store";
 import {
   flattenOrdersForTable,
   type OrderTableRow,
@@ -21,131 +24,134 @@ const PAGE_SIZE = 5;
 
 const columnHelper = createColumnHelper<OrderTableRow>();
 
-const columns = [
-  {
-    accessorKey: "orderId",
-    header: "Order ID",
-    cell: ({ row }) => (
-      <span className="text-[#141118] dark:text-white font-bold text-sm bg-[#f2f0f4] dark:bg-white/10 px-2 py-1 rounded-md">
-        #{row.original.orderId.slice(0, 8)}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "product.title",
-    header: "Game Account",
-    cell: ({ row }) => {
-      const product = row.original.product;
-      const title = product?.title ?? "Unknown product";
-      const imageUrl = product?.imageUrl;
-      return (
-        <div className="flex items-center gap-3">
-          <div className="size-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0 relative">
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={title}
-                fill
-                className="object-cover"
-                unoptimized={imageUrl.startsWith("http")}
-              />
-            ) : null}
-          </div>
-          <span className="text-[#141118] dark:text-white text-sm font-medium">
-            {title}
-          </span>
-        </div>
-      );
-    },
-  },
-  columnHelper.accessor("createdAt", {
-    header: "Date Placed",
-    cell: (info) => (
-      <span className="text-[#756189] dark:text-gray-400 text-sm">
-        {new Date(info.getValue()).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })}
-      </span>
-    ),
-  }),
-  columnHelper.accessor("priceAtPurchase", {
-    header: "Total",
-    cell: (info) => (
-      <span className="text-[#141118] dark:text-white font-bold text-sm">
-        ${info.getValue().toFixed(2)}
-      </span>
-    ),
-  }),
-  columnHelper.accessor("orderStatus", {
-    header: "Status",
-    cell: (info) => <OrderStatusBadge status={info.getValue()} />,
-  }),
-  columnHelper.display({
-    id: "action",
-    header: "Action",
-    cell: (info) => (
-      <OrderActionMenu
-        orderId={info.row.original.orderId}
-        productId={info.row.original.productId}
-        status={info.row.original.orderStatus}
-      />
-    ),
-  }),
-] as ColumnDef<OrderTableRow>[];
-
-function sortRows(
-  rows: OrderTableRow[],
-  sort: OrderSortOption,
-): OrderTableRow[] {
-  const copy = [...rows];
-  switch (sort) {
-    case "oldest":
-      return copy.sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-      );
-    case "price-high":
-      return copy.sort((a, b) => b.priceAtPurchase - a.priceAtPurchase);
-    case "price-low":
-      return copy.sort((a, b) => a.priceAtPurchase - b.priceAtPurchase);
-    case "newest":
-    default:
-      return copy.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
-  }
-}
-
-function filterRows(
-  rows: OrderTableRow[],
-  statusFilter: OrderStatusFilter,
-): OrderTableRow[] {
-  if (statusFilter === "all") return rows;
-  return rows.filter((row) => row.orderStatus === statusFilter);
-}
-
 export const OrdersContent: React.FC = () => {
-  const { data: orders = [], isLoading, isError } = useGetMyOrdersQuery();
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const { data: orders = [], isLoading, isError } = useGetMyOrdersQuery(
+    undefined,
+    { skip: !isAuthenticated }
+  );
   const [statusFilter, setStatusFilter] = useState<OrderStatusFilter>("all");
   const [sort, setSort] = useState<OrderSortOption>("newest");
   const [pageIndex, setPageIndex] = useState(0);
+  const [credentialsOrderId, setCredentialsOrderId] = useState<string | null>(
+    null
+  );
+
+  const columns = useMemo(
+    () =>
+      [
+        {
+          accessorKey: "orderId",
+          header: "Order ID",
+          cell: ({ row }) => (
+            <span className="text-[#141118] dark:text-white font-bold text-sm bg-[#f2f0f4] dark:bg-white/10 px-2 py-1 rounded-md">
+              #{row.original.orderId.slice(0, 8)}
+            </span>
+          ),
+        },
+        {
+          accessorKey: "product.title",
+          header: "Game Account",
+          cell: ({ row }) => {
+            const product = row.original.product;
+            const title = product?.title ?? "Unknown product";
+            const imageUrl = product?.imageUrl;
+            return (
+              <div className="flex items-center gap-3">
+                <div className="size-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0 relative">
+                  {imageUrl ? (
+                    <Image
+                      src={imageUrl}
+                      alt={title}
+                      fill
+                      className="object-cover"
+                      unoptimized={imageUrl.startsWith("http")}
+                    />
+                  ) : null}
+                </div>
+                <span className="text-[#141118] dark:text-white text-sm font-medium">
+                  {title}
+                </span>
+              </div>
+            );
+          },
+        },
+        columnHelper.accessor("createdAt", {
+          header: "Date Placed",
+          cell: (info) => (
+            <span className="text-[#756189] dark:text-gray-400 text-sm">
+              {new Date(info.getValue()).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
+          ),
+        }),
+        columnHelper.accessor("priceAtPurchase", {
+          header: "Total",
+          cell: (info) => (
+            <span className="text-[#141118] dark:text-white font-bold text-sm">
+              ${info.getValue().toFixed(2)}
+            </span>
+          ),
+        }),
+        columnHelper.accessor("orderStatus", {
+          header: "Status",
+          cell: (info) => <OrderStatusBadge status={info.getValue()} />,
+        }),
+        columnHelper.display({
+          id: "action",
+          header: "Action",
+          cell: (info) => (
+            <OrderActionMenu
+              orderId={info.row.original.orderId}
+              productId={info.row.original.productId}
+              status={info.row.original.orderStatus}
+              onViewCredentials={setCredentialsOrderId}
+            />
+          ),
+        }),
+      ] as ColumnDef<OrderTableRow>[],
+    []
+  );
 
   const tableRows = useMemo(() => flattenOrdersForTable(orders), [orders]);
 
   const filteredAndSorted = useMemo(() => {
-    return sortRows(filterRows(tableRows, statusFilter), sort);
+    const filtered =
+      statusFilter === "all"
+        ? tableRows
+        : tableRows.filter((row) => row.orderStatus === statusFilter);
+
+    const copy = [...filtered];
+    switch (sort) {
+      case "oldest":
+        return copy.sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+      case "price-high":
+        return copy.sort((a, b) => b.priceAtPurchase - a.priceAtPurchase);
+      case "price-low":
+        return copy.sort((a, b) => a.priceAtPurchase - b.priceAtPurchase);
+      case "newest":
+      default:
+        return copy.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+    }
   }, [tableRows, statusFilter, sort]);
 
   const paginatedData = useMemo(
     () =>
       filteredAndSorted.slice(
         pageIndex * PAGE_SIZE,
-        (pageIndex + 1) * PAGE_SIZE,
+        (pageIndex + 1) * PAGE_SIZE
       ),
-    [filteredAndSorted, pageIndex],
+    [filteredAndSorted, pageIndex]
   );
 
   const handleFilterChange = (filter: OrderStatusFilter) => {
@@ -160,6 +166,12 @@ export const OrdersContent: React.FC = () => {
 
   return (
     <main className="flex-1 flex flex-col items-center w-full px-4 py-8 md:px-10 lg:px-40">
+      <OrderCredentialsModal
+        orderId={credentialsOrderId}
+        open={credentialsOrderId !== null}
+        onClose={() => setCredentialsOrderId(null)}
+      />
+
       <div className="flex flex-col w-full max-w-[1200px] gap-6">
         <nav
           className="flex flex-wrap gap-2 items-center text-sm"
@@ -196,39 +208,56 @@ export const OrdersContent: React.FC = () => {
           </Link>
         </div>
 
-        <OrdersFilters
-          activeFilter={statusFilter}
-          sort={sort}
-          onFilterChange={handleFilterChange}
-          onSortChange={handleSortChange}
-        />
-
-        {isLoading ? (
-          <div className="py-16 text-center text-[#756189] dark:text-gray-400">
-            Loading your orders...
-          </div>
-        ) : isError ? (
-          <div className="py-16 text-center text-rose-500">
-            Could not load orders. Please sign in and try again.
-          </div>
-        ) : filteredAndSorted.length === 0 ? (
-          <div className="py-16 text-center text-[#756189] dark:text-gray-400">
-            No orders found for this filter.
+        {!isAuthenticated ? (
+          <div className="py-16 text-center space-y-4">
+            <p className="text-[#756189] dark:text-gray-400">
+              Sign in to view your order history.
+            </p>
+            <button
+              type="button"
+              onClick={() => dispatch(setIsLoginModalOpen(true))}
+              className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-bold text-sm"
+            >
+              Sign in
+            </button>
           </div>
         ) : (
-          <TanstackTable
-            data={paginatedData}
-            columns={columns}
-            pagination={{
-              pageIndex,
-              pageSize: PAGE_SIZE,
-              total: filteredAndSorted.length,
-              onPageChange: setPageIndex,
-            }}
-          />
-        )}
+          <>
+            <OrdersFilters
+              activeFilter={statusFilter}
+              sort={sort}
+              onFilterChange={handleFilterChange}
+              onSortChange={handleSortChange}
+            />
 
-        <OrdersHelpSection />
+            {isLoading ? (
+              <div className="py-16 text-center text-[#756189] dark:text-gray-400">
+                Loading your orders...
+              </div>
+            ) : isError ? (
+              <div className="py-16 text-center text-rose-500">
+                Could not load orders. Please try again.
+              </div>
+            ) : filteredAndSorted.length === 0 ? (
+              <div className="py-16 text-center text-[#756189] dark:text-gray-400">
+                No orders found for this filter.
+              </div>
+            ) : (
+              <TanstackTable
+                data={paginatedData}
+                columns={columns}
+                pagination={{
+                  pageIndex,
+                  pageSize: PAGE_SIZE,
+                  total: filteredAndSorted.length,
+                  onPageChange: setPageIndex,
+                }}
+              />
+            )}
+
+            <OrdersHelpSection />
+          </>
+        )}
       </div>
     </main>
   );
