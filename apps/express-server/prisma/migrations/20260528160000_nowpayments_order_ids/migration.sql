@@ -1,5 +1,6 @@
 -- AlterTable
-ALTER TABLE "Order" ADD COLUMN "nowpaymentsInvoiceId" TEXT,
+ALTER TABLE "Order" ADD COLUMN "paymentProvider" TEXT,
+ADD COLUMN "nowpaymentsInvoiceId" TEXT,
 ADD COLUMN "nowpaymentsPaymentId" TEXT;
 
 -- CreateIndex
