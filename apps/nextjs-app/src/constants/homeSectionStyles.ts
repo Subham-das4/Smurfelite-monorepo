@@ -1,0 +1,2 @@
+export const sectionLabelClasses =
+  "relative text-xl w-max before:absolute before:left-full before:top-1/2 before:-translate-y-1/2 before:ml-2.5 before:h-0.5 before:w-[26px] before:bg-gradient-to-l before:from-primary before:to-primary-hover before:content-[''] after:absolute after:left-full after:top-1/2 after:-mt-0.5 after:ml-9 after:size-1.5 after:rounded-full after:bg-gradient-to-l after:from-primary after:to-primary-hover after:content-['']";

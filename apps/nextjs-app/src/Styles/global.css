@@ -4,6 +4,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 @import "react-toastify/dist/ReactToastify.css";
 
+@import "./Carousel/Carousel.css";
+
 /* Tailwind CSS v4 — full import. Tailwind wraps styles in @layer so Bootstrap's
    unlayered CSS naturally wins the cascade on existing pages. */
 @import "tailwindcss";
@@ -21,6 +23,78 @@
   --color-accent-dark: #1f1f23;
   --font-family-display: "Inter", sans-serif;
   --font-family-body: "Inter", sans-serif;
+  --animate-shine: shine 1s ease;
+}
+
+@keyframes shine {
+  100% {
+    left: 200%;
+  }
+}
+
+@layer components {
+  .shiny-glass {
+    @apply relative overflow-hidden;
+  }
+
+  .shiny-glass::before {
+    position: absolute;
+    top: 0;
+    left: -200%;
+    display: none;
+    content: "";
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: skewX(-25deg);
+    transition: all 0.5s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shiny-glass::before {
+      transition: none;
+    }
+  }
+
+  .shiny-glass:hover::before {
+    display: block;
+    animation: shine 1s ease;
+  }
+
+  .btn-glass {
+    @apply absolute inset-0 -z-10 bg-primary;
+  }
+
+  .btn-glass::before {
+    content: "";
+    transition: all 0.6s ease;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: linear-gradient(
+      to right,
+      hsla(256, 88%, 72%, 0.686),
+      hsla(256, 88%, 72%, 0.4),
+      hsla(256, 88%, 72%, 0.3),
+      hsla(256, 88%, 72%, 0.2),
+      hsla(256, 88%, 72%, 0.1),
+      transparent,
+      transparent,
+      transparent,
+      transparent
+    );
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  .group:hover .btn-glass::before {
+    transform: rotateY(180deg);
+  }
 }
 
 .material-symbols-outlined {
