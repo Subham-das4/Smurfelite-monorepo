@@ -1,4 +1,4 @@
-import { PrismaClient } from "@smurfelite/types/src/generated/prisma/index.js";
+import { PrismaClient } from "@smurfelite/types/prisma";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import type { CronConfig } from "./config.js";

@@ -9,6 +9,11 @@
       "import": "./index.ts",
       "default": "./index.ts"
     },
+    "./prisma": {
+      "types": "./src/generated/prisma/index.d.ts",
+      "import": "./src/generated/prisma/index.js",
+      "default": "./src/generated/prisma/index.js"
+    },
     "./src/generated/prisma/index.js": "./src/generated/prisma/index.js",
     "./pricing": {
       "types": "./pricing.ts",
@@ -19,6 +24,7 @@
   "files": [
     "index.ts",
     "pricing.ts",
+    "src/enums.ts",
     "src/generated"
   ],
   "scripts": {

@@ -1,7 +1,7 @@
-import {
+import type {
+  User,
   Role,
   OrderStatus,
-  User,
   ProductStatus,
   PaymentStatus,
   DisputeStatus,
@@ -9,7 +9,34 @@ import {
   SellerApprovalStatus,
 } from "./src/generated/prisma/index";
 
-export * from "./src/generated/prisma/index";
+export {
+  Role,
+  OrderStatus,
+  PaymentStatus,
+  ProductStatus,
+  DisputeStatus,
+  WalletLedgerType,
+  SellerApprovalStatus,
+  PasswordResetPurpose,
+} from "./src/enums";
+
+export type {
+  User,
+  VerificationToken,
+  PasswordResetToken,
+  RefreshToken,
+  Game,
+  Platform,
+  Product,
+  Cart,
+  CartItem,
+  Order,
+  OrderItem,
+  Enquiry,
+  Dispute,
+  SellerWallet,
+  WalletLedger,
+} from "./src/generated/prisma/index";
 
 // ─────────────────────────────────────────
 // Enquiry
