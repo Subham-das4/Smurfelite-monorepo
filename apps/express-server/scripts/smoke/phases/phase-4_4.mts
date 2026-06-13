@@ -1,6 +1,7 @@
 import { prisma } from "../../../src/lib/prisma.js";
 import { ProductStatus } from "../../../src/types/prisma.js";
-import { isPaymentBypassEnabled } from "../../../src/lib/payment-bypass.js";
+import { isNowPaymentsEnabled } from "../../../src/lib/nowpayments-config.js";
+import { isPayPalEnabled } from "../../../src/lib/paypal-config.js";
 import { SmokeRunner, assertEq, assertIncludes } from "../lib/runner.mts";
 import type { SmokeContext } from "../lib/runner.mts";
 import { apiRequest } from "../lib/http.mts";
@@ -17,16 +18,26 @@ export async function runPhase4_4(ctx: SmokeContext): Promise<boolean> {
 
   let testProductId: string | undefined;
 
-  runner.section("Payment bypass status (test mode UI)");
+  runner.section("Payment gateway status");
 
-  await runner.test("GET /payments/bypass/status exposes test mode flag", async () => {
+  await runner.test("GET /payments/paypal/status exposes enabled flag", async () => {
     const { data } = await apiRequest<{ enabled: boolean }>(
       ctx,
-      "/payments/bypass/status",
+      "/payments/paypal/status",
       { expectStatus: 200 }
     );
     runner.assert(typeof data.enabled === "boolean", "enabled flag missing");
-    assertEq(data.enabled, isPaymentBypassEnabled(), "matches PAYMENT_BYPASS env");
+    assertEq(data.enabled, isPayPalEnabled(), "matches PayPal env config");
+  });
+
+  await runner.test("GET /payments/nowpayments/status exposes enabled flag", async () => {
+    const { data } = await apiRequest<{ enabled: boolean }>(
+      ctx,
+      "/payments/nowpayments/status",
+      { expectStatus: 200 }
+    );
+    runner.assert(typeof data.enabled === "boolean", "enabled flag missing");
+    assertEq(data.enabled, isNowPaymentsEnabled(), "matches NOWPayments env config");
   });
 
   runner.section("Unavailable product guards");

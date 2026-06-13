@@ -12,6 +12,7 @@ import {
   useCreateNowPaymentsInvoiceMutation,
   useCreatePayPalOrderMutation,
   useGetPayPalStatusQuery,
+  useGetNowPaymentsStatusQuery,
 } from "@/api";
 import { getApiErrorMessage } from "@/lib/apiError";
 import { payOrderWithCrypto } from "@/lib/payWithCrypto";
@@ -30,6 +31,7 @@ export function OrderDetailContent() {
   const [createPayPalOrder, { isLoading: isPayingPayPal }] =
     useCreatePayPalOrderMutation();
   const { data: paypalStatus } = useGetPayPalStatusQuery();
+  const { data: nowPaymentsStatus } = useGetNowPaymentsStatusQuery();
   const [credentialsOpen, setCredentialsOpen] = useState(false);
   const [paypalModal, setPaypalModal] = useState<{
     paypalOrderId: string;
@@ -38,6 +40,7 @@ export function OrderDetailContent() {
   const paypalEnabled =
     Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.trim()) &&
     (paypalStatus?.enabled ?? false);
+  const cryptoEnabled = nowPaymentsStatus?.enabled ?? false;
 
   const handleCancel = async () => {
     if (!order || order.status !== OrderStatus.PENDING) return;
@@ -177,18 +180,20 @@ export function OrderDetailContent() {
                   {isPayingPayPal ? "Starting PayPal…" : "Pay with PayPal"}
                 </button>
               )}
-              <button
-                type="button"
-                onClick={() =>
-                  void payOrderWithCrypto(orderId, (args) =>
-                    createInvoice(args).unwrap()
-                  )
-                }
-                disabled={isPayingCrypto || isPayingPayPal || isCancelling}
-                className="px-5 py-2.5 rounded-xl font-bold text-sm bg-primary text-white hover:bg-primary/90 disabled:opacity-60"
-              >
-                {isPayingCrypto ? "Starting payment…" : "Pay with crypto"}
-              </button>
+              {cryptoEnabled && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    void payOrderWithCrypto(orderId, (args) =>
+                      createInvoice(args).unwrap()
+                    )
+                  }
+                  disabled={isPayingCrypto || isPayingPayPal || isCancelling}
+                  className="px-5 py-2.5 rounded-xl font-bold text-sm bg-primary text-white hover:bg-primary/90 disabled:opacity-60"
+                >
+                  {isPayingCrypto ? "Starting payment…" : "Pay with crypto"}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={handleCancel}

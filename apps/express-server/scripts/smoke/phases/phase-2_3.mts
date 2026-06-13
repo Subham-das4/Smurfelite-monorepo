@@ -1,6 +1,5 @@
 import { prisma } from "../../../src/lib/prisma.js";
 import { OrderStatus, ProductStatus } from "../../../src/types/prisma.js";
-import { isPaymentBypassEnabled } from "../../../src/lib/payment-bypass.js";
 import { SmokeRunner, assertEq } from "../lib/runner.mts";
 import type { SmokeContext } from "../lib/runner.mts";
 import { apiRequest } from "../lib/http.mts";
@@ -8,9 +7,9 @@ import {
   addProductToCart,
   cancelOrder,
   clearServerCart,
-  completeBypass,
   createOrderForProduct,
   findPurchasableProduct,
+  fulfillOrderForSmoke,
   getCartCount,
   releaseProductReservation,
 } from "../lib/helpers.mts";
@@ -88,9 +87,7 @@ export async function runPhase2_3(ctx: SmokeContext): Promise<boolean> {
 
   runner.section("Post-payment cart clear (success flow)");
 
-  await runner.test("Cart clears after bypass payment + DELETE /cart", async () => {
-    runner.assert(isPaymentBypassEnabled(), "PAYMENT_BYPASS must be true for bypass cart clear test");
-
+  await runner.test("Cart clears after fulfilled payment + DELETE /cart", async () => {
     await clearServerCart(ctx);
 
     const product =
@@ -100,13 +97,13 @@ export async function runPhase2_3(ctx: SmokeContext): Promise<boolean> {
             where: { id: reservedProductId, status: ProductStatus.ACTIVE, isAvailable: true, transactionBlock: false },
           })
         : null);
-    runner.assert(product, "No purchasable product for bypass cart clear test");
+    runner.assert(product, "No purchasable product for post-payment cart clear test");
 
     await addProductToCart(ctx, product!.id);
     runner.assert((await getCartCount(ctx)) >= 1, "Cart should have item");
 
     const order = await createOrderForProduct(ctx, product!.id);
-    await completeBypass(ctx, order.id);
+    await fulfillOrderForSmoke(order.id);
 
     await clearServerCart(ctx);
     assertEq(await getCartCount(ctx), 0, "cart count after post-payment clear");

@@ -448,6 +448,10 @@ export interface PaymentPayPalStatusResponse {
   enabled: boolean;
 }
 
+export interface PaymentNowPaymentsStatusResponse {
+  enabled: boolean;
+}
+
 // ─────────────────────────────────────────
 // Payments — NOWPayments (crypto invoice)
 // ─────────────────────────────────────────
@@ -459,23 +463,6 @@ export interface CreateNowPaymentsInvoiceRequest {
 export interface CreateNowPaymentsInvoiceResponse {
   invoiceUrl: string;
   invoiceId: string;
-}
-
-// ─────────────────────────────────────────
-// Payments — bypass (dev/E2E)
-// ─────────────────────────────────────────
-
-export interface PaymentBypassStatusResponse {
-  enabled: boolean;
-}
-
-export interface CompleteBypassPaymentRequest {
-  internalOrderId: string;
-}
-
-export interface CompleteBypassPaymentResponse {
-  message: string;
-  order: OrderResponse;
 }
 
 // ─────────────────────────────────────────

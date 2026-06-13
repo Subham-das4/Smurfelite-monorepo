@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { rateLimit } from "express-rate-limit";
 import { AuthenticatedRequest } from "../../../types/auth.types.js";
 import { createInvoiceForOrder, processNowPaymentsIpn } from "./nowpayments.service.js";
+import { isNowPaymentsEnabled } from "../../../lib/nowpayments-config.js";
 import ApiError from "../../../utils/errors.js";
 
 export const nowPaymentsInvoiceLimiter = rateLimit({
@@ -11,6 +12,13 @@ export const nowPaymentsInvoiceLimiter = rateLimit({
   legacyHeaders: false,
   message: { message: "Too many payment requests, please try again later." },
 });
+
+export const nowPaymentsStatusController = (
+  _req: Request,
+  res: Response
+): void => {
+  res.status(200).json({ enabled: isNowPaymentsEnabled() });
+};
 
 export const createNowPaymentsInvoiceController = async (
   req: Request,

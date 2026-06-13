@@ -29,7 +29,6 @@ export class NowPaymentsApiError extends Error {
 
 function getBaseUrl(): string {
   const raw = process.env.NOWPAYMENTS_API_BASE_URL?.trim() || DEFAULT_BASE;
-  console.log("raw", raw);
   return raw.replace(/\/$/, "");
 }
 

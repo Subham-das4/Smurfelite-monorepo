@@ -7,9 +7,12 @@ import {
   createNowPaymentsInvoiceController,
   nowPaymentsInvoiceLimiter,
   nowPaymentsIpnController,
+  nowPaymentsStatusController,
 } from "./nowpayments.controller.js";
 
 const router = Router();
+
+router.get("/status", nowPaymentsStatusController);
 
 router.post(
   "/create-invoice",

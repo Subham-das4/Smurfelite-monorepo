@@ -1,5 +1,6 @@
 import { prisma } from "../../../src/lib/prisma.js";
 import { ProductStatus } from "../../../src/types/prisma.js";
+import { fulfillOrder } from "../../../src/modules/orders/fulfillment.service.js";
 import { PUBLIC_LISTABLE_PRODUCT_WHERE } from "../../../src/modules/product/product.constants.js";
 import type { SmokeContext } from "./runner.mts";
 import { apiRequest } from "./http.mts";
@@ -114,19 +115,18 @@ export async function cancelOrder(ctx: SmokeContext, orderId: string): Promise<v
   });
 }
 
-export async function completeBypass(
-  ctx: SmokeContext,
+export async function fulfillOrderForSmoke(
   orderId: string
 ): Promise<{ status: string; paymentStatus: string; paymentProvider?: string }> {
-  const { data } = await apiRequest<{
-    order: { status: string; paymentStatus: string; paymentProvider?: string };
-  }>(ctx, "/payments/bypass/complete", {
-    method: "POST",
-    token: ctx.buyerToken,
-    body: { internalOrderId: orderId },
-    expectStatus: 200,
-  });
-  return data.order;
+  const order = await fulfillOrder(orderId, "smoke");
+  if (!order) {
+    throw new Error(`fulfillOrder failed for order ${orderId}`);
+  }
+  return {
+    status: order.status,
+    paymentStatus: order.paymentStatus,
+    paymentProvider: order.paymentProvider ?? undefined,
+  };
 }
 
 /** Best-effort cleanup so repeated smoke runs can reuse products. */

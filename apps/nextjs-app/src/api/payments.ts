@@ -5,10 +5,8 @@ import {
     CapturePayPalOrderResponse,
     CreateNowPaymentsInvoiceRequest,
     CreateNowPaymentsInvoiceResponse,
-    PaymentBypassStatusResponse,
     PaymentPayPalStatusResponse,
-    CompleteBypassPaymentRequest,
-    CompleteBypassPaymentResponse,
+    PaymentNowPaymentsStatusResponse,
 } from '@smurfelite/types';
 import { baseApi } from './baseApi';
 
@@ -50,6 +48,10 @@ export const paymentsApi = baseApi.injectEndpoints({
             query: () => '/payments/paypal/status',
         }),
 
+        getNowPaymentsStatus: build.query<PaymentNowPaymentsStatusResponse, void>({
+            query: () => '/payments/nowpayments/status',
+        }),
+
         createNowPaymentsInvoice: build.mutation<
             CreateNowPaymentsInvoiceResponse,
             CreateNowPaymentsInvoiceRequest
@@ -63,26 +65,6 @@ export const paymentsApi = baseApi.injectEndpoints({
                 { type: 'Order', id: internalOrderId },
             ],
         }),
-
-        getPaymentBypassStatus: build.query<PaymentBypassStatusResponse, void>({
-            query: () => '/payments/bypass/status',
-        }),
-
-        completeBypassPayment: build.mutation<
-            CompleteBypassPaymentResponse,
-            CompleteBypassPaymentRequest
-        >({
-            query: (body) => ({
-                url: '/payments/bypass/complete',
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: (_result, _err, { internalOrderId }) => [
-                { type: 'Order', id: internalOrderId },
-                { type: 'Orders', id: 'LIST' },
-                'Cart',
-            ],
-        }),
     }),
 });
 
@@ -90,7 +72,6 @@ export const {
     useCreatePayPalOrderMutation,
     useCapturePayPalOrderMutation,
     useCreateNowPaymentsInvoiceMutation,
-    useGetPaymentBypassStatusQuery,
     useGetPayPalStatusQuery,
-    useCompleteBypassPaymentMutation,
+    useGetNowPaymentsStatusQuery,
 } = paymentsApi;

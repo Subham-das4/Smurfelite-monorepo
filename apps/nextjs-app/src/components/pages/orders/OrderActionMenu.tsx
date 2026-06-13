@@ -19,6 +19,7 @@ import {
   useCreateNowPaymentsInvoiceMutation,
   useCreatePayPalOrderMutation,
   useGetPayPalStatusQuery,
+  useGetNowPaymentsStatusQuery,
 } from "@/api";
 import { getApiErrorMessage } from "@/lib/apiError";
 import { payOrderWithCrypto } from "@/lib/payWithCrypto";
@@ -44,6 +45,7 @@ function getMenuItems(
     onPayWithCrypto: () => void;
     onPayWithPayPal: () => void;
     paypalEnabled: boolean;
+    cryptoEnabled: boolean;
     isCancelling: boolean;
     isPaying: boolean;
     isPayingPayPal: boolean;
@@ -90,8 +92,8 @@ function getMenuItems(
           handlers.isCancelling,
       });
     }
-    items.push(
-      {
+    if (handlers.cryptoEnabled) {
+      items.push({
         label: handlers.isPaying ? "Starting payment…" : "Pay with crypto",
         icon: <MdCurrencyBitcoin className="text-base shrink-0" />,
         onClick: handlers.onPayWithCrypto,
@@ -99,7 +101,9 @@ function getMenuItems(
           handlers.isPaying ||
           handlers.isPayingPayPal ||
           handlers.isCancelling,
-      },
+      });
+    }
+    items.push(
       {
         label: handlers.isCancelling ? "Cancelling…" : "Cancel Order",
         icon: <MdCancel className="text-base shrink-0" />,
@@ -135,6 +139,7 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
   const [createPayPalOrder, { isLoading: isPayingPayPal }] =
     useCreatePayPalOrderMutation();
   const { data: paypalStatus } = useGetPayPalStatusQuery();
+  const { data: nowPaymentsStatus } = useGetNowPaymentsStatusQuery();
   const [paypalModal, setPaypalModal] = useState<{
     paypalOrderId: string;
   } | null>(null);
@@ -142,6 +147,7 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
   const paypalEnabled =
     Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.trim()) &&
     (paypalStatus?.enabled ?? false);
+  const cryptoEnabled = nowPaymentsStatus?.enabled ?? false;
 
   useEffect(() => {
     if (!open) return;
@@ -194,6 +200,7 @@ export const OrderActionMenu: React.FC<OrderActionMenuProps> = ({
     onPayWithCrypto: handlePayWithCrypto,
     onPayWithPayPal: () => void handlePayWithPayPal(),
     paypalEnabled,
+    cryptoEnabled,
     isCancelling,
     isPaying,
     isPayingPayPal,

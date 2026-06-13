@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   MdArrowBack,
@@ -89,8 +89,8 @@ interface PaymentFormProps {
   isSubmitting?: boolean;
   submitDisabled?: boolean;
   submitDisabledReason?: string;
-  paymentBypassEnabled?: boolean;
   paypalEnabled?: boolean;
+  cryptoEnabled?: boolean;
   selectedMethod?: PaymentMethod;
   onMethodChange?: (method: PaymentMethod) => void;
   hideSubmit?: boolean;
@@ -104,7 +104,7 @@ const PAYMENT_OPTIONS: Omit<
     id: "paypal",
     label: "PayPal",
     description:
-      "Pay simply and securely with PayPal. You will be redirected to complete your purchase.",
+      "Approve payment with PayPal below. Your order completes after confirmation.",
     icon: (
       <span className="font-bold italic text-lg select-none">
         <span className="text-[#003087]">Pay</span>
@@ -137,19 +137,38 @@ const PAYMENT_OPTIONS: Omit<
   },
 ];
 
+function firstEnabledMethod(
+  paypalEnabled: boolean,
+  cryptoEnabled: boolean
+): PaymentMethod {
+  if (paypalEnabled) return "paypal";
+  if (cryptoEnabled) return "crypto";
+  return "paypal";
+}
+
+function isMethodEnabled(
+  method: PaymentMethod,
+  paypalEnabled: boolean,
+  cryptoEnabled: boolean
+): boolean {
+  if (method === "paypal") return paypalEnabled;
+  if (method === "crypto") return cryptoEnabled;
+  return false;
+}
+
 export const PaymentForm: React.FC<PaymentFormProps> = ({
   onSubmit,
   isSubmitting,
   submitDisabled = false,
   submitDisabledReason,
-  paymentBypassEnabled = false,
   paypalEnabled = false,
+  cryptoEnabled = false,
   selectedMethod: controlledMethod,
   onMethodChange,
   hideSubmit = false,
 }) => {
   const [internalMethod, setInternalMethod] = useState<PaymentMethod>(
-    paypalEnabled ? "paypal" : "crypto"
+    firstEnabledMethod(paypalEnabled, cryptoEnabled)
   );
   const selectedMethod = controlledMethod ?? internalMethod;
   const setSelectedMethod = (method: PaymentMethod) => {
@@ -157,19 +176,40 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
     else setInternalMethod(method);
   };
 
+  useEffect(() => {
+    if (!isMethodEnabled(selectedMethod, paypalEnabled, cryptoEnabled)) {
+      setSelectedMethod(firstEnabledMethod(paypalEnabled, cryptoEnabled));
+    }
+  }, [paypalEnabled, cryptoEnabled, selectedMethod]);
+
   const paymentOptions = PAYMENT_OPTIONS.map((option) => {
     if (option.id === "paypal") {
       return {
         ...option,
         disabled: !paypalEnabled,
-        disabledReason: paypalEnabled ? undefined : "Coming soon",
+        disabledReason: paypalEnabled ? undefined : "Not available",
+      };
+    }
+    if (option.id === "crypto") {
+      return {
+        ...option,
+        disabled: !cryptoEnabled,
+        disabledReason: cryptoEnabled ? undefined : "Not available",
       };
     }
     return option;
   });
 
+  const anyPaymentEnabled = paypalEnabled || cryptoEnabled;
+  const selectedMethodEnabled = isMethodEnabled(
+    selectedMethod,
+    paypalEnabled,
+    cryptoEnabled
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!anyPaymentEnabled || !selectedMethodEnabled) return;
     await onSubmit(selectedMethod);
   };
 
@@ -177,9 +217,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
     ? "Processing…"
     : submitDisabled
       ? (submitDisabledReason ?? "Cannot complete order")
-      : paymentBypassEnabled
-        ? "Complete Order (test)"
-        : "Complete Order";
+      : "Complete Order";
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -189,18 +227,13 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
           Digital delivery — account credentials are sent to your email after
           payment. No shipping required.
         </p>
-        {paymentBypassEnabled && (
+        {!anyPaymentEnabled && (
           <div
-            className="text-sm font-medium text-amber-800 dark:text-amber-200 mb-4 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/50 px-4 py-3"
+            className="text-sm text-amber-800 dark:text-amber-200 mb-4 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/50 px-4 py-3"
             role="status"
           >
-            <p className="font-bold uppercase tracking-wide text-xs mb-1">
-              Test mode active
-            </p>
-            <p>
-              Payment bypass is enabled on the server. Your order will complete
-              immediately without crypto checkout.
-            </p>
+            Online payments are temporarily unavailable. Please try again later
+            or contact support at help@smurfelite.com.
           </div>
         )}
         <p className="text-sm text-[#756189] dark:text-gray-400 mb-6">
@@ -243,7 +276,12 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
           </Link>
           <button
             type="submit"
-            disabled={isSubmitting || submitDisabled}
+            disabled={
+              isSubmitting ||
+              submitDisabled ||
+              !anyPaymentEnabled ||
+              !selectedMethodEnabled
+            }
             className="w-full sm:w-auto bg-primary hover:bg-primary/90 active:scale-95 text-white rounded-xl h-14 px-8 text-base font-bold tracking-wide shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:pointer-events-none"
           >
             <span>{submitLabel}</span>

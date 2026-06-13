@@ -14,11 +14,10 @@ import { productsApi } from "@/api/products";
 import { useGetCartQuery } from "@/api/cart";
 import { useCreateOrderMutation } from "@/api/orders";
 import {
-  useCompleteBypassPaymentMutation,
   useCreateNowPaymentsInvoiceMutation,
   useCreatePayPalOrderMutation,
-  useGetPaymentBypassStatusQuery,
   useGetPayPalStatusQuery,
+  useGetNowPaymentsStatusQuery,
 } from "@/api/payments";
 import { setIsLoginModalOpen } from "@/store/reducers/auth/slice";
 import { clearCheckoutCart } from "@/lib/clearCheckoutCart";
@@ -184,15 +183,12 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
   const [createOrder] = useCreateOrderMutation();
   const [createNowPaymentsInvoice] = useCreateNowPaymentsInvoiceMutation();
   const [createPayPalOrder] = useCreatePayPalOrderMutation();
-  const [completeBypassPayment] = useCompleteBypassPaymentMutation();
-  const { data: bypassStatus } = useGetPaymentBypassStatusQuery();
   const { data: paypalStatus } = useGetPayPalStatusQuery();
-  const paymentBypassEnabled = bypassStatus?.enabled === true;
-  const paypalClientConfigured = Boolean(
-    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.trim()
-  );
+  const { data: nowPaymentsStatus } = useGetNowPaymentsStatusQuery();
   const paypalEnabled =
-    paypalClientConfigured && (paypalStatus?.enabled ?? false);
+    Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.trim()) &&
+    (paypalStatus?.enabled ?? false);
+  const cryptoEnabled = nowPaymentsStatus?.enabled ?? false;
 
   const handlePaymentSubmit = async (method: PaymentMethod) => {
     setSubmitError(null);
@@ -248,13 +244,6 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
     setIsPaying(true);
     try {
       const order = await createOrder({ productIds: productIdsForOrder }).unwrap();
-
-      if (paymentBypassEnabled) {
-        await completeBypassPayment({ internalOrderId: order.id }).unwrap();
-        await clearCheckoutCart(dispatch);
-        router.push(`/checkout/success?orderId=${encodeURIComponent(order.id)}`);
-        return;
-      }
 
       if (method === "paypal") {
         const paypal = await createPayPalOrder({
@@ -319,7 +308,7 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
     <main className="flex-1 w-full max-w-[1280px] mx-auto px-4 md:px-10 py-8 md:py-12">
       <div className="flex flex-col lg:flex-row gap-8 xl:gap-16">
         <div className="flex-1 flex flex-col gap-8">
-          <CheckoutStepper paymentBypassEnabled={paymentBypassEnabled} />
+          <CheckoutStepper />
 
           <CheckoutUnavailableAlert issues={availabilityIssues} />
 
@@ -340,8 +329,8 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({
             isSubmitting={isPaying}
             submitDisabled={isAuthenticated && !paymentReady}
             submitDisabledReason={submitDisabledReason}
-            paymentBypassEnabled={paymentBypassEnabled}
             paypalEnabled={paypalEnabled}
+            cryptoEnabled={cryptoEnabled}
             hideSubmit={paypalCheckout !== null}
           />
 

@@ -8,7 +8,6 @@ import { mapIpnPaymentStatus } from "../../../src/lib/payment-status.js";
 import { applyIpnPaymentStatus } from "../../../src/modules/orders/payment-status.service.js";
 import { fulfillOrder } from "../../../src/modules/orders/fulfillment.service.js";
 import { createOrder } from "../../../src/modules/orders/orders.services.js";
-import { completeBypassPayment } from "../../../src/modules/payments/bypass/bypass.service.js";
 import { SmokeRunner } from "../lib/runner.mts";
 import type { SmokeContext } from "../lib/runner.mts";
 import { apiRequest } from "../lib/http.mts";
@@ -54,19 +53,19 @@ export async function runPhase5_9(ctx: SmokeContext): Promise<boolean> {
     });
   });
 
-  await runner.test("Bypass completion sets paymentStatus PAID", async () => {
+  await runner.test("Direct fulfillment sets paymentStatus PAID", async () => {
     const product = await findPurchasableProduct();
     runner.assert(product, "no purchasable product");
 
     const order = await createOrder(ctx.buyerId, [product!.id]);
-    await completeBypassPayment(order.id, ctx.buyerId);
+    await fulfillOrder(order.id, "smoke");
 
     const refreshed = await prisma.order.findUnique({
       where: { id: order.id },
       select: { paymentStatus: true, status: true },
     });
-    runner.assert(refreshed?.paymentStatus === PaymentStatus.PAID, "PAID after bypass");
-    runner.assert(refreshed?.status === OrderStatus.COMPLETED, "COMPLETED after bypass");
+    runner.assert(refreshed?.paymentStatus === PaymentStatus.PAID, "PAID after fulfill");
+    runner.assert(refreshed?.status === OrderStatus.COMPLETED, "COMPLETED after fulfill");
   });
 
   await runner.test("IPN handler updates paymentStatus on pending order", async () => {

@@ -29,7 +29,12 @@ pnpm docker:up
 
 Migrations run on `express-server` startup (`prisma migrate deploy`).
 
-Payment webhooks: `https://api.smurfelite.store/api/payments/...`
+Payment webhooks (production):
+
+- NOWPayments IPN: `https://api.smurfelite.store/api/payments/nowpayments/ipn`
+- PayPal: `https://api.smurfelite.store/api/payments/paypal/webhook`
+
+Verify after deploy: `GET /api/payments/paypal/status` and `GET /api/payments/nowpayments/status` return `{ "enabled": true }` when credentials are configured.
 
 ### Per-app Dockerfiles
 
@@ -50,20 +55,22 @@ Database:
 
 ## Payments (NOWPayments, sandbox)
 
-1. Copy [`apps/express-server/.env.example`](apps/express-server/.env.example) to `apps/express-server/.env` and set `NOWPAYMENTS_API_KEY` and `NOWPAYMENTS_IPN_SECRET` from the NOWPayments **sandbox** dashboard.
-2. Set `PUBLIC_API_BASE_URL` to the **public HTTPS origin** of the Express API (no trailing slash), e.g. `https://abc123.ngrok.io`. NOWPayments cannot send IPN webhooks to `localhost`; use ngrok or Cloudflare Tunnel while developing.
-3. IPN endpoint: `POST /api/payments/nowpayments/ipn` (signature header `x-nowpayments-sig`, verified with `NOWPAYMENTS_IPN_SECRET`).
-4. Buyer flow: `POST /api/orders` then `POST /api/payments/nowpayments/create-invoice` with `{ "internalOrderId": "<uuid>" }`; redirect the browser to `invoiceUrl`.
-5. Production: switch `NOWPAYMENTS_API_BASE_URL` to `https://api.nowpayments.io/v1` and use production API keys.
+1. Copy [`apps/express-server/.env.example`](apps/express-server/.env.example) to `apps/express-server/.env` and set `NOWPAYMENTS_API_KEY`, `NOWPAYMENTS_IPN_SECRET`, and `PUBLIC_API_BASE_URL`.
+2. Set `PUBLIC_API_BASE_URL` to the **public HTTPS origin** of the Express API (no trailing slash), e.g. `https://abc123.ngrok.io` locally or `https://api.smurfelite.store` in production. NOWPayments cannot send IPN webhooks to `localhost`; use ngrok or Cloudflare Tunnel while developing.
+3. Register IPN URL in NOWPayments dashboard: `https://api.smurfelite.store/api/payments/nowpayments/ipn` (signature header `x-nowpayments-sig`, verified with `NOWPAYMENTS_IPN_SECRET`).
+4. Checkout and `/orders` show **Pay with crypto** when `GET /api/payments/nowpayments/status` returns `{ "enabled": true }` (requires API key, IPN secret, and `PUBLIC_API_BASE_URL`).
+5. Buyer flow: `POST /api/orders` then `POST /api/payments/nowpayments/create-invoice` with `{ "internalOrderId": "<uuid>" }`; redirect the browser to `invoiceUrl`.
+6. Production: set `NOWPAYMENTS_API_BASE_URL` to `https://api.nowpayments.io/v1` and use production API keys.
 
 Manual checks: valid signature + `payment_status` `finished` fulfills order to `COMPLETED`; `failed`/`expired` cancels and unlocks products; `refunded` on completed order sets `REFUNDED`; invalid signature returns `401`; duplicate IPN is idempotent; PENDING orders on `/orders` can retry via Pay with crypto; cancel URL returns the user to `/checkout/cancel`.
 
 ## Payments (PayPal, sandbox)
 
-1. Set `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_MODE=sandbox`, and `NEXT_PUBLIC_PAYPAL_CLIENT_ID` (same client id) in express-server and nextjs-app env.
-2. Register webhook URL `POST /api/payments/paypal/webhook` in PayPal Developer Dashboard; set `PAYPAL_WEBHOOK_ID`.
-3. Checkout: select PayPal → create order → approve in PayPal buttons → order `COMPLETED`.
-4. PENDING orders: **Pay with PayPal** on `/orders` reuses create-order + modal buttons.
+1. Set `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_MODE=sandbox`, and `NEXT_PUBLIC_PAYPAL_CLIENT_ID` (same client id) in express-server and nextjs-app env. Rebuild nextjs-app after changing `NEXT_PUBLIC_PAYPAL_CLIENT_ID`.
+2. Register webhook URL `https://api.smurfelite.store/api/payments/paypal/webhook` in PayPal Developer Dashboard; set `PAYPAL_WEBHOOK_ID`.
+3. Checkout shows PayPal when `NEXT_PUBLIC_PAYPAL_CLIENT_ID` is set and `GET /api/payments/paypal/status` returns `{ "enabled": true }`.
+4. Checkout: select PayPal → create order → approve in PayPal buttons → order `COMPLETED`.
+5. PENDING orders: **Pay with PayPal** on `/orders` reuses create-order + modal buttons.
 
 <!-- ****************************************** -->
 <!-- ****************************************** -->

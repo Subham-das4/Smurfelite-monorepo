@@ -142,7 +142,7 @@ Usage:
 
 Phases:
   1    Schema & foundations
-  2.1  Payment bypass
+  2.1  Order fulfillment (smoke direct fulfill)
   2.2  Order fulfillment
   2.3  Cart & checkout fixes
   2.5  Order expiry (pending timeout)
@@ -151,7 +151,7 @@ Phases:
   3.3  Enquiry fix (guest contact form + help@ notification)
   4.2  Buyer disputes (POST /disputes + /disputes/mine)
   4.3  Product detail API contract (no mock reviews)
-  4.4  Checkout UX — unavailable products + bypass status
+  4.4  Checkout UX — unavailable products + payment status
   5.1  Product lifecycle — draft, publish, delist, ban, soft delete
   5.2  Games & platforms — admin CRUD + restrict listings
   5.3  Admin seller delist / reactivate cascade
@@ -224,7 +224,6 @@ Environment:
   SMOKE_SELLER_PASSWORD
   SMOKE_ADMIN_EMAIL  Test admin (default: admin@admin.com)
   SMOKE_ADMIN_PASSWORD
-  PAYMENT_BYPASS     Must be true for phase 2.1 / 2.3 bypass tests
 
 Requires: express-server running and PostgreSQL seeded with buyer@buyer.com
           (seller@seller.com and admin@admin.com auto-created in dev on startup)
