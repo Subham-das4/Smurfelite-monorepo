@@ -81,6 +81,9 @@ services:
       HOSTNAME: 0.0.0.0
       PORT: "3000"
       NODE_ENV: production
+      NEXT_PUBLIC_EXPRESS_SERVER_API: ${NEXT_PUBLIC_EXPRESS_SERVER_API:-https://api.smurfelite.store/api}
+      NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID:-}
+      NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${NEXT_PUBLIC_PAYPAL_CLIENT_ID:-}
     networks:
       - frontend
 
