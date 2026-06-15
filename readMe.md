@@ -38,13 +38,13 @@ Verify after deploy: `GET /api/payments/paypal/status` and `GET /api/payments/no
 
 ### Per-app Dockerfiles
 
-| App | Dockerfile |
-|-----|------------|
+| App            | Dockerfile                       |
+| -------------- | -------------------------------- |
 | express-server | `apps/express-server/Dockerfile` |
-| cron-server | `apps/cron-server/Dockerfile` |
-| nextjs-app | `apps/nextjs-app/Dockerfile` |
-| admin-app | `apps/admin-app/Dockerfile` |
-| seller-app | `apps/seller-app/Dockerfile` |
+| cron-server    | `apps/cron-server/Dockerfile`    |
+| nextjs-app     | `apps/nextjs-app/Dockerfile`     |
+| admin-app      | `apps/admin-app/Dockerfile`      |
+| seller-app     | `apps/seller-app/Dockerfile`     |
 
 Build context is always the **monorepo root**.
 
@@ -126,3 +126,5 @@ pm.test("Token extraction failed", function() {
 pm.expect(accessToken).to.be.a('string', 'Token was null or undefined in the response.');
 });
 }
+
+docker compose -p smurfelite --env-file docker/.env up -d nextjs-app
